@@ -1,0 +1,36 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   21.march.2022
+#   @integration  :   Logger
+#   @description  :   Define the level of logging activities in Home Assistant
+#   @basic concept: 
+#     AVM; clear out the non-essentials from logs at startup--- 
+#          enable focus on the warnings and info that matters
+#     PS: outcome is visible in Configuration/settings/logs#     
+#
+#   further info: https://www.home-assistant.io/integrations/logger/
+#
+###############################################################################
+
+
+logger:
+#  default: debug
+  default: info
+
+#  logs:
+#    homeassistant.components.netatmo: critical
+#    homeassistant.components.netatmo: warning
+#    custom_components/min_renovasjon: info
+    
+  filters:
+    homeassistant.components.netatmo:
+      - "Webhook not registered - https and port 443 is required to register the webhook"
+#      - "Error during webhook registration - 400 - Bad request - Allowed ports for webhooks are 80, 88, 443 and 9443. (21) when accessing 'https://api.netatmo.com/api/addwebhook'""
+    homeassistant.components.camera:
+      - "Platform netatmo not ready yet: None; Retrying in background in 30 seconds"
+    homeassistant.components.select:
+      - "Platform netatmo not ready yet: None; Retrying in background in 30 seconds"
+    homeassistant.components.climate:
+      - "Platform netatmo not ready yet: None; Retrying in background in 30 seconds"
+    homeassistant.components.light:
+      - "Platform netatmo not ready yet: None; Retrying in background in 30 seconds"

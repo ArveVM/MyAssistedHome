@@ -1,0 +1,44 @@
+input_datetime:
+  adguard_filter_off_timer:
+    name: Adguard filter off timer
+    has_date: false
+    has_time: true
+    initial: 00:30
+
+timer:
+  adguard_filter_off:
+    duration: 00:30
+
+script:
+  adguard_filter_off:
+    sequence:
+      - service: timer.start
+        data:
+          duration: >
+            {{states('input_datetime.adguard_filter_off_timer')}}
+        target:
+          entity_id: timer.adguard_filter_off
+      - service: switch.turn_off
+        data: {}
+        target:
+          entity_id: switch.adguard_home_filtering
+
+automation:
+  - alias: "_Adguard timer; stop"
+    id: 2a778068-6620-4ae7-8a29-ed7097509333
+    trigger:
+      - id: pause
+        platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.adguard_filter_off
+      # - id: restar
+        
+    action:
+      # - service: notify.nma
+      #   data:
+      #     message: "Timer stop"
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.adguard_home_filtering

@@ -1,0 +1,230 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_temp.md
+
+# Inputs; switch.hotwater_puck   - shelly1 controlling thermostat
+# Temps on the
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      solution_attribute_to_entity: &solution_attribute
+        solution: "Hotwater Temp"
+      solution_attribute_to_input_entity: &solution_input_attribute
+        solution input to: "Hotwater Temp"
+
+      # Adding node-anchor(s)/ for 'input-sensors' to use as variables
+      # and to ensure re-use of specific "internal sensors" in automations/templates below
+      #power: &power sensor.entry_heater_puck_power                              # sensor for consumption W
+      #energy: &energy sensor.entry_heater_puck_energy                           # sensor for consumption kwH
+      onoff: &onoff switch.hotwater_puck # switch OnOff   (shelly+ contactor)
+      auto: &auto input_boolean.hotwater_temp_powerauto # waf/guest-mode,, will run of local thermostat and NO powersaving
+      powersave: &powersave input_boolean.hotwater_temp_powersave # use for powersave on price ?
+      powerhoursave: &powerhoursave input_boolean.hotwater_temp_powerhoursave # use to cut consumption for price-level pr hour
+      gen_thermostat: &gen_thermostat climate.hotwater_temp_thermostat # the generic thermostat,, used in automations to turn switch on/off
+      local_temp: &local_temp sensor.hotwater_temp_temperature # this is input from Shelly
+      gen_thermostat_output: &gen_thermostat_output input_boolean.hotwater_temp_thermostat_output # output from generic thermostat,, used in automations to turn switch on/off
+      gen_thermostat_target: &gen_thermostat_target sensor.priceanalyzer_vvb # target degrees,, fluctuates with prices from Nordpool
+
+    # tagging entities used (as input) by this file/Solution with the 'Solution name' as an attribute:
+    switch.hotwater_puck:
+      <<: *solution_input_attribute
+    sensor.hotwater_puck_bottom_temperature:
+      <<: *solution_input_attribute
+    binary_sensor.hotwater_puck_input:
+      <<: *solution_input_attribute
+
+    # tagging entities created in this file/Solution with the 'Solution name' as an attribute:
+    input_boolean.hotwater_temp_thermostat_output:
+      <<: *solution_attribute
+    input_boolean.hotwater_temp_powerauto:
+      <<: *solution_attribute
+    input_boolean.hotwater_temp_powersave:
+      <<: *solution_attribute
+    input_boolean.hotwater_temp_powerhoursave:
+      <<: *solution_attribute
+    climate.hotwater_temp_thermostat:
+      <<: *solution_attribute
+    automation.hotwater_temp_adjust_thermostat:
+      <<: *solution_attribute
+    automation.hotwater_temp_thermostat:
+      <<: *solution_attribute
+    automation.hotwater_temp_auto_off:
+      <<: *solution_attribute
+    automation.hotwater_temp_auto_on:
+      <<: *solution_attribute
+    sensor.hotwater_puck_mixscrew_temperature:
+      <<: *solution_attribute
+
+input_boolean:
+  hotwater_temp_thermostat_output:
+    name: Hotwater Temp Thermostat Output
+
+  hotwater_temp_powerauto:
+    name: Hotwater Temp PowerAuto
+
+  hotwater_temp_powersave:
+    name: Hotwater Temp PowerSave
+
+  hotwater_temp_powerboost:
+    name: Hotwater Temp PowerBoost
+
+  hotwater_temp_powerhoursave:
+    name: Hotwater Temp PowerHourSave
+
+template:
+  - sensor:
+      - name: "Hotwater Temp Difference"
+        unit_of_measurement: "°C"
+        attributes:
+          <<: *solution_attribute
+        state: >-
+          {%set bottom = states('sensor.hotwater_puck_bottom_temperature.state') | float(default=45) %}
+          {%set top = states('sensor.hotwater_temp_mixscrew_filtererd_temperature') | float(default=55) %}
+          {{bottom - top}}
+      #- name: "Hotwater Temp Power"
+      #  unique_id: hotwater_temp_power
+      #  device_class: power
+      #  unit_of_measurement: "W"
+      #  state: >
+      #    {% if is_state('binary_sensor.hotwater_puck_input', 'on') %}
+      #      2850 
+      #    {% else %} 
+      #      0
+      #    {% endif %}
+      - name: Hotwater Temp temperature
+        unique_id: hotwater_temp_temperature
+        device_class: temperature
+        unit_of_measurement: "°C"
+        state_class: measurement
+        attributes:
+          <<: *solution_attribute
+        state: >-
+          {%set bottom = states.sensor.hotwater_puck_bottom_temperature.state | float(default=45) %}
+          {%set top = states.sensor.hotwater_puck_mixscrew_temperature.state | float(default=55) %}
+          {{(bottom + top)/2}}
+
+
+sensor:
+  # since the mix-screw temp-sensor is lcoated on the screw where cold water enteres, 
+  # I hereby define that quick drops is not representative of state of hotwater, 
+  # but only representing quick drops in temp due to hotwater running into tank. 
+  # Therefore; the filtered mixScrew-temp is considered to be temp of water in top of the tank  
+  - platform: filter
+    name: "Hotwater Temp MixScrew Filtererd temperature"
+    entity_id: sensor.hotwater_puck_mixscrew_temperature
+    filters:
+      - filter: outlier
+        window_size: 4
+        radius: 2.0
+      - filter: lowpass
+        time_constant: 10
+      - filter: time_simple_moving_average
+        window_size: "00:05"
+        precision: 2
+  - platform: statistics
+    name: VVB difference Statistics
+    entity_id: sensor.hotwater_puck_bottom_temperature
+    state_characteristic: change
+    max_age:
+      minutes: 2
+    sampling_size: 50
+    precision: 1
+
+
+
+climate:
+  - name: Hotwater Temp Thermostat
+    platform: generic_thermostat
+    unique_id: hotwater_temp_thermostat
+    #min_cycle_duration:
+    #  minutes: 10
+    heater: *gen_thermostat_output
+    target_sensor: *local_temp
+    min_temp: 40
+    max_temp: 80
+    precision: 1
+    hot_tolerance: 2
+    cold_tolerance: 2
+
+automation:
+  - id: "hotwater_temp_adjust_thermostat"
+    alias: "_Hotwater Temp; adjust thermostat"
+    description: "adjust thermostat temps according to PriceAnalyzer intelligence. See Priceanalyzer-integration for settings and tuning of temp-adjustment, this automation blindly follow"
+    mode: single
+    use_blueprint:
+      path: erlendsellie/priceanalyzer_vvb.yaml
+      input:
+        sensor: *gen_thermostat_target
+        climate: *gen_thermostat
+
+  - id: "hotwater_temp_auto_off"
+    alias: "_Hotwater Temp; auto OFF"
+    description: "when auto is off; switch shold allways be off (=heat ON)"
+    mode: single
+    trigger:
+      - id: "auto_off"
+        platform: state
+        entity_id: *auto
+        to: "off"
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: *auto
+        state: "off"
+    action:
+      - service: switch.turn_off
+        target:
+          entity_id: *onoff
+
+  - id: "hotwater_temp_auto_on"
+    alias: "_Hotwater Temp; auto ON"
+    description: "when auto is on; switch shold allways follow generic thermostat and power-save schemes"
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: *auto
+        to: "on"
+      - platform: state
+        entity_id: *gen_thermostat_output # this is generic thermostat output  (genTherm think that heater should be ON, but there might be other reasons beside temp)
+      - platform: state
+        entity_id: *powersave
+      - platform: state
+        entity_id: *powerhoursave
+      - platform: time_pattern
+        minutes: 4
+      - platform: homeassistant
+        event: start
+
+    condition:
+      #- condition: template
+      #  value_template: "{{ states('input_boolean.laundry_heater_powerauto')  == 'on' }}"
+      - condition: state
+        entity_id: *auto
+        state: "on"
+
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: *auto
+                state: "on"
+              - condition: state
+                entity_id: *gen_thermostat_output #  floor sensor
+                state: "on"
+              - condition: state
+                entity_id: *powersave #  not powersaving
+                state: "off"
+              - condition: state
+                entity_id: *powerhoursave #  not powersaving
+                state: "off"
+            sequence:
+              - service: switch.turn_off
+                target:
+                  entity_id: *onoff
+        default:
+          - service: switch.turn_on
+            target:
+              entity_id: *onoff

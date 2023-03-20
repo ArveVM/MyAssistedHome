@@ -1,0 +1,43 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+
+homeassistant:
+  customize:
+    # Add state-class to enable long term statistics:
+    sensor.hastats_db_size:
+      state_class: measurement
+    sensor.hastats_db_rows_states:
+      state_class: measurement
+    sensor.hastats_db_rows_stateattributes:
+      state_class: measurement
+    sensor.hastats_db_rows_statistics:
+      state_class: measurement
+    sensor.hastats_db_rows_statisticsshortterm:
+      state_class: measurement
+
+
+
+# YAML-config depricated,, moved to GUI
+# sensor:
+#   - platform: sql
+#     scan_interval: 30001
+#     queries:
+#       - name: "HAstats DB size"
+#         # source: Moonbase59 -  https://community.home-assistant.io/t/calculate-home-assistant-v2-db-size-without-whitelisting-entire-config-dir/195808/2
+#         query: "SELECT ROUND(page_count * page_size / 1024 / 1024, 1) as size FROM pragma_page_count(), pragma_page_size();"
+#         column: "size"
+#         unit_of_measurement: "MiB"
+#   - platform: sql
+#     scan_interval: 30001
+#     queries:
+#       - name: "HAstats DB rows in States"
+#         query: "SELECT COUNT(*) as rows FROM states;"
+#         column: "rows"
+#         unit_of_measurement: "rows"
+#   - platform: sql
+#     scan_interval: 30001
+#     queries:
+#       - name: "HAstats DB rows in Statistics"
+#         query: "SELECT COUNT(*) as rows FROM statistics;"
+#         column: "rows"
+#         unit_of_measurement: "rows"

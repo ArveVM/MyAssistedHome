@@ -1,0 +1,39 @@
+
+# https://github.com/knudsvik/EnergyScore?fbclid=IwAR0sDxRk0DDS0S6Yb2ILpTC-h1WlutbjB_rSRLebt-HAqJadYiEbzQFMcAI
+#sensor:
+#  - platform: energyscore
+#    name: Heater Energy Score
+#    energy_entity: sensor.heater_energy
+#    price_entity: sensor.nordpool_electricity_price
+
+sensor:
+  - platform: energyscore
+    unique_id: 524d5407-8dda-40a7-a6de-11c2579a52f6
+    name: PwrCtrl EnergyScore total
+    energy_entity: sensor.pwrctrl_use_total_energy
+    price_entity: sensor.priceanalyzer_price
+  - platform: energyscore
+    unique_id: 969d46a1-ad00-441e-a7d4-db554fbd1598
+    name: PwrCtrl EnergyScore carCharge
+    energy_entity: sensor.pwrctrl_use_carcharger_energy
+    price_entity: sensor.priceanalyzer_price
+  - platform: energyscore
+    unique_id: a7a9ecb4-7638-4ee0-bdd1-cb11dba32cb5
+    name: PwrCtrl EnergyScore heating
+    energy_entity: sensor.pwrctrl_use_heating_energy
+    price_entity: sensor.priceanalyzer_price
+  - platform: energyscore
+    unique_id: 2714848e-e3d4-4c5f-8e1f-31e726eb8304
+    name: PwrCtrl EnergyScore lights
+    energy_entity: sensor.pwrctrl_use_lights_energy
+    price_entity: sensor.priceanalyzer_price
+  - platform: energyscore
+    unique_id: 5a82a369-eb3b-4888-b81e-51bd3a6c0307
+    name: PwrCtrl EnergyScore appliances
+    energy_entity: sensor.pwrctrl_use_appliances_energy
+    price_entity: sensor.priceanalyzer_price
+  - platform: energyscore
+    unique_id: 922252cd-b7a7-4c53-8721-ccbba8e0ceee
+    name: PwrCtrl EnergyScore multimedia
+    energy_entity: sensor.pwrctrl_use_multimedia_energy
+    price_entity: sensor.priceanalyzer_price

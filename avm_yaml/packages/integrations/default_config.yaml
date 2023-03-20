@@ -1,0 +1,74 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   15.march.2022
+#   @integration  :   Default config integration
+#   @description  :   configure a default set of integrations
+#   @basic concept: 
+#      Started breaking down everything to enable only the needed
+#      but almost everything was needed
+#      
+#      So ended up with adding back default_config: and just keep the  
+#      current integrations as comments, and keep config of those whom 
+#      need it in the place where the integration is actually 'activated'
+#        Functionality cones from Add-ons and Integrations
+#
+#   further info: https://www.home-assistant.io/integrations/default_config/
+#
+###############################################################################
+
+# First; add everyting everyting; 
+default_config:
+
+# Then; list the commented integrations beeing 'activated' - as placeholder
+#       and add config where needed
+
+# add automations-file that is enabled in GUI:
+automation: !include ../../../automations.yaml
+# copied from mrRRs config,, own folder for functionality-view Yaml-editable-only-automations:
+#automation yaml_editable: !include_dir_list ../../entities/automation_yaml
+
+#backup:       #AVM; added in 22.4 
+#bluetooth:    #AVM: added in 2022.8
+#config:
+#counter:
+#dhcp:
+#energy:
+
+# AVM: enable UI-Minimalist-themes
+frontend:
+  themes: !include_dir_merge_named ../../../themes
+
+#hardware        #AVM: added in 2022.6  
+#history:
+#homeassistant_alerts    #AVM: added in 2022.8  
+#homeassistant_cloud:  
+#image:
+#input_boolean:
+#input_button:
+#input_datetime:
+#input_number:
+#input_select:
+#input_text:
+#logbook:
+#logger:  #->  see config in logger.yaml in /integrations
+#map:
+#media_source:
+#mobile_app:
+#my:
+#person:
+#schedule:        #AVM: added in 2022.9
+
+scene: !include ../../../scenes.yaml
+script: !include ../../../scripts.yaml
+
+#ssdp:
+#stream:
+#sun:
+#system_health:
+#tag:
+#timer:
+#updater:        REMOVED
+#usb:
+#webhook:
+#zeroconf:
+#zone:

@@ -1,0 +1,28 @@
+#
+#  AVM;    https://www.home-assistant.io/integrations/frontend/#setting-themes
+
+
+#minimalist-desktop:
+  # Journal
+#  state-icon-color: "rgb(var(--color-theme))"
+#  border-radius: "20px"
+#  ha-card-border-radius: "var(--border-radius)"
+
+
+
+happy:
+  primary-color: pink
+  text-primary-color: purple
+  mdc-theme-primary: plum
+sad:
+  primary-color: steelblue
+  modes:
+    dark:
+      secondary-text-color: slategray
+day_and_night:
+  primary-color: coral
+  modes:
+    light:
+      secondary-text-color: olive
+    dark:
+      secondary-text-color: slategray

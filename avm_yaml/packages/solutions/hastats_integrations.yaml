@@ -1,0 +1,21 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+
+template:
+  #  Count number of loaded Integrations
+  - sensor:
+      - name: HAstats integrations count
+        unique_id: hastats_integrations_count
+        state_class:
+          measurement
+          #{{ ns.count }} - {{attr}} {{states.sensor.start_time.attributes [attr] }}
+        state: >
+          {% set ns = namespace(count = 0) %}
+          {% for attr in states.sensor.start_time.attributes %}
+          {%- if not attr=="friendly_name" 
+              and not attr=="unit_of_measurement"     
+              and not attr=="icon" -%}
+          {%- set ns.count = ns.count+1 %}
+          {%- endif %}
+          {%- endfor %}
+          {{ns.count}}

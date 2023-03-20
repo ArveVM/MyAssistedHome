@@ -1,0 +1,40 @@
+###############################################################################
+#   @author       :   ArveVM
+#   @date         :   21.march.2022
+#   @integration  :   Recorder
+#   @description  :   storine details in a database
+#   @basic concept:
+#     from https://github.com/frenck/home-assistant-config:
+#       "The recorder component is storing details in a database which
+#       then are handled by the history component."
+#
+#   further info: https://www.home-assistant.io/integrations/recorder
+#
+###############################################################################
+
+recorder:
+  commit_interval: 1
+  #ArveVM; default is 1 sec, but I'll try if I can "feel the lagging" if increased to two seconds
+
+  # Use the Core MariaDB add-on to store the recorder data in
+  # e.g.: "mysql://homeassistant:PASSWORD@core-mariadb/homeassistant?charset=utf8"
+  # db_url: !secret recorder_db_url
+
+  # The number of days of history to keep in the recorder database
+  purge_keep_days: 10
+  # ArveVM; default is 10 days
+
+  #  auto_purge: false
+
+  exclude:
+    domains:
+      #- automation
+      - updater
+    entity_globs:
+      - sensor.weather_*
+    entities:
+      #- sun.sun # Don't record sun data
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.date
+    event_types:
+      - call_service # Don't record service calls

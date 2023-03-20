@@ -1,0 +1,195 @@
+# ArveVM; solution to calculate State of Charge for hotwater
+# idea intirely stolen from Asbjørn Bergsland on Facebook/Home Assistant Norge
+# re-worked as Solution and to new template format, and to my naming standards
+# also moved input-data to be UI-settings,, added as a line in the card
+# and adding new "input-sensor" at the top,, to get the average tank-temp from temp-sensors
+
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      solution_attribute_to_entity: &solution_attribute
+        solution: "Hotwater SoC"
+
+    input_number.hotwater_soc_target_temp:
+      device_class: temperature
+      <<: *solution_attribute
+    input_number.hotwater_soc_min_temp:
+      device_class: temperature
+      <<: *solution_attribute
+    input_number.hotwater_soc_input_temp:
+      device_class: temperature
+      <<: *solution_attribute
+    input_number.hotwater_soc_tanksize:
+      <<: *solution_attribute
+    input_number.hotwater_soc_elementsize:
+      <<: *solution_attribute
+
+# First set some required input's to the solution
+template:
+  - sensor:
+      # ArveVM; here you need to change sensors to your particular temp-sensors.
+      #If you have just one sensor (or more),, change the templating accordingly
+      - name: "Hotwater SoC average temperature"
+        unique_id: hotwater_soc_average_temperature
+        unit_of_measurement: °C
+        state: >
+          {% set temp1 = states('sensor.hotwater_puck_bottom_temperature') | float %}
+          {% set temp2 = states('sensor.hotwater_puck_mixscrew_temperature') | float %}
+          {{ (temp1 + temp2) /2| round(1) }}
+        attributes:
+          <<: *solution_attribute
+
+      # Input completed,,, rest of yaml-lines are configurable through UI when you have added the 'solution-dashboard'
+      # ##############################################################################
+
+      # ##############################################################################
+      # Then comes Asbjørns formulas and my input-definitions to control settings through UI:
+
+      # Asbjørn's comments:
+      # Beregner antall kWh det tar å varme bereder til settpunkt temperatur-
+      # l = tankstørrelse (250L)    - ArveVM; moved to input-number for easy-adoptation.
+      # t1 = settpunkt temperatur
+      # t2 = temperatur bereder
+      # 4.186 = 4186 er konstanten for varmekapasiteten til vann
+      # 3600 = sekunder i en time
+
+      # Asbjørn's comments:
+      # Beregning av hvor mye energi som kan lagres ved target temperatur
+      - name: "Hotwater SoC energy max"
+        unique_id: hotwater_soc_energy_max
+        icon: "mdi:lightning-bolt-outline"
+        unit_of_measurement: "kWh"
+        state: >
+          {% set l = states('input_number.hotwater_soc_tanksize') | float %}
+          {% set tx = states('input_number.hotwater_soc_target_temp') | float %}       
+          {% set k = 4.186 %}
+          {% set kt = 3600 %}
+          {% set kx = states('input_number.hotwater_soc_input_temp') | float %}
+          {{ (k * l * (tx - kx) /kt) | round(1) }}
+        attributes:
+          <<: *solution_attribute
+
+      # Asbjørn's comments:
+      # Energi lagret i bereder
+      # (ArveVM; re-done to total stored energy, not according to SoC,, thinking of when tank is below 0% SoC and need re-heating,, then we need correct number of kWh to "charge" )
+      - name: "Hotwater SoC energy Stored"
+        unique_id: hotwater_soc_energy_stored
+        icon: "mdi:lightning-bolt-outline"
+        unit_of_measurement: "kWh"
+        state: >-
+          {% set l = states('input_number.hotwater_soc_tanksize') | float %}
+          {% set t2 = states('sensor.hotwater_soc_average_temperature') | float %}
+          {% set k = 4.186 %}
+          {% set kt = 3600 %}
+          {% set kx = states('input_number.hotwater_soc_input_temp') | float %}
+          {{ (k * l * (t2 - kx) /kt) | round(1) }}
+        attributes:
+          <<: *solution_attribute
+
+      - name: "Hotwater SoC energy chargable"
+        unique_id: hotwater_soc_energy_chargable
+        icon: "mdi:lightning-bolt-outline"
+        unit_of_measurement: "kWh"
+        state: >
+          {% set l = states('input_number.hotwater_soc_tanksize') | float %}
+          {% set t1 = states('input_number.hotwater_soc_target_temp') | float %}
+          {% set t2 = states('sensor.hotwater_soc_average_temperature') | float %}
+          {% set k = 4.186 %}
+          {% set kt = 3600 %}
+          {{ (k * l * (t1 - t2) /kt) | round(1) }}
+        attributes:
+          <<: *solution_attribute
+        # ArveVM; this could be simplified by taking max-stored ?
+
+      # Asbjørn's comments:
+      # Beregner tid det tar for å varme bereder til settpunkt temperatur-
+      # p = bereder element i kW                                          #ArveVM: moved to input number
+      # kWh = energi for å verme til settpunkt
+      - name: "Hotwater SoC chargetime float"
+        unique_id: hotwater_soc_chargetime_float
+        icon: "mdi:lightning-bolt-outline"
+        unit_of_measurement: "t"
+        state: >
+          {% set p = states('input_number.hotwater_soc_elementsize') | float %}
+          {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
+          {{ (kwh / p) | round(2) }}
+        attributes:
+          <<: *solution_attribute
+
+      - name: "Hotwater SoC chargetime"
+        unique_id: hotwater_soc_chargetime
+        icon: "mdi:store-24-hour"
+        unit_of_measurement: "t"
+        state: >
+          {% set hours = states('sensor.hotwater_soc_chargetime_float') | float %}
+          {% set minutes = ((hours % 1) * 60) | int %}
+          {% set hours = (hours - (hours % 1)) | int %}
+          {{ '%02i:%02i'%(hours, minutes) }}
+        attributes:
+          <<: *solution_attribute
+
+      # Asbjørn's comments:
+      # Fyllingsgrad i bereder avhangig av setpunkt temperatur
+      - name: "Hotwater SoC"
+        unique_id: hotwater_soc
+        icon: "mdi:lightning-bolt-outline"
+        unit_of_measurement: "%"
+        state: >
+          {% set l = states('input_number.hotwater_soc_tanksize') | float %}
+          {% set kwha = states('sensor.hotwater_soc_energy_stored') | float %}       
+          {% set kwhs = states('sensor.hotwater_soc_energy_max') | float %}
+          {% set k = 4.186 %}
+          {% set kt = 3600 %}
+          {% set kx = states('input_number.hotwater_soc_min_temp') | float %}
+          {{ 100-(((kwhs-kwha)*100))*10/100 | round(1) }}
+        attributes:
+          <<: *solution_attribute
+
+input_number:
+  # Set value for what you considered 100% charged hotwater-tank.
+  # It can be supressed, so you can fill 120% if you boost water above this limit
+  hotwater_soc_target_temp:
+    name: Hotwater SoC Target Temp
+    unit_of_measurement: °C
+    min: 60
+    max: 85
+    step: 1
+
+  # Set value for what you considered 0% charged hotwater-tank.
+  # It can be supressed, so you can get to -40% if you get colder water than this in your tank
+  # (but then it is not considered "hotwater anymore")
+  hotwater_soc_min_temp:
+    name: Hotwater SoC Min Temp
+    unit_of_measurement: °C
+    min: 10
+    max: 85
+    step: 1
+
+  # Set value for temperature of cold water flowing into the tank.
+  hotwater_soc_input_temp:
+    name: Hotwater SoC Input Temp
+    unit_of_measurement: °C
+    min: 0
+    max: 10
+    step: 1
+
+  # Set value for size of tank (in liters)
+  hotwater_soc_tanksize:
+    name: Hotwater SoC TankSize
+    unit_of_measurement: L
+    min: 50
+    max: 500
+    step: 10
+
+  # Set value for element-sice (in kWh).
+  hotwater_soc_elementsize:
+    name: Hotwater SoC ElementSize
+    unit_of_measurement: kWh
+    min: 0.1
+    max: 5
+    step: 0.1

@@ -1,0 +1,202 @@
+###############################################################################
+#   @author       :   ArveVM
+#   @date         :   09.march.2022
+#   @solution     :   Eva_HAN
+#   @description  :   Measure power consumed by our house.
+#   @basic concept:
+#      EVA-han reader is plugged into our power-meters HAN-interface (Norwegian only solution?)
+#      Z2M/mosquitto integration provides data from to HA
+#
+#        sensors used:
+#           sensor.evahan_power
+#
+#   AVM: stick in power-meter, integrated through Zigbee2mqtt and provides some
+#        sensors through that integration, and some more are added here;
+#        https://www.zigbee2mqtt.io/devices/HSE2905E.html
+#
+#        NB; calculating 'instant energy' since the power-meter is not
+#            providing energy-data to Eva to pass-through until passed the end of hour
+#            (which disables in-hour adjusting of power-consumption to hourly-tariff)
+###############################################################################
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: "Eva HAN"
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      energy: &energy sensor.evahan_inst_energy
+      power: &power sensor.evahan_power
+
+    # Add node-anchor as attribute on created entities:
+    sensor.evahan_power:
+      integration: MQTT
+      <<: *package_attribute
+    sensor.evahan_inst_energy:
+      <<: *package_attribute
+    sensor.evahan_filtered_power:
+      <<: *package_attribute
+    # sensor.evahan_energy_hourly_estimate:
+    #   <<: *package_attribute
+    utility_meter.evahan_energy_hourly:
+      <<: *package_attribute
+    utility_meter.evahan_energy_daily:
+      <<: *package_attribute
+    utility_meter.evahan_energy_monthly:
+      <<: *package_attribute
+
+sensor:
+  # first convert from W to kWh   - need this to get values throughout the hour, as Eva is only reporting accumulated until next hours
+  - platform: integration
+    unique_id: evahan_inst_energy
+    name: evaHAN inst energy
+    source: *power
+    method: left
+    unit_prefix: k
+    round: 1
+
+  # eksempel fra Erlend Sellie på HA-norge-FB - brukt i en av lovelace-cards for nordpool vs current usage-grafs,,,
+  - platform: filter
+    name: "evaHAN filtered power"
+    entity_id: *power
+    filters:
+      - filter: throttle
+        window_size: 4
+      - filter: outlier
+        window_size: 4
+        radius: 2.0
+      - filter: lowpass
+        time_constant: 10
+
+template:
+  - trigger:
+      - platform: time_pattern
+        minutes: "/2" # ArveVM; trigger only every 2 minutes
+      - platform: homeassistant
+        event: start # AVM; trigger at restart HA
+      - platform: event
+        event_type: event_template_reloaded # AVM; trigger at reload Template entities
+    sensor:
+
+      - name: PwrCtrl_Estimate55
+        icon: mdi:strategy
+        unit_of_measurement: "kWh"
+        state: >
+          {% if now().minute < 10 %}
+            {{state_attr('sensor.evahan_energy_hourly', 'last_period')}}
+          {% else %} 
+            {% set usage = states('sensor.evahan_energy_hourly') | float %}
+            {% set minutes = now().minute %}
+            {% set seconds = now().second %}
+            {%if minutes%}
+              {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+              {{(usage / percentOfHour) | round (2) }}
+            {%endif%}
+          {% endif %}
+
+  # ArveVM; original template from mrKim, but adjusted with trigger and startup-value
+  - trigger:
+      - platform: time_pattern
+        minutes: "/10" # ArveVM; trigger only every 10 minutes
+      - platform: homeassistant
+        event: start # AVM; trigger at restart HA
+      - platform: event
+        event_type: event_template_reloaded # AVM; trigger at reload Template entities
+    sensor:
+      - name: EvaHAN Energy full hour estimate
+        unique_id: evahan_energy_full_hourl_estimate
+        icon: mdi:strategy
+        unit_of_measurement: "kWh"
+        state: >
+          {% if now().minute < 10 %}
+            3.14
+          {% else %} 
+            {% set usage = states('sensor.evahan_energy_hourly') | float %}
+            {% set minutes = now().minute %}
+            {% set seconds = now().second %}
+            {%if minutes%}
+              {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+              {{(usage / percentOfHour) | round (2) }}
+            {%endif%}
+          {% endif %}
+        # ArveVM; setting 3,14 before 10 minutes; if not you might see a
+        # peak that triggers unwanted actions before pattern is established
+        # PS; the middle part is code from mrKim, and I just wrapped the
+        #     'PI-idea' around it to avoid peaks above 5kwh
+
+      # - name: EvaHAN Energy hourly estimate pi
+      #   unique_id: evahan_energy_hourly_estimate_pi
+      #   icon: mdi:strategy
+      #   unit_of_measurement: "kWh"
+      #   state: >
+      #     {% if now().minute < 10 %}
+      #       3.14
+      #     {% else %} 
+      #       {% set usage = states('sensor.evahan_energy_hourly') | float %}
+      #       {% set minutes = now().minute %}
+      #       {% set seconds = now().second %}
+      #       {%if minutes%}
+      #         {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+      #         {{(usage / percentOfHour) | round (2) }}
+      #       {%endif%}
+      #     {% endif %}
+        # ArveVM; setting 3,14 before 5 minutes; if not you might see a
+        # peak that triggers unwanted actions before pattern is established
+        # PS; the middle part is code from mrKim, and I just wrapped the
+        #     PI-idea around it to avoid peaks above 5kwh
+
+      # - name: EvaHAN Energy hourly estimate pi2
+      #   unique_id: evahan_energy_hourly_estimate_pi2
+      #   icon: mdi:strategy
+      #   unit_of_measurement: "kWh"
+      #   state: >
+      #     {% if now().minute < 5 %}
+      #       {{state_attr('sensor.evahan_energy_hourly', 'last_period')}}
+      #     {% else %} 
+      #       {% set usage = states('sensor.evahan_energy_hourly') | float %}
+      #       {% set minutes = now().minute %}
+      #       {% set seconds = now().second %}
+      #       {%if minutes%}
+      #         {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+      #         {{(usage / percentOfHour) | round (2) }}
+      #       {%endif%}
+      #     {% endif %}
+
+      # - name: EvaHAN Energy hourly estimate pi3
+      #   unique_id: evahan_energy_hourly_estimate_pi3
+      #   icon: mdi:strategy
+      #   unit_of_measurement: "kWh"
+      #   state: >
+      #     {% if now().minute > 0 and now().minute < 5 %}
+      #       {{state_attr('sensor.evahan_energy_hourly', 'last_period')}}
+      #     {% else %} 
+      #       {% set usage = states('sensor.evahan_energy_hourly') | float %}
+      #       {% set minutes = now().minute %}
+      #       {% set seconds = now().second %}
+      #       {%if minutes%}
+      #         {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+      #         {{(usage / percentOfHour) | round (2) }}
+      #       {%endif%}
+      #     {% endif %}
+
+utility_meter:
+  # log usage in periods
+  #   cycle string-> How often to reset the counter.
+  #       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+
+  evahan_energy_hourly:
+    source: *energy
+    name: evaHAN Energy hourly
+    cycle: hourly
+
+  evahan_energy_daily:
+    source: *energy
+    name: evaHAN Energy daily
+    cycle: daily
+
+  evahan_energy_monthly:
+    source: *energy
+    name: evaHAN Energy monthly
+    cycle: monthly

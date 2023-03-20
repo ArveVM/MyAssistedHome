@@ -1,0 +1,26 @@
+# AVM:  test of calculation of power consuption on lights
+#       the integration also comes with features for fixed cunsumptions,, to be investigated ;)
+# HACS-install from:
+# https://github.com/bramstroker/homeassistant-powercalc
+
+# see my example in kitchen.yaml for aggregation of the multitude of kitchen lights
+
+# # # Debug logging:
+#logger:
+#  default: warning
+#  logs:
+#    custom_components.powercalc: debug
+
+powercalc:
+  enable_autodiscovery: false # AVM: added myself, want manual control of structure and config
+  force_update_frequency: 00:01:00 #Each minute
+  #  power_sensor_naming: "{} Powersensor"
+  create_energy_sensors: false # AVM: want manual control of structure and config
+  energy_integration_method: left # Riemann sum method to be used
+  energy_sensor_precision: 2
+  utility_meter_types:
+    - hourly
+    - daily
+    - weekly
+    - monthly
+    - yearly

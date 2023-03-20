@@ -1,0 +1,51 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   12.march.2022
+#   @solution     :   Kitchen Heater Soutn
+#   @description  :   Solution to make dumb appliances seem smart.  
+#   @basic concept: 
+#      Dumb heater is plugged into a ShellyS smartplug which 
+#      Shelly integration provides data from to HA
+#         sensors used:      
+#            sensor.kitchen_heater_south_power
+#            sensor.kitchen_heater_south_energy
+#      (it also has a switch wihch one can trun off in case of
+#      extreme powersaving-solutions - some time in the future)
+#
+#      Tips and shitload of guiding from mrRR, part of the v2 of my splitting documentation
+# 
+###############################################################################
+
+
+# input/tip from mrRR:  is it on?
+template:
+  - sensor:
+      - name: "kitchen_heater_south_running"
+        unique_id: "kitchen_heater_south_running"
+        state: "{{ states('sensor.kitchen_heater_south_power') | float(0) > 7 }}"
+
+
+# log usage in periods
+#   cycle string-> How often to reset the counter. 
+#       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+utility_meter:
+  kitchen_heater_south_energy_hourly:
+    source: sensor.kitchen_heater_south_energy
+    name: kitchen_heater_south_energy_hourly 
+    cycle: hourly
+
+  kitchen_heater_south_energy_daily: 
+    source: sensor.kitchen_heater_south_energy
+    name: kitchen_heater_south_energy_daily 
+    cycle: daily 
+
+  kitchen_heater_south_energy_weekly: 
+    source: sensor.kitchen_heater_south_energy
+    name: kitchen_heater_south_energy_weekly
+    cycle: weekly
+
+
+  kitchen_heater_south_energy_monthly: 
+    source: sensor.kitchen_heater_south_energy
+    name: kitchen_heater_south_energy_monthly
+    cycle: monthly

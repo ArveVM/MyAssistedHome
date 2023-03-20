@@ -1,0 +1,83 @@
+
+
+input_boolean:
+  kids_linen_todo_setting:
+    name: KidS linen todo setting
+  kids_linen_todo:
+    name: KidS linen todo
+  kids_linen_create_alert:
+    name: KidS linen create alert
+
+input_datetime:
+  kids_linen_changed:
+    name: KidS linen changed
+    has_date: true
+    has_time: false
+
+input_number:
+  kids_linen_change_interval:
+    name: KidS linen change interval
+    min: 7
+    max: 21
+  kids_linen_todo_interval:
+    name: KidS linen todo interval
+    min: 0
+    max: 5
+
+template:
+  - sensor:
+      - name: KidS linen days until change
+        unique_id: kids_linen_days__until_change
+        unit_of_measurement: days
+        state: >
+          {{states('input_number.kids_linen_change_interval') | int 
+          - (now() - states( 'input_datetime.kids_linen_changed') 
+          | as_datetime | as_local ).days }}
+
+alert:
+  kids_linen_alert:
+    name: KidS linen change overdue
+    done_message: KidS linen change overdue
+    entity_id: input_boolean.garage_door
+    state: "on"
+    repeat: 30
+    can_acknowledge: true
+    skip_first: true
+    notifiers:
+      - ryans_phone
+      - kristens_phone
+
+automation:
+  - id: kids_linen_todo_add
+    alias: "_KidS linen todo; add"
+    trigger:
+      - platform: template
+        value_template: "{{ states('input_number.kids_linen_todo_interval') >= states('sensor.kids_linen_days_until_change') }}"
+      - platform: state
+        entity_id: input_boolean.kids_linen_todo_setting
+        to: "on"
+    condition:
+      - condition: template
+        value_template: "{{ states('input_number.kids_linen_todo_interval') >= states('sensor.kids_linen_days_until_change') }}"
+      - condition: state
+        entity_id: input_boolean.kids_linen_todo_setting
+        state: "on"
+    action:
+      - service: input_boolean.turn_on
+        data:
+          entity_id: input_boolean.kids_linen_todo
+
+  - id: kids_linen_todo_completed
+    alias: "_KidS linen todo; completed"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.kids_linen_todo
+        from: "on"
+        to: "off"
+    condition: []
+    action:
+      - service: input_datetime.set_datetime
+        data:
+          date: "{{ now().strftime('%Y-%m-%d') }}"
+        target:
+          entity_id: input_datetime.kids_linen_changed

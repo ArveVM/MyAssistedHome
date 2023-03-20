@@ -1,0 +1,40 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/integrations/lovelace_yaml_dashboards.md
+
+
+# ArveVM; Default in HA is GUI dashboard, so this 
+# enable the continous usage of the UI dashboards with "secret storage", 
+# and enable the usage of yaml-dashboard :)
+lovelace:
+  mode: storage
+
+  # then add yaml dashboards
+  # AVM; make note of the requirement for a '-' in the 'dashboard-definition' - or you will get the error;
+  #        Invalid config for [lovelace]: Url path needs to contain a hyphen (-) for dictionary value when checking configuration
+  dashboards:
+    avm-mobile:
+      mode: yaml
+      title: AVM Mobile
+      icon: mdi:hammer
+      show_in_sidebar: true
+      filename: avm_yaml/dashboard/mob_dashboard.yaml
+
+    nest-hub:
+      mode: yaml
+      title: Nest Hub
+      icon: mdi:football
+      show_in_sidebar: true
+      filename: avm_yaml/dashboard/nest_hub_dashboard.yaml
+
+#  resources:
+  # Duplicates needed for casting...
+  #   info-source:  https://community.home-assistant.io/t/custom-element-doesnt-exist-but-only-when-casting/140458/14
+#  - url: /local/community/history-explorer-card/history-explorer-card.js
+#    type: module
+#  - url: /local/community/lovelace-fold-entity-row/fold-entity-row.js
+#    type: module
+
+#  - url: /local/community/button-card/button-card.js
+#    type: module
+
+

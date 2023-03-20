@@ -1,0 +1,33 @@
+# ArveVM;  this is not .yaml for config, but for lovelace card  :)
+# open Lovelace and add card (any card), click "show code editor"
+# and then replace all yaml-code with code below
+#
+#
+# Please note that the HACS-frontend 'auto-entities' is required!
+
+
+type: vertical-stack
+cards:
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: 'Min renovasjon - dager igjen:'
+    filter:
+      include:
+        - entity_id: '*renovasjon*'
+    sort:
+      method: state
+      numeric: true
+  - type: custom:auto-entities
+    card:
+      type: entities
+    entities:
+      - sensor.restavfall
+      - sensor.matavfall
+      - sensor.papp_papir_plast
+      - sensor.glas_metallemballasje
+    sort:
+      method: domain
+      numeric: false
+      reverse: true
+      ignore_case: false

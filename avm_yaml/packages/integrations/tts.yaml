@@ -1,0 +1,12 @@
+
+# Example configuration.yaml entry for Google Translate TTS service
+#    https://www.home-assistant.io/integrations/tts
+tts:
+  - platform: google_translate
+#    cache: true
+#    cache_dir: /tmp/tts
+#    time_memory: 300
+#    base_url: http://192.168.0.10:8123
+    service_name: google_say
+    language: "no"         # https://www.home-assistant.io/integrations/google_translate
+

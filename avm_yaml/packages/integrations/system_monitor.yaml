@@ -1,0 +1,59 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   21.march.2022
+#   @integration  :   System Monitor
+#   @description  :   Monitor disk usage, memory usage, CPU usage, and running processes
+#   @basic concept:   see doc's
+#
+#   Tip from https://www.youtube.com/watch?v=3jqATbm22EI
+# 
+#   further info: https://www.home-assistant.io/integrations/systemmonitor/
+#
+###############################################################################
+
+homeassistant:
+  customize:
+    # First create tag:
+    package.node_anchors:
+      customize: &customize
+        package: 'System Monitor INTEGRATION'
+    # Then tag sensors created:
+    sensor.processor_use:
+      <<: *customize
+    sensor.disk_use_percent:
+      <<: *customize
+    sensor.disk_free:
+      <<: *customize
+    sensor.memory_use_percent:
+      <<: *customize
+    sensor.last_boot:
+      <<: *customize
+
+
+# HA-performance monitor;  
+sensor:
+  - platform: systemmonitor
+    resources:
+    - type: processor_use
+    - type: disk_use_percent
+      arg: "/"
+    - type: disk_free
+      arg: "/"
+    - type: memory_use_percent
+#    - type: network_in
+#      arg: eth0
+#    - type: throughput_network_in
+#      arg: eth0
+#    - type: network_out
+#      arg: eth0
+#    - type: throughput_network_out
+#      arg: eth0
+#    - type: processor_temperature
+    - type: last_boot
+# OPTIONAL CPU Raspberry Pi Temp
+#  - platform: command_line
+#    name: CPU Temp
+#    command: "cat /sys/class/thermal/thermal_zone0/temp"
+#    unit_of_measurement: "°C"
+#    value_template: '{{ value | multiply(0.001) | round(2)  }}'
+

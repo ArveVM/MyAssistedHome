@@ -1,0 +1,21 @@
+# ArveVM: create toDo - tasks in other packages,, this package summarize the number of
+#         active toDo-tasks,, and create option to a chip/button/card to show that there
+#         are in fact tasks that need dooing  ;)
+
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/todo.md
+
+template:
+  - sensor:
+      - name: "toDo Counter"
+        unique_id: sensor.todo_counter
+        icon: mdi:list-status
+        state: >-
+          {{ states.input_boolean
+          | selectattr('entity_id', 'search', '_todo$')
+          | selectattr('state', 'eq', 'on') 
+          | list 
+          | count 
+          }}
+        attributes:
+          solution: ToDo
