@@ -1,9 +1,11 @@
-# Home Assistant config
+# MyAssistedHome = Home Assistant config, and some self-hosted stuff
 
 
 - This repo contains (part of) the working Home Assistant configuration for our home. It's clearly under development :)
 - Below you find an overview of the the configuration, and in chapters links to config/devices currently being used, links to blog/video posts, and other HA enthusists that provided inspiration and configs to help build this config. 
 <br />
+
+
 
 ## All of the code is free to use; I only ask that you Star this repo.
 
