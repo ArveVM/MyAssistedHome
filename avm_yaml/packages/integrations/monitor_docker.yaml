@@ -1,0 +1,28 @@
+# Example configuration.yaml entry
+monitor_docker:
+  - name: Docker
+    url: tcp://192.168.2.141:2375
+    containers:
+      - mosquitto
+      - zigbee2mqtt
+      - frigate
+      - ha6
+      # - ha
+    #      - nodered
+    #      - unifi
+    rename:
+      # ha6: Homeassistant
+      #      influxdb: InfluxDB
+      mosquitto: Mosquitto
+    #     nodered: "Node-RED"
+    #     unifi: UniFi
+    monitored_conditions:
+      - version
+      - containers_running
+      - containers_total
+      - state
+      - status
+      - memory
+      - memory_percentage
+      - 1cpu_percentage
+      - containers_1cpu_percentage

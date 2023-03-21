@@ -1,0 +1,51 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   18.march.2022
+#   @integration  :   Times of the day
+#   @description  :   enable powerful functionality!
+#   @basic concept: 
+#      define 'time-zones' for which you can controll/trigger automations 
+#
+#   tip from Slackerlabs: https://www.youtube.com/watch?v=QZB_o62AuV0&t=78s
+# 
+#   further info: https://www.home-assistant.io/integrations/tod/
+#
+###############################################################################
+
+
+# Example configuration.yaml entry
+binary_sensor:
+  - platform: tod
+    name: Early Morning
+    after: sunrise
+    after_offset: "-02:00"
+    before: "07:00"
+
+  - platform: tod
+    name: Late Morning
+    after: "10:00"
+    before: "12:00"
+    
+  - platform: tod
+    name: Kids awake
+    after: "06:00"
+    before: "20:00"
+
+
+
+#template:
+#  trigger:
+#    platform: event
+#    event_type: my_event
+#  binary_sensor:
+#    - name: Event recently fired
+#      auto_off: 5
+#      state: "true"
+    
+#trigger:
+#    platform: tod
+#    event_type: sunset
+#binary_sensor:
+#  - name: Night
+#    auto_off: 5
+#    state: "true"
