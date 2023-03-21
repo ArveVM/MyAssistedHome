@@ -1,0 +1,15 @@
+# ArveVM - MyAssistedHome:
+#   https://github.com/ArveVM/MyAssistedHome/wiki/Int-BTHome
+
+# ArveVM: intro from  https://www.youtube.com/watch?v=atpIP2RYldA
+
+
+browser_mod:
+  prefix: 'browser_mod_'
+  devices:
+    a6418cbe_c4021486:
+      name: dad_pc_chrome
+    8ab7cdb4_68954d40:
+      name: dad_mobile_companionapp
+    2586eff5-bc63ccbe:
+      name: dad_pc_internetexplorer

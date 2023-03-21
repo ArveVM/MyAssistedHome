@@ -1,5 +1,5 @@
-# ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/integrations/lovelace_yaml_dashboards.md
+# ArveVM - MyAssistedHome:
+#   https://github.com/ArveVM/MyAssistedHome/wiki/2-Presentation#both-gui-and-yaml-dashboard
 
 
 # ArveVM; Default in HA is GUI dashboard, so this 
