@@ -34,7 +34,8 @@
 homeassistant:
   packages: !include_dir_named avm_yaml/packages
 
-  # auto-login for nest hub - must be configured before loading packages
+
+  # enable auto-login for nest hub - must be configured before loading packages
   auth_providers:
   - type: trusted_networks
     trusted_networks:
