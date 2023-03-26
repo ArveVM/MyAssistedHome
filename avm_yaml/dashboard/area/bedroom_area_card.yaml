@@ -1,0 +1,90 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.bedroom_thp_temperature
+      humidity1: &humidity1 sensor.bedroom_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+    }
+  # AVM; replace with this if I ever get to control the lights in the office :)
+  #  ha-card {
+  #    height: 102px;
+  #    {% if is_state('light.loft', 'on') %}
+  #      background: rgba(255, 152, 0, 0.1);
+  #    {% endif %}
+  #  }
+cards:
+  # First the main-card:
+  - type: custom:mushroom-template-card
+    primary: Bedroom
+    secondary: >-
+      {{states('sensor.bedroom_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.bedroom_thp_humidity') | round(0,'', 44)}}%
+    icon: mdi:bed
+    # entity: light.kidm_lightbulb
+    tap_action:
+      action: none
+    icon_color: disabled
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+  # Then the row of chips below. Align chips with alignment and adjust spacing on each chip (margin-left)
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      # - type: template
+      #   entity: switch.kids_heater_puck
+      #   icon: mdi:radiator
+      #   icon_color: >
+      #     {{ 'blue' if states('sensor.kids_heater_puck_power') > '20' else 'disabled' }}
+      #   tap_action:
+      #     action: more-info
+
+
+      - type: template
+        entity: binary_sensor.bedroom_area_status
+        icon: mdi:check-circle
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - bedroom_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

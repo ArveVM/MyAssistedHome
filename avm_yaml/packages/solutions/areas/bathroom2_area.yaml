@@ -3,17 +3,17 @@
 
 
 
-template:
-  - binary_sensor:     
-      - name: Bathroom2 Area Status
-        unique_id: aa8707c3-37c0-4987-aa4d-5165bcaf2f23
-        state: >
-          {{   (states('input_boolean.bathroom2_heater_powerauto') != 'on')
-            or (states('sensor.bathroom2_thp_humidity') | float(default=40) < 20) 
-            or (states('sensor.bathroom2_thp_humidity') | float(default=40) > 60)   
-          }} 
-        attributes:
-          heater_powerauto: "{{ 'Problem!' if (states('input_boolean.bathroom2_heater_powerauto') != 'on') else 'OK'}}"
-          humidity_above_20: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) < 20) else 'OK'}}"
-          humidity_below_60: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) > 60) else 'OK'}}"
- 
+# template:
+#   - binary_sensor:     
+#       - name: Bathroom2 Area Status
+#         unique_id: 321841d5-2dc4-4f84-aa52-e03171df5d20
+#         state: >
+#           {{   (states('input_boolean.bathroom2_heater_powerauto') != 'on')
+#             or (states('sensor.bathroom2_thp_humidity') | float(default=40) < 20) 
+#             or (states('sensor.bathroom2_thp_humidity') | float(default=40) > 60)   
+#           }} 
+#         attributes:
+#           heater_powerauto: "{{ 'Problem!' if (states('input_boolean.bathroom2_heater_powerauto') != 'on') else 'OK'}}"
+#           humidity_above_20: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) < 20) else 'OK'}}"
+#           humidity_below_60: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) > 60) else 'OK'}}"
+#         device_class: problem

@@ -1,0 +1,142 @@
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor(s) for 'input-sensors' to use as variables
+      onoff: &onoff switch.loft_heater_plug # switch OnOff   (shelly+1pm)
+      auto: &auto input_boolean.loft_heater_powerauto # waf/guest-mode,, will run of local thermostat and NO powersaving
+      powersave: &powersave input_boolean.loft_heater_powersave # use for powersave on price ?
+      powerhoursave: &powerhoursave input_boolean.loft_heater_powerhoursave # use to cut consumption for price-level pr hour
+      local_temp: &local_temp sensor.loft_thp_temperature # external temp  used
+      gen_thermostat_output: &gen_thermostat_output input_boolean.loft_heater_thermostat_output # output from generic thermostat,, used in automations as both condition and trigger to turn switch on/off
+      gen_thermostat: &gen_thermostat climate.loft_heater_thermostat # output from generic thermostat,, used in automations to turn switch on/off
+      target: &target input_number.loft_heater_longterm_target
+
+
+input_boolean:
+  loft_heater_thermostat_output:
+    name: Loft Heater Thermostat Output
+    icon: mdi:radiator
+  loft_heater_powerauto:
+    name: Loft Heater PowerAuto
+    icon: mdi:magic-staff
+  loft_heater_powerboost:
+    name: Loft Heater PowerBoost
+    icon: mdi:fire
+  loft_heater_powersave:
+    name: Loft Heater PowerSave
+    icon: mdi:currency-usd
+  loft_heater_powerhoursave:
+    name: Loft Heater PowerHourSave
+    icon: mdi:currency-usd
+
+
+input_number:
+  loft_heater_longterm_target:
+    name: Loft Heater longterm target # - used in automation 'control climate'
+    min: 5
+    max: 22
+
+
+template:
+  - sensor:
+      # create sensor to track history of the set-temp on the thermostat
+      - unique_id: loft_heater_thermostat_target
+        name: Loft Heater Thermostat target
+        unit_of_measurement: °C
+        device_class: temperature
+        state: " {{state_attr('climate.loft_heater_thermostat', 'temperature') }} "
+
+
+climate:
+  - unique_id: loft_heater_thermostat
+    platform: generic_thermostat
+    name: Loft Heater thermostat
+    heater: *gen_thermostat_output
+    target_sensor: *local_temp
+    initial_hvac_mode: heat
+    target_temp_step: 0.5
+    max_temp: 30
+    min_cycle_duration: "00:05" # AVM; try limit switcing to 5min-periods (avoid on/of on local heatspot)
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+
+
+automation:
+  - id: loft_heater_control_climate
+    alias: _Loft Heater; control climate
+    use_blueprint:
+      path: erlendsellie/priceanalyzer.yaml
+      input:
+        sensor: sensor.priceanalyzer
+        number: *target
+        climate: *gen_thermostat
+
+  - id: loft_heater_auto_off
+    alias: "_Loft Heater; auto OFF"
+    description: "when auto is off; switch shold allways be ON"
+    mode: single
+    trigger:
+      - id: "auto_off"
+        platform: state
+        entity_id: *auto
+        to: "off"
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: *auto
+        state: "off"
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: *onoff
+
+  - id: loft_heater_auto_on
+    alias: "_Loft Heater; auto ON"
+    description: "when auto is on; switch shold allways follow generic thermostat and power-save schemes"
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: *auto
+        to: "on"
+      - platform: state
+        entity_id: *gen_thermostat_output # this is generic thermostat output
+      - platform: state
+        entity_id: *powersave
+      - platform: state
+        entity_id: *powerhoursave
+      - platform: homeassistant
+        event: start
+
+    condition:
+      - condition: state
+        entity_id: *auto
+        state: "on"
+
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: *auto
+                state: "on"
+              #- condition: state
+              #  entity_id: *local_thermostat #  floor sensor
+              #  state: "on"
+              - condition: state
+                entity_id: *gen_thermostat_output # gen.th.output
+                state: "on"
+              - condition: state
+                entity_id: *powersave #  not powersaving
+                state: "off"
+              - condition: state
+                entity_id: *powerhoursave #  not powersaving
+                state: "off"
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: *onoff
+        default:
+          - service: switch.turn_off
+            target:
+              entity_id: *onoff

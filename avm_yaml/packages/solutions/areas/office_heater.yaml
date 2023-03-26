@@ -1,0 +1,146 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_temp.md
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor(s) for 'input-sensors' to use as variables
+      onoff: &onoff switch.office_heater_plug # switch OnOff   (shelly+ contactor)
+      auto: &auto input_boolean.office_heater_powerauto # waf/guest-mode,, will run of local thermostat and NO powersaving
+      powersave: &powersave input_boolean.office_heater_powersave # use for powersave on price ?
+      powerhoursave: &powerhoursave input_boolean.office_heater_powerhoursave # use to cut consumption for price-level pr hour
+      local_temp: &local_temp sensor.office_thp_temperature # external temp
+      gen_thermostat_output: &gen_thermostat_output input_boolean.office_heater_thermostat_output # output from generic thermostat,, used in automations to turn switch on/off
+      gen_thermostat: &gen_thermostat climate.office_heater_thermostat # output from generic thermostat,, used in automations to turn switch on/off
+      target: &target input_number.office_heater_longterm_target
+
+
+
+input_boolean:
+  office_heater_thermostat_output:
+    name: Office Heater thermostat output
+    icon: mdi:radiator
+  office_heater_powerauto:
+    name: Office Heater PowerAuto
+    icon: mdi:magic-staff
+  office_heater_powerboost:
+    name: Office Heater PowerBoost
+    icon: mdi:fire
+  office_heater_powersave:
+    name: Office Heater PowerSave
+    icon: mdi:currency-usd
+  office_heater_powerhoursave:
+    name: Office Heater PowerHourSave
+    icon: mdi:currency-usd
+
+
+input_number:
+  office_heater_longterm_target:
+    name: Office Heater longterm target
+    min: 10
+    max: 23.7
+
+
+template:
+  - sensor:
+      # create sensor to track history of the set-temp on the thermostat
+      - name: Office Heater Thermostat target
+        unique_id: 6b8d6f2e-c7c0-405d-809a-7430dc54b4de
+        unit_of_measurement: °C
+        device_class: temperature
+        state: " {{state_attr('climate.office_heater_thermostat', 'temperature') }} "
+
+
+climate:
+  - platform: generic_thermostat
+    name: Office Heater thermostat
+    unique_id: office_heater_termostat
+    heater: *gen_thermostat_output
+    target_sensor: *local_temp
+    initial_hvac_mode: heat
+    target_temp_step: 0.5
+    max_temp: 30
+    min_cycle_duration: "00:05" # AVM; try limit switcing to 5min-periods (avoid on/of on local heatspot)
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+
+    
+automation:
+  - id: office_heater_control_climate
+    alias: _Office Heater; control Climate
+    use_blueprint:
+      path: erlendsellie/priceanalyzer.yaml
+      input:
+        sensor: sensor.priceanalyzer
+        number: *target
+        climate: *gen_thermostat
+
+  - id: office_heater_auto_off
+    alias: "_Office Heater; auto OFF"
+    description: "when auto is off; switch shold allways be ON"
+    mode: single
+    trigger:
+      - id: "auto_off"
+        platform: state
+        entity_id: *auto
+        to: "off"
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: *auto
+        state: "off"
+    action:
+      - service: switch.turn_on
+        target:
+          entity_id: *onoff
+
+  - id: office_heater_auto_on
+    alias: "_Office Heater: auto ON"
+    description: "when auto is on; switch shold allways follow generic thermostat and power-save schemes"
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: *auto
+        to: "on"
+      - platform: state
+        entity_id: *gen_thermostat_output # this is generic thermostat output
+      - platform: state
+        entity_id: *powersave
+      - platform: state
+        entity_id: *powerhoursave
+      - platform: homeassistant
+        event: start
+
+    condition:
+      - condition: state
+        entity_id: *auto
+        state: "on"
+
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: *auto
+                state: "on"
+              #- condition: state
+              #  entity_id: *local_thermostat #  floor sensor
+              #  state: "on"
+              - condition: state
+                entity_id: *gen_thermostat_output # gen.th.output
+                state: "on"
+              - condition: state
+                entity_id: *powersave #  not powersaving
+                state: "off"
+              - condition: state
+                entity_id: *powerhoursave #  not powersaving
+                state: "off"
+            sequence:
+              - service: switch.turn_on
+                target:
+                  entity_id: *onoff
+        default:
+          - service: switch.turn_off
+            target:
+              entity_id: *onoff
