@@ -4,7 +4,8 @@
 
 
 shell_command:
-  install_catt: "pip uninstall catt -y && pip install catt"
+  uninstall_catt: "pip uninstall catt -y"
+  install_catt: "pip install catt"
 
 
 
@@ -18,5 +19,7 @@ automation:
         event: start
     condition: []
     action:
+      - service: shell_command.uninstall_catt
+      - delay: 00:01:00
       - service: shell_command.install_catt
 
