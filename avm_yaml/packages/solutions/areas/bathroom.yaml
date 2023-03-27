@@ -1,0 +1,31 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   06.Aug.2022
+#   @solution     :   Bathroom, div
+#   @description  :   Solution to make dumb objects seem smart.
+
+
+
+
+template:
+  - binary_sensor:
+      - name: Bathroom Room Status
+        unique_id: binary_sensor.bathroom_room_status
+        state: >
+          {{ states('input_boolean.bathroom_heater_powerauto') == 'on'
+          
+          }} 
+        #and states('input_boolean.bathroom_dryer_emptying_todo') == 'off'
+        # and states('input_boolean.bathroom_light_auto') == 'on'
+        #  and states('input_boolean.bathroom_heater_powerauto') == 'on'
+ 
+ 
+      # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+      - name: Bathroom Area Status
+        unique_id: 183a4353-703d-4646-8a65-bb4f135f6a4f
+        state: >
+          {{ states('input_boolean.bathroom_heater_powerauto') != 'on'
+          
+          }} 
+        attributes:
+          temp_above_19: "{{ 'Problem!' if (states('sensor.bathroom_thp_temperature') | float(default=20) < 19) else 'OK'}}"

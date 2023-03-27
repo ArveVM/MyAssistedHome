@@ -184,6 +184,8 @@ sensor:
             power_sensor_id: sensor.laundry_lights_all_power
           - entity_id: sensor.kitchen_lights_all_power
             power_sensor_id: sensor.kitchen_lights_all_power
+          - entity_id: sensor.livingroom_lights_all_power
+            power_sensor_id: sensor.livingroom_lights_all_power
           - entity_id: sensor.hallway_lights_all_power
             power_sensor_id: sensor.hallway_lights_all_power
           - entity_id: sensor.loft_lights_all_power

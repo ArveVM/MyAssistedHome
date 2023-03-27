@@ -1,0 +1,34 @@
+
+
+
+input_datetime:
+  backup_completed:
+    name: Backup completed
+    has_date: true
+    has_time: true
+
+script:
+  backup_daily:
+    alias: Create backup and cleanup old backups
+    sequence:
+      - service: backup.create
+        data: {}
+      - service: input_datetime.set_datetime
+        data:
+          datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+        target:
+          entity_id: input_datetime.backup_completed
+
+          
+automation:
+  - id: f88a6d5a-854d-4ba8-872a-ba525bb24370
+    alias: "_Backup daily"
+    mode: single
+    trigger: 
+      - platform: time
+        # Military time format. This trigger will fire at 3:37 PM
+        at: "03:07:00"
+    condition: []
+    action:
+      - service: backup.create
+        data: {}

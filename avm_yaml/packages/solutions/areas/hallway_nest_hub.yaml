@@ -1,0 +1,68 @@
+# https://community.home-assistant.io/t/google-nest-hub-as-dashboard-with-dashcast-add-on/460217
+# Mark that the auth_provider MUST be registered in configuration.yaml, and not included via packages :)
+#   And the IP of hte nest-hub must be added under 'trusted_networks'
+
+# CATT:
+shell_command:
+  hallway_nest_hub_cast1: "catt -d 'Hallway Nest Hub' cast_site 'http://192.168.2.141:8126/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
+
+
+input_boolean:
+  hallway_nest_hub_recast:
+    name: Hallway Nest Hub recast
+    icon: mdi:magic-staff
+
+
+script:
+  hallway_nest_hub:
+    alias: Hallway Nest Hub
+    sequence:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
+              - condition: state
+                entity_id: input_boolean.hallway_nest_hub_recast
+                state: "on"
+            sequence:
+              - service: media_player.volume_set
+                data:
+                  volume_level: 0
+                target:
+                  entity_id: media_player.hallway_nest_hub
+              - service: shell_command.hallway_nest_hub_cast1
+
+
+automation:
+  - id: 2a778068-6620-4ae7-8a29-ed7097509333-s
+    alias: "_Hallway nest hub recast"
+    description: "Hallway nest hub - recast"
+    mode: single
+    trigger:
+      - id: focuschange
+        platform: template
+        value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
+      - id: restart
+        platform: state
+        entity_id: input_boolean.hallway_nest_hub_recast
+        to: "on"
+      - id: restart
+        platform: homeassistant
+        event: start
+    condition: 
+      - condition: state
+        entity_id: input_boolean.hallway_nest_hub_recast
+        state: "on"
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: restart
+            sequence:
+              # Waits 1.5 minutes
+              - delay: "00:01:30"
+              - service: script.hallway_nest_hub  # The script above
+                data: {}
+        default:
+          - service: script.hallway_nest_hub  # The script above
+            data: {}

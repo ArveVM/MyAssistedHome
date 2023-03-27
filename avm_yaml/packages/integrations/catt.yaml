@@ -1,0 +1,22 @@
+
+
+
+
+
+shell_command:
+  install_catt: "pip uninstall catt -y && pip install catt"
+
+
+
+automation:
+  - id: c141fc81-b0f5-42ad-be3a-b4fca9509573-4
+    alias: "_Install CATT"
+    description: "Install Python-functionality CastAllTheThings)"
+    mode: single
+    trigger:
+      - platform: homeassistant
+        event: start
+    condition: []
+    action:
+      - service: shell_command.install_catt
+
