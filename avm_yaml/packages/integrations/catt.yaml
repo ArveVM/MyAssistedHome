@@ -18,6 +18,7 @@ automation:
       - platform: homeassistant
         event: start
     condition: []
+    
     action:
       - service: shell_command.uninstall_catt
       - delay: 00:01:00
