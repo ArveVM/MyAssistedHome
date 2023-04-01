@@ -1,0 +1,53 @@
+
+
+type: horizontal-stack
+cards:
+  - type: custom:mushroom-template-card
+    entity: sensor.priceanalyzer_current_hour_value
+    secondary: øre/kWh
+    primary: >
+      {{ states(entity) | round(1) }}
+    icon: mdi:currency-usd
+    icon_color: orange
+    tap_action:
+      action: more-info
+    card_mod: &card_mod_chips
+      style: |
+        ha-card {
+          margin-top: -3px;
+          margin-bottom: -12px;
+          margin-right: -10px;
+          --icon-size: 30px;
+        }
+
+  - type: custom:mushroom-template-card
+    entity: sensor.pwrctrl_use_total
+    secondary: Now
+    primary: >
+      {{ ( states(entity) |int / 1000) | round(1) }} kW
+    icon: mdi:flash
+    icon_color: blue
+    card_mod: *card_mod_chips
+    hold_action:
+      action: more-info
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: vertical-stack
+            cards:
+              - !include ../cards/pwrctrl_save_card.yaml
+
+  - type: custom:mushroom-template-card
+    entity: sensor.pwrctrl_limit_fullhour_trend
+    secondary: Hour trend
+    primary: >
+      {{ states(entity) | round(1) }} kWh
+    name: Grid
+    icon: mdi:flash
+    icon_color: green
+    card_mod: *card_mod_chips
+    tap_action:
+      action: more-info

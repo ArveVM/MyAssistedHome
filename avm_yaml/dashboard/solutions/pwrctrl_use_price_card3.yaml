@@ -1,0 +1,97 @@
+
+
+
+type: custom:apexcharts-card
+card_mod:
+  style: |
+    ha-card {
+      margin-top: -10px;
+      margin-bottom: -8px;
+    }
+header:
+  show_states: true
+  show: false
+now:
+  show: true
+graph_span: 48h
+span:
+  start: day
+update_interval: 10min
+apex_config:
+  chart:
+    height: 150
+  # annotations:
+  #   xaxis:
+  #     - x: EVAL:new Date().setHours(0,0,0,0) # This will return last midnight
+  legend:
+    show: false
+  xaxis:
+    tooltip:
+      enabled: false
+    labels:
+      format: HH
+    # stroke
+    header:
+      show: false
+      show_states: false
+      colorize_states: true
+yaxis:
+  - id: one
+    show: true
+    decimals: 0
+    max: auto
+    min: ~90
+    apex_config:
+      show: true,
+      forceNiceScale: true
+
+  - id: header
+    show: false
+
+series:
+  - name: Price today
+    entity: sensor.priceanalyzer
+    float_precision: 0
+    unit: Øre/kWh
+    yaxis_id: one
+    offset: "-1min"
+    type: line
+    curve: stepline
+    stroke_width: 2
+    extend_to: now
+    color: orange
+    show:
+      legend_value: false
+      in_header: false
+      extremas: true
+    data_generator: |
+      let today =  entity.attributes.raw_today.map((entry) => {
+        return [new Date(entry.start), (entry.value) ];
+      });
+      return today;
+
+  - name: Price tomorrow
+    entity: sensor.priceanalyzer
+    # https://github.com/RomRider/apexcharts-card#confirmation-options
+    # add popup to usage    - and the same for limit
+    float_precision: 0
+    unit: Øre/kWh
+    yaxis_id: one
+    offset: "-1min"
+    type: line
+    curve: stepline
+    stroke_width: 2
+    extend_to: now
+    color: orange
+    show:
+      legend_value: false
+      in_header: false
+      extremas: true
+    data_generator: |
+      if(entity.attributes.tomorrow_valid) 
+      {let tomorrow = entity.attributes.raw_tomorrow.map((entry) => 
+        {
+              return [new Date(entry.start), (entry.value) ];
+            });
+        return tomorrow;
+      }

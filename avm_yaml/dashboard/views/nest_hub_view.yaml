@@ -13,10 +13,13 @@ homeassistant:
       temp1: &temp1 sensor.livingroom_netatmo_temperature
       tempout: &tempout sensor.outside_netatmo_temperature
 
+
+
 cards:
+
   - type: vertical-stack
     cards:
-      # # ----------  Chips-row 0 -----------
+      # #####  first a row of chips   ############################################################################################
       - type: custom:mushroom-chips-card
         alignment: justify
         chips:
@@ -33,6 +36,23 @@ cards:
                     type: vertical-stack
                     cards:
                       - !include ../solutions/weather_card.yaml
+
+
+
+          # - type: conditional
+          #   conditions:
+          #     - entity: group.office_all_lamps
+          #       state: 'on'
+          #   chip:
+          #     type: template
+          #     icon: mdi:lightbulb
+          #     content: >-
+          #       {{ expand(states.group.office_all_lamps, states.light.master_bedroom_l)
+          #       | selectattr( 'state', 'eq', 'on') | list | count }}
+          #     entity: group.office_all_lamps
+          #     icon_color: amber
+          #     tap_action:
+          #       action: none
 
           - type: template
             content: >
@@ -123,128 +143,160 @@ cards:
                       - !include ../solutions/ha_toolbox.yaml
 
 
+      # #####  Then main   ############################################################################################
       - type: horizontal-stack
         cards:
 
 
 
-        - type: vertical-stack
-          cards:
+          # #####  Then main  - LEFT SIDE  ############################################################################################
+          - type: vertical-stack
+            cards:
 
-            # # ---------   POWER !!        -----------
-            - !include ../solutions/pwrctrl_use_price_card.yaml
+              # # ---------   POWER !!        -----------
+              - !include ../solutions/pwrctrl_use_price_card3.yaml
+
+              # # #####  Then main  - LEFT-left SIDE  ############################################################################################
+              # - type: horizontal-stack
+              #   cards:
+              #     - type: vertical-stack
+              #       cards:
+              #         - !include ../solutions/pwrctrl_use_price_card31.yaml
 
 
-            # # ----------  Calendar-row -----------        
-            - type: vertical-stack
-              cards:
-                - type: custom:mushroom-template-card
-                  primary: Hello, {{user}}
-                  secondary: 7-days listing of calendar HA-shared,, click to refresh
-                  icon: mdi:home
-                  tap_action:
-                    action: call-service
-                    service: homeassistant.reload_config_entry
-                    data: {}
-                    target:
-                      entity_id: calendar.ha_shared
-                - type: custom:atomic-calendar-revive
-                  entities:
-                    - entity: calendar.ha_shared
-                      name: HA-shared
-                  firstDayOfWeek: 1
-                  maxDaysToShow: 7
-                  showWeekDay: true
-                  refreshInterval: 60
+              #         # # ----------  Calendar-row -----------        
+              #         - type: vertical-stack
+              #           cards:
+              #             - type: custom:mushroom-template-card
+              #               primary: Hello, {{user}}
+              #               secondary: 7-days listing of calendar HA-shared,, click to refresh
+              #               icon: mdi:home
+              #               tap_action:
+              #                 action: call-service
+              #                 service: homeassistant.reload_config_entry
+              #                 data: {}
+              #                 target:
+              #                   entity_id: calendar.ha_shared'
 
-            # # ---------   Mental reminder, shold be in conditional with other "Alerts"        -----------
-            - type: custom:mushroom-entity-card
-              entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-              name: Certificate expiry date
-            - type: custom:mushroom-entity-card
-              entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-              name: Certificate expiry
-              layout: vertical
-              secondary_info: state
+              - type: horizontal-stack
+                cards:
+                  # #####  Then main  - LEFT-right SIDE  ############################################################################################
+                  - type: vertical-stack
+                    cards:
+                      - !include ../solutions/pwrctrl_use_price_card31.yaml
+                      - type: custom:mushroom-template-card
+                        primary: Hello, {{user}}
+                        secondary: 7-days listing of calendar HA-shared,, click to refresh
+                        icon: mdi:home
+                        tap_action:
+                          action: call-service
+                          service: homeassistant.reload_config_entry
+                          data: {}
+                          target:
+                            entity_id: calendar.ha_shared'
+                      - type: custom:mushroom-entity-card
+                        entity: sensor.cert_expiry_timestamp_e220_duckdns_org
+                        name: Certificate expiry date
 
-        - type: vertical-stack
-          cards:
-            # # ---------   Area-cards, swipe over two "pages"        -----------
-            # - type: custom:swipe-card
-            #   parameters:
-            #   start_card: 1
-            #   simulateTouch: true
-            #   spaceBetween: 8
-            #   preventInteractionOnTransition: true
-            #   freeMode: true
-            #   cards:
+                  # # #####  Then main  - LEFT-RIGHT SIDE  ############################################################################################
+                  - type: custom:atomic-calendar-revive
+                    entities:
+                      - entity: calendar.ha_shared
+                        name: HA-shared
+                    firstDayOfWeek: 1
+                    maxDaysToShow: 7
+                    showWeekDay: true
+                    refreshInterval: 60
 
-                # Card/page1:
-                # - type: vertical-stack
-                #   cards:
-                #     # - type: custom:mushroom-template-card
-                    #   primary: Hello, {{user}}
-                    #   secondary: 7-days listing of calendar HA-shared,, click to refresh
-                    #   icon: mdi:home
-                    #   tap_action:
-                    #     action: call-service
-                    #     service: homeassistant.reload_config_entry
-                    #     data: {}
-                    #     target:
-                    #       entity_id: calendar.ha_shared
-                    # - type: custom:atomic-calendar-revive
-                    #   entities:
-                    #     - entity: calendar.ha_shared
-                    #       name: HA-shared
-                    #   firstDayOfWeek: 1
-                    #   maxDaysToShow: 7
-                    #   showWeekDay: true
-                    #   refreshInterval: 60
+              # # # ---------   Mental reminder, shold be in conditional with other "Alerts"        -----------
+              # - type: custom:mushroom-entity-card
+              #   entity: sensor.cert_expiry_timestamp_e220_duckdns_org
+              #   name: Certificate expiry date
+              # - type: custom:mushroom-entity-card
+              #   entity: sensor.cert_expiry_timestamp_e220_duckdns_org
+              #   name: Certificate expiry
+              #   layout: vertical
+              #   secondary_info: state
 
-                # Card/page2:
-                - type: grid
-                  columns: 3
-                  square: false
-                  cards:
-                    - !include ../area/livingroom_area_card.yaml
-                    - !include ../area/kitchen_area_card.yaml
-                    - !include ../area/laundry_area_card.yaml
+          # #####  Then main  - RIGHT SIDE  ############################################################################################
+          - type: vertical-stack
+            cards:
+              # # ---------   Area-cards, swipe over two "pages"        -----------
+              # - type: custom:swipe-card
+              #   parameters:
+              #   start_card: 1
+              #   simulateTouch: true
+              #   spaceBetween: 8
+              #   preventInteractionOnTransition: true
+              #   freeMode: true
+              #   cards:
 
-                    - !include ../area/bathroom_area_card.yaml
-                    - !include ../area/loft_area_card.yaml
-                    - !include ../area/hallway_area_card.yaml
+                  # Card/page1:
+                  # - type: vertical-stack
+                  #   cards:
+                  #     # - type: custom:mushroom-template-card
+                      #   primary: Hello, {{user}}
+                      #   secondary: 7-days listing of calendar HA-shared,, click to refresh
+                      #   icon: mdi:home
+                      #   tap_action:
+                      #     action: call-service
+                      #     service: homeassistant.reload_config_entry
+                      #     data: {}
+                      #     target:
+                      #       entity_id: calendar.ha_shared
+                      # - type: custom:atomic-calendar-revive
+                      #   entities:
+                      #     - entity: calendar.ha_shared
+                      #       name: HA-shared
+                      #   firstDayOfWeek: 1
+                      #   maxDaysToShow: 7
+                      #   showWeekDay: true
+                      #   refreshInterval: 60
+
+                  # Card/page2:
+                  - type: grid
+                    columns: 3
+                    square: false
+                    cards:
+                      - !include ../area/livingroom_area_card.yaml
+                      - !include ../area/kitchen_area_card.yaml
+                      - !include ../area/laundry_area_card.yaml
+
+                      - !include ../area/bathroom_area_card.yaml
+                      - !include ../area/loft_area_card.yaml
+                      - !include ../area/hallway_area_card.yaml
+                      
+                      
+                      - !include ../area/kidl_area_card.yaml
+                      - !include ../area/kidm_area_card.yaml
+                      - !include ../area/kids_area_card.yaml
+
+                      - !include ../area/bathroom2_area_card.yaml
+                      - !include ../area/office_area_card.yaml
+                      - !include ../area/entry_area_card.yaml
+
+                      - !include ../area/workshop_area_card.yaml
+                      - !include ../area/serverroom_area_card.yaml
+                      
+                      - !include ../area/icehouse_area_card.yaml
+                  #     - !include ../cards/blank_card.yaml
+
+                      - !include ../area/garage_area_card.yaml
+                      - !include ../area/outside_area_card.yaml
+                      - !include ../area/bedroom_area_card.yaml
+
+
+                  # Card/page3:
+                  # - type: grid
+                  #   columns: 2
+                  #   square: false
+                  #   cards:
                     
-                    
-                    - !include ../area/kidl_area_card.yaml
-                    - !include ../area/kidm_area_card.yaml
-                    - !include ../area/kids_area_card.yaml
+                  #     - !include ../area/office_area_card.yaml
 
-                    - !include ../area/bathroom2_area_card.yaml
-                    - !include ../area/office_area_card.yaml
-                    - !include ../area/entry_area_card.yaml
+                  #     - !include ../area/entry_area_card.yaml
+                  #     - !include ../area/workshop_area_card.yaml
 
-                    - !include ../area/workshop_area_card.yaml
-                    - !include ../area/serverroom_area_card.yaml
-                    
-                    - !include ../area/icehouse_area_card.yaml
-                #     - !include ../cards/blank_card.yaml
-
-                    - !include ../area/garage_area_card.yaml
-                    - !include ../area/outside_area_card.yaml
-                    - !include ../area/bedroom_area_card.yaml
-
-
-                # Card/page3:
-                # - type: grid
-                #   columns: 2
-                #   square: false
-                #   cards:
-                  
-                #     - !include ../area/office_area_card.yaml
-
-                #     - !include ../area/entry_area_card.yaml
-                #     - !include ../area/workshop_area_card.yaml
-
-                    # - !include ../area/serverroom_area_card.yaml
-                #     - !include ../cards/blank_card.yaml
-                    
+                      # - !include ../area/serverroom_area_card.yaml
+                  #     - !include ../cards/blank_card.yaml
+                      

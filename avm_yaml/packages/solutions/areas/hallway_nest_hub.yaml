@@ -56,10 +56,22 @@ automation:
     action:
       - choose:
           - conditions:
+              - condition: template
+                value_template: "{{ states('media_player.hallway_nest_hub') == 'off' }}"
+            sequence:
+              - service: media_player.turn_on
+                data: {}
+                target:
+                  entity_id: media_player.hallway_nest_hub
+                # Waits 1.5 minutes
+              - delay: "00:01:30"
+              - service: script.hallway_nest_hub  # The script above
+                data: {}
+          - conditions:
               - condition: trigger
                 id: restart
             sequence:
-              # Waits 1.5 minutes
+              # Waits 1.5 minutes for catt-install to finish
               - delay: "00:01:30"
               - service: script.hallway_nest_hub  # The script above
                 data: {}
