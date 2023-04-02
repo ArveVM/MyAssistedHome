@@ -21,7 +21,7 @@ cards:
     cards:
       # #####  first a row of chips   ############################################################################################
       - type: custom:mushroom-chips-card
-        alignment: justify
+        alignment: center
         chips:
           - type: weather
             entity: weather.forecast_mylocation
@@ -38,7 +38,19 @@ cards:
                       - !include ../solutions/weather_card.yaml
 
 
-
+          - type: weather
+            entity: weather.mylocation
+            show_conditions: false
+            show_temperature: true
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../solutions/weather_card.yaml
           # - type: conditional
           #   conditions:
           #     - entity: group.office_all_lamps
@@ -56,7 +68,7 @@ cards:
 
           - type: template
             content: >
-              {{states('sensor.processor_use') | int }}/
+              {{states('sensor.docker_ha6_1cpu') | int }}/
               {{states('sensor.glances_cpu_used') | int }}
             icon: mdi:cpu-64-bit
             tap_action:
@@ -80,7 +92,58 @@ cards:
                         path: /avm-mobile/server
                     - service: browser_mod.close_popup
 
+          - type: template
+            entity: light.house_lights_group
+            # entity2: light.
+            content: >
+              {% set lights_on = expand(entity)
+                  | selectattr('state', 'eq', 'on')
+                  | map(attribute='entity_id')
+                  | select('search', 'light.*') 
+                  | list | count %}
+              {% set lights_all = expand(entity)
+                  | map(attribute='entity_id')
+                  | select('search', 'light.*') 
+                  | list | count %}
+              {{ lights_on}}/{{lights_all}}
 
+            icon: mdi:lightbulb-group
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: custom:auto-entities
+                        card:
+                          type: entities
+                          title: Lights on
+                          show_header_toggle: false
+                        filter:
+                          template: >
+                            {{ expand('light.house_lights_group')
+                              | selectattr('state', 'eq', 'on')
+                              | map(attribute='entity_id')
+                              | select('search', 'light.*') 
+                              | list 
+                              }}
+                          exclude: []
+                      - type: custom:auto-entities
+                        card:
+                          type: entities
+                          title: Lights off
+                          show_header_toggle: false
+                        filter:
+                          template: >
+                            {{ expand('light.house_lights_group')
+                              | selectattr('state', 'eq', 'off')
+                              | map(attribute='entity_id')
+                              | select('search', 'light.*') 
+                              | list 
+                              }}
+                          exclude: []
           - type: template
             entity: sensor.hotwater_soc
             content: >
@@ -180,10 +243,11 @@ cards:
 
               - type: horizontal-stack
                 cards:
-                  # #####  Then main  - LEFT-right SIDE  ############################################################################################
+                  # #####  Then main  - LEFT-LEFT SIDE  ############################################################################################
                   - type: vertical-stack
                     cards:
                       - !include ../solutions/pwrctrl_use_price_card31.yaml
+
                       - type: custom:mushroom-template-card
                         primary: Hello, {{user}}
                         secondary: 7-days listing of calendar HA-shared,, click to refresh
@@ -194,9 +258,53 @@ cards:
                           data: {}
                           target:
                             entity_id: calendar.ha_shared'
+
                       - type: custom:mushroom-entity-card
                         entity: sensor.cert_expiry_timestamp_e220_duckdns_org
                         name: Certificate expiry date
+
+                      - type: custom:auto-entities
+                        card:
+                          type: entities
+                          title: Shellys unavailable
+                          show_header_toggle: false
+                        filter:
+                          include:
+                            # - integration: shelly 
+                            - entity_id: switch.bathroom_heater_puck
+                            - entity_id: switch.bathroom2_heater_puck
+                            - entity_id: light.christmas_tree
+                            - entity_id: switch.dishwasher_plug
+                            - entity_id: switch.entry_heater_puck
+                            - entity_id: switch.freezerdownstairs
+                            - entity_id: switch.garage_dad
+                            - entity_id: switch.garage_t
+                            - entity_id: light.hallway_switch_up_2_2
+                            - entity_id: switch.hotwater_puck
+                            - entity_id: light.kidl_light_puck
+                            - entity_id: light.kidm_lightbulb
+                            - entity_id: switch.kitchen_heater
+                            - entity_id: switch.kitchen_heatpump
+                            - entity_id: switch.kitchen_switch1
+                            - entity_id: switch.laundry_dryer_plug
+                            - entity_id: switch.laundry_freezer
+                            - entity_id: switch.laundry_heater_puck
+                            - entity_id: light.laundry_lights_puck
+                            - entity_id: switch.laundry_washer_puck
+                            - entity_id: light.livingroom_lounge
+                            - entity_id: light.livingroom_diningtable
+                            - entity_id: light.loft      
+                            - entity_id: switch.loft_heater_plug
+                            - entity_id: switch.office_heater_plug
+                            - entity_id: switch.server_rack_plug
+                            - entity_id: switch.workshop_washer
+                          exclude:
+                            - state: "off"
+                            - state: "on"
+                            # - entity_category: sensors
+                            # - entity_category: config
+                            # - entity_category: diagnostics
+
 
                   # # #####  Then main  - LEFT-RIGHT SIDE  ############################################################################################
                   - type: custom:atomic-calendar-revive

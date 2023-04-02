@@ -63,8 +63,8 @@ automation:
                 data: {}
                 target:
                   entity_id: media_player.hallway_nest_hub
-                # Waits 1.5 minutes
-              - delay: "00:01:30"
+                # Waits 30 seconds
+              - delay: "00:00:30"
               - service: script.hallway_nest_hub  # The script above
                 data: {}
           - conditions:

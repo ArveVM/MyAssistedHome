@@ -1,6 +1,10 @@
 
 
-type: horizontal-stack
+# type: horizontal-stack
+type: grid
+# title: Backyard
+columns: 2
+square: false
 cards:
   - type: custom:mushroom-template-card
     entity: sensor.priceanalyzer_current_hour_value
@@ -48,6 +52,19 @@ cards:
     name: Grid
     icon: mdi:flash
     icon_color: green
+    card_mod: *card_mod_chips
+    tap_action:
+      action: more-info
+
+
+  - type: custom:mushroom-template-card
+    entity: sensor.pwrctrl_use_total_energy_daily
+    secondary: Today
+    primary: >
+      {{ states(entity) | round(1) }} kWh
+    name: Grid
+    icon: mdi:flash
+    icon_color: blue
     card_mod: *card_mod_chips
     tap_action:
       action: more-info

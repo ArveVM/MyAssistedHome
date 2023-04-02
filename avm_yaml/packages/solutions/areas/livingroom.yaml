@@ -6,6 +6,14 @@ homeassistant:
       package_attribute_to_entity: &package_attribute
         solution: Livingroom
 
+light:
+  - platform: group
+    name: Livingroom Lights group
+    entities:
+      - light.livingroom_diningtable
+      - light.livingroom_light_lounge
+      - light.livingroom_light_windowstrip
+      - light.livingroom_soyle
 
 sensor:
   - platform: powercalc
@@ -29,6 +37,9 @@ sensor:
 
 
 template:
+
+
+
   - binary_sensor:
       - name: Livingroom Area Status
         unique_id: c9bb57af-00b1-413f-afc1-92f111ad2ab0
