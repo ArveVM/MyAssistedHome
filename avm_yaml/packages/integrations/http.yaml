@@ -1,0 +1,25 @@
+# The http component serves all files and data required for the
+# Home Assistant frontend.
+#
+# https://www.home-assistant.io/components/http/
+
+http:
+
+  # specify port for web-access to HA  (change in Secrets if restore/changing to test-sytstem)
+  server_port: !secret HA_server_port
+
+  #  ip_ban_enabled: true
+
+  #satt inn for ngnix
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.2.2 # Add the IP address of the proxy server
+
+  #  login_attempts_threshold: 10
+
+  # fixe custom components i GoogleCast (swipe card på nest hub)
+  # https://www.facebook.com/photo.php?fbid=10158231040271651&set=p.10158231040271651&type=3
+  cors_allowed_origins:
+    #- https://google.com
+    #- https://www.home-assistant.io
+    - !secret HA_external_url

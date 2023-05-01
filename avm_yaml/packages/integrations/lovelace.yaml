@@ -26,6 +26,14 @@ lovelace:
       show_in_sidebar: true
       filename: avm_yaml/dashboard/nest_hub_dashboard.yaml
 
+    kids-tablet:
+      mode: yaml
+      title: KidS Tablet
+      icon: mdi:teddy-bear
+      show_in_sidebar: false
+      filename: avm_yaml/dashboard/kids_tablet_dashboard.yaml
+
+
 #  resources:
   # Duplicates needed for casting...
   #   info-source:  https://community.home-assistant.io/t/custom-element-doesnt-exist-but-only-when-casting/140458/14

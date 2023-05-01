@@ -1,0 +1,16 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+
+type: weather
+entity: weather.mylocation
+show_conditions: false
+show_temperature: true
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include ../solutions/weather_card.yaml

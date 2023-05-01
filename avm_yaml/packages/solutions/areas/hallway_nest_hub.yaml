@@ -5,6 +5,7 @@
 # CATT:
 shell_command:
   hallway_nest_hub_cast1: "catt -d 'Hallway Nest Hub' cast_site 'http://192.168.2.141:8126/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
+  livingroom_chromecast1: "catt -d 'Livingroom chromecast' cast_site 'http://192.168.2.141:8126/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
 
 
 input_boolean:
@@ -14,6 +15,16 @@ input_boolean:
 
 
 script:
+  livingroom_cast_test:
+    alias: Livingroom cast dashboard
+    sequence:
+      - service: media_player.volume_set
+        data:
+          volume_level: 0
+        target:
+          entity_id: media_player.hallway_nest_hub
+      - service: shell_command.livingroom_chromecast1
+
   hallway_nest_hub:
     alias: Hallway Nest Hub
     sequence:
@@ -40,12 +51,24 @@ automation:
     mode: single
     trigger:
       - id: focuschange
-        platform: template
-        value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
-      - id: restart
+        # platform: template
+        # value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
+        platform: state
+        entity_id: media_player.hallway_nest_hub
+        attribute: app_name
+        not_to: DashCast
+        # to: "to state"
+
+      - id: recast
         platform: state
         entity_id: input_boolean.hallway_nest_hub_recast
         to: "on"
+      # - id: off_idle
+      #   platform: state
+      #   entity_id: media_player.hallway_nest_hub
+      #   to: 
+      #     - "idle"
+      #     - "off"
       - id: restart
         platform: homeassistant
         event: start
@@ -55,6 +78,7 @@ automation:
         state: "on"
     action:
       - choose:
+          # if it is off,, turn it on before start casting
           - conditions:
               - condition: template
                 value_template: "{{ states('media_player.hallway_nest_hub') == 'off' }}"
@@ -63,10 +87,11 @@ automation:
                 data: {}
                 target:
                   entity_id: media_player.hallway_nest_hub
-                # Waits 30 seconds
-              - delay: "00:00:30"
+                # Waits 10 seconds
+              - delay: "00:00:10"
               - service: script.hallway_nest_hub  # The script above
                 data: {}
+          # after restart,, await the catt uninstall/install procedure,,  before start casting
           - conditions:
               - condition: trigger
                 id: restart
@@ -75,6 +100,7 @@ automation:
               - delay: "00:01:30"
               - service: script.hallway_nest_hub  # The script above
                 data: {}
+        # anyway,, start script and start casting
         default:
           - service: script.hallway_nest_hub  # The script above
             data: {}

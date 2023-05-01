@@ -144,6 +144,8 @@ cards:
                               | list 
                               }}
                           exclude: []
+
+                          
           - type: template
             entity: sensor.hotwater_soc
             content: >

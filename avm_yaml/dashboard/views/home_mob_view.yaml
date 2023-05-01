@@ -11,19 +11,20 @@ cards:
   - type: custom:mushroom-chips-card
     alignment: justify
     chips:
-      - type: weather
-        entity: weather.mylocation
-        show_conditions: false
-        show_temperature: true
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:
-              content:
-                type: vertical-stack
-                cards:
-                  - !include ../solutions/weather_card.yaml
+      - !include ../solutions/weather_chip.yaml
+      # - type: weather
+      #   entity: weather.mylocation
+      #   show_conditions: false
+      #   show_temperature: true
+      #   tap_action:
+      #     action: fire-dom-event
+      #     browser_mod:
+      #       service: browser_mod.popup
+      #       data:
+      #         content:
+      #           type: vertical-stack
+      #           cards:
+      #             - !include ../solutions/weather_card.yaml
 
       - type: template
         content: >

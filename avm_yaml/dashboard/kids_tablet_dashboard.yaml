@@ -1,0 +1,11 @@
+
+
+# First step of building dashboard,, add views
+# Could use include-command to include whole folder,,
+# but I prefer to have manally control of which drafts to include in which dashboard,
+# and especially the order of them.
+
+title: "KidS Tablet"
+views:
+  # first the "main view,,"
+  - !include views/kids_tablet_view.yaml

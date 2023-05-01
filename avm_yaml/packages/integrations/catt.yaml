@@ -4,6 +4,7 @@
 
 
 shell_command:
+  # uninstall_catt: "pip uninstall catt -y<"
   uninstall_catt: "pip uninstall catt -y"
   install_catt: "pip install catt"
 
