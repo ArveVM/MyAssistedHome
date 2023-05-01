@@ -1,0 +1,39 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: Group
+      icon: mdi:window-shutter-auto
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-cover-card
+          entity: cover.livingroom_all_covers
+          show_position_control: true
+          show_tilt_position_control: false
+          show_buttons_control: true
+        - type: custom:mushroom-cover-card
+          entity: cover.livingroom_all_covers
+          show_position_control: true
+
+  - attributes:
+      label: Single
+      icon: mdi:window-shutter
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-cover-card
+          entity: cover.livingroom_blind1
+          show_position_control: true
+          show_tilt_position_control: false
+          show_buttons_control: true
+        - type: custom:mushroom-cover-card
+          entity: cover.livingroom_blind2
+          show_position_control: true
+        - type: custom:mushroom-cover-card
+          entity: cover.livingroom_blind3
+          show_position_control: true

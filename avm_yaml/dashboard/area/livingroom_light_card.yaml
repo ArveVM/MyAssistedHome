@@ -1,0 +1,107 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: light
+      icon: mdi:lightbulb
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-light-card
+          entity: light.livingroom_light_lounge
+          secondary_info: last-changed
+          use_light_color: true
+          collapsible_controls: true
+          tap_action:
+            action: toggle
+          show_brightness_control: true
+          show_color_temp_control: true
+          show_color_control: true
+        - type: custom:mushroom-light-card
+          entity: light.livingroom_light_windowstrip
+          primary_info: name
+          icon_type: icon
+          use_light_color: true
+          show_brightness_control: true
+          show_color_control: true
+          show_color_temp_control: true
+          collapsible_controls: true
+          tap_action:
+            action: toggle
+        - type: custom:mushroom-light-card
+          entity: light.livingroom_diningtable
+          tap_action:
+            action: toggle
+          secondary_info: last-changed
+        - type: custom:mushroom-light-card
+          entity: light.livingroom_soyle
+          secondary_info: last-changed
+        - type: horizontal-stack
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: custom:mushroom-template-card
+                  primary: Koselys PÅ
+                  secondary: ""
+                  icon: mdi:candle
+                  tap_action:
+                    action: call-service
+                    service: script.livingroom_cosylight1_on
+                    data: {}
+                    target: {}
+                - type: custom:mushroom-template-card
+                  primary: Koselys AV
+                  secondary: ""
+                  icon: mdi:candle
+                  tap_action:
+                    action: call-service
+                    service: script.livingroom_cosylight1_off
+                    data: {}
+                    target: {}
+  - attributes:
+      label: Scenes
+      icon: mdi:movie
+    card:
+      type: vertical-stack
+      cards:
+        - type: horizontal-stack
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: custom:mushroom-template-card
+                  primary: Mom's favourite
+                  secondary: ""
+                  icon: mdi:led-strip-variant
+                  tap_action:
+                    action: call-service
+                    service: light.turn_on
+                    target:
+                      entity_id: light.livingroom_light_windowstrip
+                    data:
+                      transition: 2
+                      brightness: 154
+                      rgb_color:
+                        - 255
+                        - 204
+                        - 101
+
+                - type: custom:mushroom-template-card
+                  primary: Dad's favourite
+                  secondary: ""
+                  icon: mdi:led-strip-variant
+                  tap_action:
+                    action: call-service
+                    service: light.turn_on
+                    target:
+                      entity_id: light.livingroom_light_windowstrip
+                    data:
+                      transition: 2
+                      brightness: 84
+                      rgb_color:
+                        - 255
+                        - 29
+                        - 11
