@@ -58,17 +58,21 @@ automation:
         attribute: app_name
         not_to: DashCast
         # to: "to state"
-
+      - id: focuschange
+        platform: state
+        entity_id: media_player.hallway_nest_hub
+        not_to: "on"
+        # to: "to state"
       - id: recast
         platform: state
         entity_id: input_boolean.hallway_nest_hub_recast
         to: "on"
-      # - id: off_idle
-      #   platform: state
-      #   entity_id: media_player.hallway_nest_hub
-      #   to: 
-      #     - "idle"
-      #     - "off"
+      - id: off_idle
+        platform: state
+        entity_id: media_player.hallway_nest_hub
+        to: 
+          - "idle"
+          - "off"
       - id: restart
         platform: homeassistant
         event: start

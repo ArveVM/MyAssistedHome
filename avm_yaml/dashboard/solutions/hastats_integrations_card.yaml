@@ -1,0 +1,58 @@
+# ArveVM;  https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
+
+
+type: vertical-stack
+title: HA integration - count
+cards:
+  - type: horizontal-stack
+    cards:
+      ## Total:
+      - type: custom:mushroom-entity-card
+        entity: sensor.hastats_integrations_count
+        icon: mdi:home-assistant
+        primary_info: state
+        secondary_info: name
+      - type: custom:mushroom-template-card
+        primary: Integrations by startup-time
+        secondary: (tap to show)
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - type: markdown
+                    content: |
+                      Integrations sort by last startup-time:
+                        {% set ns = namespace(count = 0) %}
+                        {% for attr in states.sensor.start_time.attributes %}
+                        {%- if not attr=="friendly_name" 
+                            and not attr=="unit_of_measurement"     
+                            and not attr=="icon" -%}
+                        {%- set ns.count = ns.count+1 %}
+                        #{{ ns.count }} - {{attr}} {{states.sensor.start_time.attributes [attr] }}
+                        {%- endif %}
+                        {%- endfor %}
+                      Total count: {{ns.count}}
+
+  - type: custom:history-explorer-card
+    cardName: 5a37dc34-9043-4090-9b65-b4acd8262ff0
+    defaultTimeRange: 6o
+    header: hide
+    statistics:
+      enabled: true
+      mode: max
+      period: day
+    uiLayout:
+      toolbar: top
+      selector: hide
+    graphs:
+      - type: line
+        options:
+          interval: daily
+        entities:
+          - entity: sensor.hastats_integrations_count
+            name: Integrations count
+            lineMode: curves

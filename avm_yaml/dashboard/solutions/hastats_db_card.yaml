@@ -1,0 +1,88 @@
+# ArveVM;  https://github.com/ArveVM/HomeAssistantConfig4/edit/master/avm_yaml/packages/solutions/hastats.md
+
+type: vertical-stack
+# title: Recorder DB size
+cards:
+  # Total:
+  - type: custom:mushroom-title-card
+    title: Recorder DB File-size
+  - type: custom:mushroom-entity-card
+    entity: sensor.hastats_db_size
+    icon: mdi:home-assistant
+    primary_info: state
+    secondary_info: name
+  - type: custom:history-explorer-card
+    cardName: 5a37dc34-9043-4090-9b65-b4acd8262ff0
+    defaultTimeRange: 6o
+    header: hide
+    statistics:
+      enabled: true
+      mode: max
+      period: day
+    uiLayout:
+      toolbar: top
+      selector: hide
+    graphs:
+      - type: line
+        options:
+          interval: daily
+        entities:
+          - entity: sensor.hastats_db_size
+            name: Recorder database size
+            lineMode: curves
+
+  - type: custom:mushroom-title-card
+    title: Recorder DB Row-counts
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: sensor.hastats_db_rows_states
+        icon: mdi:home-assistant
+        primary_info: state
+        secondary_info: name
+      - type: custom:mushroom-entity-card
+        entity: sensor.hastats_db_rows_stateattributes
+        icon: mdi:home-assistant
+        primary_info: state
+        secondary_info: name
+      - type: custom:mushroom-entity-card
+        entity: sensor.hastats_db_rows_statistics
+        icon: mdi:home-assistant
+        primary_info: state
+        secondary_info: name
+      - type: custom:mushroom-entity-card
+        entity: sensor.hastats_db_rows_statisticsshortterm
+        icon: mdi:home-assistant
+        primary_info: state
+        secondary_info: name
+
+  - type: custom:history-explorer-card
+    cardName: 5a37dc34-9043-4090-9b65-b4acd8262ff0-2
+    defaultTimeRange: 6o
+    header: hide
+    statistics:
+      enabled: true
+      mode: max
+      period: day
+    uiLayout:
+      toolbar: top
+      selector: hide
+    graphs:
+      - type: line
+        options:
+          interval: daily
+        entities:
+          - entity: sensor.hastats_db_rows_states
+            name: Recorder count States
+            lineMode: curves
+          - entity: sensor.hastats_db_rows_stateattributes
+            name: Recorder count StateAttributes
+            lineMode: curves
+          - entity: sensor.hastats_db_rows_statistics
+            name: Recorder count Statistics
+            lineMode: curves
+          - entity: sensor.hastats_db_rows_statisticsshortterm
+            name: Recorder count StatsShortTerm
+            lineMode: curves

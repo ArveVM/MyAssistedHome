@@ -1,0 +1,70 @@
+# ArveVM;  https://github.com/ArveVM/HomeAssistantConfig4/edit/master/avm_yaml/packages/solutions/hastats.md
+
+type: vertical-stack
+cards:
+  - type: custom:mushroom-title-card
+    title: "Solution - HAstats;"
+  - type: custom:tabbed-card
+    options:
+      defaultTabIndex: 1
+    styles:
+      "--mdc-theme-primary": orange
+      "--mdc-tab-text-label-color-default": white
+      "--mdc-typography-button-font-size": 10px
+    tabs:
+      - attributes:
+          label: RM
+          icon: mdi:file-sign
+        card:
+          type: vertical-stack
+          axisAddMarginMin: false
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: markdown
+                  content: |
+                    HA-stats documentation on GitHub.
+                    all sub-solutions are documented in one readme-file
+                    please review all documentation as information 
+                    might be intertvined.
+            - type: entities
+              entities:
+                - type: weblink
+                  name: Github-repo about HA-stats
+                  url: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+                  icon: mdi:home-assistant
+
+      - attributes:
+          label: int
+          icon: mdi:hammer-screwdriver
+        card:
+          type: vertical-stack
+          cards:
+            - !include hastats_integrations_card.yaml
+
+      - attributes:
+          label: EbD
+          icon: mdi:land-rows-horizontal
+        card:
+          type: vertical-stack
+          axisAddMarginMin: false
+          cards:
+            - !include hastats_entities_by_domain_card.yaml
+
+      - attributes:
+          label: Yaml
+          icon: mdi:land-rows-horizontal
+        card:
+          type: vertical-stack
+          axisAddMarginMin: false
+          cards:
+            - !include hastats_yaml_lines_card.yaml
+
+      - attributes:
+          label: DB
+          icon: mdi:database
+        card:
+          type: vertical-stack
+          axisAddMarginMin: false
+          cards:
+            - !include hastats_db_card.yaml
