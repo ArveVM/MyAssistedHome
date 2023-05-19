@@ -32,7 +32,7 @@ Direct link:  https://github.com/ArveVM/MyAssistedHome/wiki
 |[3. Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions)   |About my method(s) for grouping "everything HA" in Solutions|
 |[4. Functionality](https://github.com/ArveVM/MyAssistedHome/wiki/4-Functionality)|About added functionality required to produce Solutions|
 |||
-|[5. General info](https://github.com/ArveVM/MyAssistedHome/wiki/5-General-info)|Yeah, some blabla|
+|[8. General info](https://github.com/ArveVM/MyAssistedHome/wiki/8-General-info)|Yeah, some blabla|
 |||
 |[9. Disclaimer](https://github.com/ArveVM/MyAssistedHome/wiki/9-Disclaimer)|Because everyone has one ;)|
 <br />
