@@ -13,8 +13,9 @@ http:
   #satt inn for ngnix
   use_x_forwarded_for: true
   trusted_proxies:
-    - 192.168.2.2 # Add the IP address of the proxy server
-
+    - 192.168.2.0/24   # Add the IP address of the proxy server (or wrap in all internal IP's)
+    - 172.18.0.0/24    # unRaid "thomasnet" :)
+   
   #  login_attempts_threshold: 10
 
   # fixe custom components i GoogleCast (swipe card på nest hub)

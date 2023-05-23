@@ -6,12 +6,12 @@ monitor_docker:
       - mosquitto
       - zigbee2mqtt
       - frigate
+      - ha1
       - ha6
-      # - ha
-    #      - nodered
-    #      - unifi
+      # - nodered
+      # - unifi
     rename:
-      # ha6: Homeassistant
+      # - ha1: HA
       #      influxdb: InfluxDB
       mosquitto: Mosquitto
     #     nodered: "Node-RED"

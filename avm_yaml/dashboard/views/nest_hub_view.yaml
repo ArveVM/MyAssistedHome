@@ -68,7 +68,7 @@ cards:
 
           - type: template
             content: >
-              {{states('sensor.docker_ha6_1cpu') | int }}/
+              {{states('sensor.docker_ha1_1cpu') | int }}/
               {{states('sensor.glances_cpu_used') | int }}
             icon: mdi:cpu-64-bit
             tap_action:
