@@ -1,0 +1,18 @@
+# 100% stolen from https://github.com/RonnyRusten/     dashboards/cards/mail_card.yaml
+
+type: grid
+columns: 1
+square: false
+cards:
+  - type: markdown
+    title: Postleveringer
+    content: >-
+      ![Image](https://upload.wikimedia.org/wikipedia/commons/5/53/Posten-Norge-Logo.svg)
+
+      ***
+      {% set days = states('sensor.posten_sensor').split(',') %}
+    
+      {% for day in days -%}
+          {{ as_timestamp(day | replace("[","") | replace("]","") | replace("'","") | replace(" ","") + 'T00:00:00') | timestamp_custom('%d.%m.%Y') | title }}{{'\r\n'}} 
+      {%- endfor %}
+

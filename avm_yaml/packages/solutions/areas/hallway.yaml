@@ -21,38 +21,39 @@ sensor:
         power_sensor_id: light.hallway_staircase_power
 
 
-automation:
-  - id: "1644065600447"
-    alias: "_Hallway; Light up1"
-    description: ""
-    trigger:
-      - platform: device
-        domain: mqtt
-        device_id: 509827c214ff22544e3dc4152899663d
-        type: action
-        subtype: single
-        discovery_id: 0x00158d000753d70f action_single
-        id: hallUp_switch1-click
-      - platform: device
-        domain: mqtt
-        device_id: 509827c214ff22544e3dc4152899663d
-        type: click
-        subtype: double
-        discovery_id: 0x00158d000753d70f click_double
-        id: hallUp_switch1-double
-    condition: []
-    action:
-      - condition: trigger
-        id: hallUp_switch1-click
-      - service: light.toggle
-        data: {}
-        target:
-          device_id: f0fb4c986b14a039f3856c8d5bc6ad1b
-      - condition: trigger
-        id: hallUp_lwitch1-double
-      - service: light.turn_on
-        data:
-          brightness_pct: 75
-        target:
-          device_id: f0fb4c986b14a039f3856c8d5bc6ad1b
-    mode: single
+# automation:
+#   - id: "1644065600447"
+#     alias: "_Hallway; Light up1"
+#     description: ""
+#     trigger:
+#       - platform: device
+#         domain: mqtt
+#         device_id: 509827c214ff22544e3dc4152899663d
+#         type: action
+#         subtype: single
+#         discovery_id: 0x00158d000753d70f action_single
+#         id: hallUp_switch1-click
+#       - platform: device
+#         domain: mqtt
+#         device_id: 509827c214ff22544e3dc4152899663d
+#         type: click
+#         subtype: double
+#         discovery_id: 0x00158d000753d70f click_double
+#         id: hallUp_switch1-double
+#     condition: []
+#     action:
+#       - condition: trigger
+#         id: hallUp_switch1-click
+#       - service: light.toggle
+#         data: {}
+#         target:
+#           device_id: f0fb4c986b14a039f3856c8d5bc6ad1b
+#       - condition: trigger
+#         id: hallUp_lwitch1-double
+#       - service: light.turn_on
+#         data:
+#           brightness_pct: 75
+#         target:
+#           device_id: f0fb4c986b14a039f3856c8d5bc6ad1b
+#     mode: single
+

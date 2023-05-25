@@ -1,0 +1,28 @@
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+
+type: template
+content: >
+  {{states('sensor.docker_ha1_1cpu') | int }}/
+  {{states('sensor.glances_cpu_used') | int }}
+icon: mdi:cpu-64-bit
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.navigate
+    data:
+      deviceID: THIS
+      # browser_id: THIS
+      path: /avm-mobile/server
+hold_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.sequence
+    data:
+      sequence:
+        - service: browser_mod.navigate
+          data:
+            deviceID: THIS
+            # browser_id: THIS
+            path: /avm-mobile/server
+        - service: browser_mod.close_popup

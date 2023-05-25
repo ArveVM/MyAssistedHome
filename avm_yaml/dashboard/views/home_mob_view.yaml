@@ -25,40 +25,10 @@ cards:
       #           type: vertical-stack
       #           cards:
       #             - !include ../solutions/weather_card.yaml
+      - !include ../solutions/mail_chip.yaml
+      - !include ../solutions/cpu_chip.yaml
 
-      - type: template
-        content: >
-          {{states('sensor.docker_ha6_1cpu') | int }}/
-          {{states('sensor.glances_cpu_used') | int }}
-        icon: mdi:cpu-64-bit
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.navigate
-            data:
-              deviceID: THIS
-              # browser_id: THIS
-              path: /avm-mobile/server
-
-        hold_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.sequence
-            data:
-              sequence:
-                - service: browser_mod.navigate
-                  data:
-                    deviceID: THIS
-                    # browser_id: THIS
-                    path: /avm-mobile/server
-
-                - service: browser_mod.close_popup
-
-            # service: script.house_navigate_view_closepopup
-            # data:
-            #   browser_id: THIS
-            #   device_id: THIS
-            #   path: /avm-mobile/server
+     
 
       # service: browser_mod.close_popup
 

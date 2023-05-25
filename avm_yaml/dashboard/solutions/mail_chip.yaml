@@ -1,0 +1,34 @@
+# 100% stolen from https://github.com/RonnyRusten/     
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+
+type: template
+# content: >
+#   {{states('sensor.docker_ha1_1cpu') | int }}/
+#   {{states('sensor.glances_cpu_used') | int }}
+
+icon: |-
+  {% if is_state('binary_sensor.posten_binary_sensor', 'on') %}
+    mdi:mailbox
+  {% else %}
+    mdi:mailbox-open
+  {% endif %}           
+icon_color: |-
+  {% if is_state('binary_sensor.posten_binary_sensor', 'on') %}
+    green
+  {% else %}
+    grey
+  {% endif %}
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include ../solutions/mail_card.yaml
+double_tap_action:
+  action: none
+hold_action:
+  action: none

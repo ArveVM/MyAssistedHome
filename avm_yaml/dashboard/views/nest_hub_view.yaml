@@ -65,32 +65,8 @@ cards:
           #     icon_color: amber
           #     tap_action:
           #       action: none
-
-          - type: template
-            content: >
-              {{states('sensor.docker_ha1_1cpu') | int }}/
-              {{states('sensor.glances_cpu_used') | int }}
-            icon: mdi:cpu-64-bit
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.navigate
-                data:
-                  deviceID: THIS
-                  # browser_id: THIS
-                  path: /avm-mobile/server
-            hold_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.sequence
-                data:
-                  sequence:
-                    - service: browser_mod.navigate
-                      data:
-                        deviceID: THIS
-                        # browser_id: THIS
-                        path: /avm-mobile/server
-                    - service: browser_mod.close_popup
+          - !include ../solutions/mail_chip.yaml
+          - !include ../solutions/cpu_chip.yaml
 
           - type: template
             entity: light.house_lights_group
