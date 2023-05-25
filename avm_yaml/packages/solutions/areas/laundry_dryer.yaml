@@ -1,0 +1,230 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   10.march.2022
+#   @solution     :   Dryer
+#   @description  :   Solution to make dumb appliances seem smart.  
+#   @basic concept: 
+#      Dumb dryer is plugged into a ShellyS smartplug which 
+#      native Shelly-integration provides data from to HA
+#         sensors used:      
+#            sensor.laundry_dryer_plug_power
+#            sensor.laundry_dryer_plug_energy
+#      (it also has a switch which one can trun off in case of
+#      extreme powersaving-solutions - some time in the future)
+###############################################################################
+
+# first ensure proper config on the shelly-device:
+# ShellyS - config:
+#   Internet & Security:
+#     WIFI MODE - CLIENT:
+#       Connect to wifi; 'NoT'      (= no internet, only access to HA-server, no global NTP)
+#       Set static IP; 192.168.30.14
+#       Set gateway;   192.168.30.1
+#     SNTP SERVER:
+#       Server;        192.168.2.150
+#   Safety:
+#     MAX POWER PROTECTION = 1800
+#   Settings:
+#     POWER ON DEFAULT MODE = ON    (= always on,, no additional power-saving )
+#     TIME ZONE AND GEO-LOCATION:
+#       Automatically detect Time zone = OFF
+#       Timezone Settings = Europe/Oslo
+#     DEVICE NAME = ShellyS-test1
+#     ECO MODE = ON
+
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Laundry Dryer'
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      power: &power sensor.laundry_dryer_plug_power
+      energy: &energy sensor.laundry_washer_energy
+      mqtt_sensor: &mqtt_sensor sensor.laundry_dryer_status
+      mqtt_topic: &mqtt_topic house/laundry_dryer/status
+      emptying_todo: &emptying_todo input_boolean.laundry_dryer_emptying_todo
+      cycle_counter: &cycle_counter counter.laundry_dryer_cycle_counter
+
+  # # #Add node-anchor as attribute on created sensors:
+    input_boolean.laundry_dryer_emptying_todo:
+      <<: *package_attribute
+    counter.laundry_dryer_cycle_counter:
+      <<: *package_attribute
+    sensor.laundry_dryer_status:
+      <<: *package_attribute
+    sensor.laundry_dryer_cycle_daily:
+      <<: *package_attribute
+    sensor.laundry_dryer_cycle_weekly:
+      <<: *package_attribute
+    sensor.laundry_dryer_cycle_monthly:
+      <<: *package_attribute
+    sensor.laundry_dryer_energy_daily:
+      <<: *package_attribute
+    sensor.laundry_dryer_energy_weekly:
+      <<: *package_attribute
+    sensor.laundry_dryer_energy_monthly:
+      <<: *package_attribute
+    automation.laundry_dryer_power_status_change:
+      <<: *package_attribute
+
+
+# # first creation of sensors/helpers,, can't use variables here :(
+#      but remember to also add them to the '#Add node-anchor section' above!
+
+input_boolean:
+  laundry_dryer_emptying_todo:
+    name: "Laundry Dryer Emptying toDo"
+    initial: off
+    icon: mdi:washing-machine-alert
+
+
+counter:
+  #  my own idea of traching number of cycles the device is running
+  laundry_dryer_cycle_counter:
+    name: Laundry Dryer Cycle counter
+    initial: 1
+    step: 1
+
+
+mqtt:
+  # ArveVM; faking an MQTT-sensor and not input_boolean to disable user interference in UI
+  sensor:
+    - state_topic: *mqtt_topic
+      name: "Laundry Dryer Status"
+      icon: mdi:tumble-dryer
+
+
+utility_meter:
+  # log usage in periods
+  #   cycle string-> How often to reset the counter. 
+  #       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+
+  laundry_dryer_cycle_daily: 
+    unique_id: laundry_dryer_cycle_daily
+    name: Laundry Dryer Cycle daily
+    source: *cycle_counter
+    cycle: daily
+
+  laundry_dryer_cycle_weekly: 
+    name: Laundry Dryer Cycle weekly    
+    source: *cycle_counter
+    cycle: weekly
+
+  laundry_dryer_cycle_monthly: 
+    name: Laundry Dryer Cycle monthly
+    source: *cycle_counter
+    cycle: monthly
+
+  laundry_dryer_energy_daily: 
+    name: Laundry Dryer Energy daily
+    source: *energy
+    cycle: daily
+  laundry_dryer_energy_weekly: 
+    name: Laundry Dryer Energy weekly
+    source: *energy
+    cycle: weekly
+  laundry_dryer_energy_monthly: 
+    name: Laundry Dryer Energy monthly
+    source: *energy
+    cycle: monthly
+
+
+automation:
+  - id: 'laundry_dryer_power_status_change'
+    alias: '_Laundry Dryer; set Status'
+    description: ''
+    mode: single
+    trigger:     
+    - id: emptying
+      platform: state
+      entity_id: *emptying_todo
+      to: "off"
+    - id: idle
+      platform: numeric_state
+      entity_id: *power
+      below: '0.1'
+      for: "00:01:00"      # which watt-usages should trigger?  (using trigger to enable time-factor of one minute before changing status,,,,)
+    - id: running
+      platform: numeric_state
+      entity_id: *power
+      above: '15'
+      for: "00:01:00"
+    - id: finished
+      platform: numeric_state
+      entity_id: *power
+      above: '0.5'
+      below: '10'
+      for: "00:01:00"
+
+    condition: []
+    action:                                         # choose for each option:
+    - choose:
+      # Emptying:
+      - conditions:
+        - condition: trigger
+          id: emptying 
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Idle
+            retain: true
+      
+      #  - Idle:            # hmm,,, er denne nødvendig ?
+      - conditions:
+        - condition: trigger
+          id: idle  
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Idle
+            retain: true
+
+      # Running:
+      - conditions:
+        - condition: trigger
+          id: running
+        sequence:
+        - service: input_boolean.turn_off
+          target:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Running
+            retain: true
+
+      #  - Finished:
+      - conditions:
+          - condition: trigger
+            id: finished
+          - condition: state
+            entity_id: *mqtt_sensor
+            state: Running
+        sequence:
+        - service: input_boolean.turn_on
+          data:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Finished
+            retain: true
+        - service: counter.increment
+          target:
+            entity_id: *cycle_counter
+        - service: notify.miCasa_Parent_phones_and_HA_notification
+          data:
+            message: 💚 Tørketrommelen ferdig  -=>  {{ now().strftime('%H:%M') }}
+        - service: tts.google_say
+          data:
+            entity_id: media_player.kitchen_media_players
+            message: Tørketrommelen er ferdig 
+            language: 'no'
+
+      # ELSE (if none of the choose-conditions apply,,,)
+      default: []
+
+

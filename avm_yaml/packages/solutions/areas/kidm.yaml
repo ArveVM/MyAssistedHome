@@ -1,0 +1,203 @@
+
+mqtt:
+  switch:
+    - unique_id: 538dab15-6e0f-4401-9843-9547b8a64d2f
+      name: "ShellyKitchenHeater"
+      state_topic: "shellies/Kitchen_Heater_Plug/relay/0"
+      command_topic: "shellies/Kitchen_Heater_Plug/relay/0/command"
+      # availability:
+      #   - topic: "shellies/Kitchen_Heater_Plug/relay/0/available"
+      payload_on: "on"
+      payload_off: "off"
+      qos: 1
+      # retain: true
+
+  sensor:
+    - name: ShellyKitchenHeater_power
+      qos: 1
+      expire_after: 86400
+      device_class: power
+      unit_of_measurement: 'W'
+      icon: mdi:lightning-bolt-outline
+      state_topic: shellies/Kitchen_Heater_Plug/relay/0/power
+
+
+input_boolean:
+  kidm_light_auto:
+    name: KidM Light auto
+    icon: mdi:magic-staff
+
+  kidm_morninglight_auto:
+    name: KidM MorningLight auto
+    icon: mdi:magic-staff
+
+sensor:
+  - platform: powercalc
+    create_group: kidm lights all
+    entities:
+      - entity_id: light.kidm_light_puck # AVM: conventional 40W E14 bulb
+        fixed:
+          power: 40
+
+script:
+  kid_m_sleepytime:
+    sequence:
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.3
+        target:
+          entity_id: media_player.smartclock_kidm
+      - service: tts.google_say
+        data:
+          entity_id: media_player.smartclock_kidm
+          message: No er det leggetid,, god natt kjekke gutt
+          language: "no"
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: tts.google_say
+        data:
+          entity_id: media_player.smartclock_kidm
+          message: i morgon vert ein fin dag,, sov godt
+          language: "nopackages/solutions_draft"
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: media_player.turn_off
+        data: {}
+        target:
+          entity_id: media_player.smartclock_kidm
+
+template:
+  - sensor:
+      - name: Kid M linen days until change
+        unique_id: kid_m_linen_days__until_change
+        unit_of_measurement: days
+        state: >
+          {{states('input_number.kid_m_linen_change_interval') | int 
+          - (now() - states( 'input_datetime.kid_m_linen_changed') 
+          | as_datetime | as_local ).days }}
+
+input_datetime:
+  kid_m_linen_changed:
+    name: KidM linen changed
+    has_date: true
+    has_time: false
+  kidm_earlymorning_lights:
+    name: KidM EarlyMorning Light
+    has_date: false
+    has_time: true
+  kidm_morning_lights:
+    name: KidM Morning Light
+    has_date: false
+    has_time: true
+
+input_number:
+  kid_m_linen_change_interval:
+    name: KidM linen change interval
+    min: 7
+    max: 21
+
+scene:
+  - name: KidM_EarlyMorning
+    icon: mdi:clock
+    entities:
+      light.kidm_lightbulb:
+        state: "on"
+        color_name: greeen
+        transition: 300
+        brightness_pct: 1
+  - name: KidM_Morning
+    icon: mdi:clock
+    entities:
+      light.kidm_lightbulb:
+        state: "on"
+        color_name: yellow
+        transition: 3
+        brightness_pct: 3
+  - name: KidM_Daytime
+    icon: mdi:clock
+    entities:
+      light.kidm_lightbulb:
+        state: "on"
+        kelvin: 2700
+        brightness_pct: 40
+
+automation:
+  - id: 8f0d3958-863a-4c43-81f6-f59331760f1d
+    alias: "_KidM light; auto"
+    description: "when auto is ON, turn on soft green light at 6-O'clock"
+    mode: single
+    trigger:
+      - id: earlymorninig
+        platform: time
+        # Military time format. This trigger will fire at 3:32 PM
+        at: input_datetime.kidm_earlymorning_lights
+      - id: morninig
+        platform: time
+        # Military time format. This trigger will fire at 3:32 PM
+        at: input_datetime.kidm_morning_lights
+      - id: "on"
+        platform: state
+        entity_id:
+          - binary_sensor.kidm_light_puck_input
+        to: "on"
+      - id: "off"
+        platform: state
+        entity_id:
+          - binary_sensor.kidm_light_puck_input
+        to: "off"
+    condition:
+      - condition: template
+        value_template: " {{ states('input_boolean.kidm_light_auto') == 'on' }} "
+
+    action:
+      - choose:
+          #0 - 'early morning'
+          - conditions:
+              - condition: trigger
+                id: earlymorninig
+              - condition: state
+                entity_id: input_boolean.kidm_morninglight_auto
+                state: "on"
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: scene.kidm_earlymorning
+
+          #1 - 'morning'
+          - conditions:
+              - condition: trigger
+                id: morninig
+              - condition: state
+                entity_id: input_boolean.kidm_morninglight_auto
+                state: "on"
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: scene.kidm_morning
+
+
+          #2 - 'on'
+          - conditions:
+              - condition: trigger
+                id: "on"
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: scene.kidm_daytime
+
+
+          #3 - 'off'
+          - conditions:
+              - condition: trigger
+                id: "off"
+            sequence:
+              - service: light.turn_off
+                data: {}
+                target:
+                  entity_id: light.kidm_lightbulb

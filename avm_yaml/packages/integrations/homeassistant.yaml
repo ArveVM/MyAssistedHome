@@ -1,0 +1,12 @@
+homeassistant:
+  #  name: Home
+  #  latitude: 32.87336
+  #  longitude: 117.22743
+  #  elevation: 430
+  #  unit_system: metric
+  #  currency: USD
+
+  #  time_zone: "America/Los_Angeles"
+  internal_url: !secret HA_internal_url
+  external_url: !secret HA_external_url
+#ArveVM; test to see if i can get cast dashboard to work

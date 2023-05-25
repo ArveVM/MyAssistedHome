@@ -1,0 +1,198 @@
+# Input-sensors for this package:
+#  - entry_heater   = ShellyPlus1pm behind dumb thermostat controlling underfloor heating-foil
+#  - entry_THP      = Aquara temp/humidity/pressure
+
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Entry Heater'
+      # Add node-anchor(s) for 'input-sensors' to use as variables
+      power: &power sensor.entry_heater_puck_power                              # sensor for consumption W
+      energy: &energy sensor.entry_heater_puck_energy                           # sensor for consumption kwH
+      onoff: &onoff switch.entry_heater_puck                                    # switch OnOff   (shelly+1pm)
+      auto: &auto input_boolean.entry_heater_powerauto                          # waf/guest-mode,, will run of local thermostat and NO powersaving
+      powersave: &powersave input_boolean.entry_heater_powersave                # use for powersave on price ?
+      powerhoursave: &powerhoursave input_boolean.entry_heater_powerhoursave    # use to cut consumption for price-level pr hour
+      local_thermostat: &local_thermostat binary_sensor.entry_heater_puck_input         # this is input to Shelly from wall-thermostat, ON means local thermostat(floor) want to turn on heating
+      gen_thermostat: &gen_thermostat input_boolean.entry_heater_thermostat_output # output from generic thermostat,, used in automations to turn switch on/off
+
+  # # Add node-anchor as attribute on created sensors:
+    sensor.entry_heater_time_on:
+      <<: *package_attribute
+    input_boolean.entry_heater_thermostat_output:
+      <<: *package_attribute
+    input_boolean.entry_heater_powerauto:
+      <<: *package_attribute
+    input_boolean.entry_heater_powersave:
+      <<: *package_attribute
+    input_boolean.entry_heater_powerhoursave:
+      <<: *package_attribute
+    sensor.entry_heater_thermostat_mode:
+      <<: *package_attribute
+    sensor.entry_heater_thermostat_target:
+      <<: *package_attribute
+    climate.entry_heater_thermostat:  
+      <<: *package_attribute
+    automation.entry_heater_auto_off:
+      <<: *package_attribute
+    automation.entry_heater_auto_on:
+      <<: *package_attribute
+    utility_meter.entry_heater_energy_daily: 
+      <<: *package_attribute
+    utility_meter.entry_heater_energy_weekly: 
+      <<: *package_attribute
+    utility_meter.entry_heater_energy_monthly: 
+      <<: *package_attribute
+
+sensor:
+  - platform: history_stats
+    name: Entry Heater time on
+    entity_id: *onoff
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=00, minute=00, second=00) }}"
+    end: "{{ now() }}"
+
+
+input_boolean:
+  entry_heater_thermostat_output:
+    name: Entry Heater Thermostat Output          # created to over-ride thermostat-output in case of powersaving,,,
+    icon: mdi:radiator
+  entry_heater_powerauto:
+    name: Entry Heater PowerAuto                       # = *auto
+    icon: mdi:magic-staff
+  entry_heater_powerboost:
+    name: Entry Heater PowerBoost                       # = *auto
+    icon: mdi:magic-staff
+  entry_heater_powersave:
+    name: Entry Heater PowerSave
+    icon: mdi:currency-usd
+  entry_heater_powerhoursave:
+    name: Entry Heater PowerHourSave
+    icon: mdi:currency-usd
+
+
+template:
+  - sensor:
+    - name: Entry Heater Thermostat mode
+      unique_id : "entry_heater_thermostat_mode"
+      state: " {{state_attr('climate.entry_heater_thermostat', 'preset_mode') }} "
+  - sensor:
+    - name: Entry Heater Thermostat target
+      unique_id : "entry_heater_thermostat_target"
+      unit_of_measurement: °C
+      device_class: temperature
+      state: " {{state_attr('climate.entry_heater_thermostat', 'temperature') }} "
+
+
+climate:
+  - platform: generic_thermostat
+    name: Entry Heater Thermostat
+    unique_id: entry_heater_thermostat
+    heater: *gen_thermostat
+    target_sensor: sensor.entry_thp_temperature
+    initial_hvac_mode: heat
+    max_temp: 30
+    # target_temp: 15                # AVM; ignored, willl restart at last value
+    min_cycle_duration: "00:05"     # AVM; try limit switcing to 5min-periods (avoid on/of on local heatspot)
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    away_temp: 10             # for Home mode: vacation
+    comfort_temp: 21          # for Home status: Evening, evening-grownups, kidrooms cold
+    home_temp: 21             # for Home status: Daytime, 
+    sleep_temp: 17            # for Home status: Night
+    activity_temp: 21         # for Home status: Morning, exept office and bedrooms
+
+
+automation:
+
+  - id: 'entry_heater_auto_off'
+    alias: "_Entry Heater; auto OFF"
+    description: 'when auto is off; switch shold allways follow local thermostat'
+    mode: single
+    trigger:
+    - id: 'auto_off'
+      platform: state
+      entity_id: *auto
+      to: 'off'
+    - id: 'thermostat_change'
+      platform: state
+      entity_id: *local_thermostat                  # this is input to Shelly from wall-thermostat, ON means local thermostat(floor) want to turn on heating
+    condition: 
+    # - condition: template
+    #   value_template: "{{ states('input_boolean.entry_heater_auto')  != 'on' }}"
+    - condition: state
+      entity_id: *auto
+      state: 'off'
+    action:
+    - choose:
+      - conditions:
+        - condition: state
+          entity_id: *local_thermostat              #  floor sensor
+          state: 'on'
+        sequence:
+          - service: switch.turn_on
+            target: 
+              entity_id: *onoff
+      default:
+        - service: switch.turn_off
+          target: 
+            entity_id: *onoff
+
+  - id: 'entry_heater_auto_on'
+    alias: "_Entry Heater; auto ON"
+    description: 'when auto is on; switch shold allways follow generic thermostat and power-save schemes'
+    mode: single
+    trigger:
+    - platform: state
+      entity_id: *auto
+      to: 'on'
+    - platform: state
+      entity_id: *local_thermostat
+    - platform: state
+      entity_id: *gen_thermostat              # this is generic thermostat output
+    - platform: state
+      entity_id: *powersave
+    - platform: state
+      entity_id: *powerhoursave
+
+    condition:
+    #- condition: template
+    #  value_template: "{{ states('input_boolean.entry_heater_auto')  == 'on' }}"
+    - condition: state
+      entity_id: *auto
+      state: 'on'
+
+    action:
+    - choose:
+      - conditions:
+        - condition: state
+          entity_id: *auto
+          state: 'on'
+        - condition: state
+          entity_id: *local_thermostat         #  floor sensor
+          state: 'on'
+        - condition: state
+          entity_id: *gen_thermostat         #  floor sensor
+          state: 'on'
+        - condition: state
+          entity_id: *powersave        #  not powersaving
+          state: 'off'    
+        - condition: state
+          entity_id: *powerhoursave        #  not powersaving
+          state: 'off'    
+        sequence:
+          - service: switch.turn_on
+            target: 
+              entity_id: *onoff
+      default:
+        - service: switch.turn_off
+          target: 
+            entity_id: *onoff
+
+
+

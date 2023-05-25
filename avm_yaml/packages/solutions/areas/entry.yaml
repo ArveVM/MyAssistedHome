@@ -1,0 +1,50 @@
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Entry'
+      # Add node-anchor(s) for 'input-sensors' to use as variables
+
+      
+  # # Add node-anchor as attribute on created sensors:
+    binary_sensor.entry_room_status: 
+      <<: *package_attribute
+#    utility_meter.entry_heater_energy_monthly: 
+#      <<: *package_attribute
+
+
+template:
+  - binary_sensor:
+      - name: Entry Room Status
+        unique_id: entry_room_status
+        state: >
+          {{ states('input_boolean.entry_heater_powerauto') == 'on'
+          and states('binary_sensor.entry_door_contact') == 'off' 
+          }}
+        
+
+timer:
+  entry_door_open:
+    duration: '00:03:00'
+    name: Entry Door Open Timer
+    icon: mdi:door-open
+
+automation:
+  - id: 'entry_door_open'
+    alias: "_Entry Door; open"
+    description: 'start timer to check when door has been open for more than 3 minutes'
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.entry_door_contact
+        to: 'on'
+    condition: []
+    action:
+    - service: timer.start
+      target:
+        entity_id: timer.entry_door_open
+
+

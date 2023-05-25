@@ -1,0 +1,90 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      solution_attribute_to_entity: &solution_attribute
+        solution: "House"
+
+light:
+  - platform: group
+    name: House Lights group
+    entities:
+      - light.livingroom_lights_group
+      - light.kitchen_lights_group
+      - light.hallway_lights_group
+      - light.loft
+      - light.kidm_lightbulb
+      - light.outside_light1
+
+template:
+  - sensor:
+      - name: House Average Temperature
+        unique_id: b01783ea-3c42-4360-af4e-296f8eb61a24
+        unit_of_measurement: °C
+        state: >
+          {% set temp1 = states('sensor.livingroom_netatmo_temperature') | float(default=20) %}
+          {% set temp2 = states('sensor.kitchen_thp_temperature') | float(default=20) %}
+          {% set temp3 = states('sensor.hallway_thp_temperature') | float(default=20) %}
+          {{ ((temp1 + temp2 + temp3) / 3) | round(1) }}
+        attributes:
+          Temp1 Livingroom: >-
+            {{states('sensor.livingroom_netatmo_temperature') | float(default=20) | round(1) }}
+          Temp2 Kitchen: >-
+            {{states('sensor.kitchen_thp_temperature') | float(default=20) | round(1) }}
+          Temp3 Hallway: >-
+            {{states('sensor.hallway_thp_temperature') | float(default=20) | round(1) }}
+
+      - name: House Average Humidity
+        unique_id: 17f1a8a3-d74f-4523-bc84-1f319602179b
+        unit_of_measurement: "%"
+        icon: mdi:water-percent
+        state: >
+          {% set h1 = states('sensor.livingroom_netatmo_humidity') | float(default=45) %}
+          {% set h2 = states('sensor.kitchen_thp_humidity') | float(default=45) %}
+          {% set h3 = states('sensor.hallway_thp_humidity') | float(default=45) %}
+          {{ ((h1 + h2 + h3) / 3) | round(1) }}
+        attributes:
+          Humidity1 Livingroom: >-
+            {{states('sensor.livingroom_netatmo_humidity') | float(default=45) | round(1) }}
+          Humidity2 Kitchen: >-
+            {{states('sensor.kitchen_thp_humidity') | float(default=45) | round(1) }}
+          Humidity3 Hallway: >-
+            {{states('sensor.hallway_thp_humidity') | float(default=45) | round(1) }}
+
+script:
+  house_navigate_view_closepopup:
+    sequence:
+      - service: tts.google_say
+        data:
+          entity_id: media_player.kitchen_googlemini
+          message: >
+            "Test path {{ path }}"
+            "id {{ device_id }}"
+          language: "no"
+
+      - service: browser_mod.navigate
+        data:
+          deviceID: "{{ browser_id }}"
+          # browser_id: " {{ browser_id }} "
+          # device_id: "{{device_id}}"
+          path: "{{ path }}"
+          # deviceID: "{{deviceID}}"
+          # path: "{{path}}"
+      - service: system_log.write
+        data:
+          message: "Button was clicked in {{ device_id }} and {{ browser_id }}"
+
+      # tap_action:
+      #   action: fire-dom-event
+      #   browser_mod:
+      #     service: browser_mod.navigate
+      #     data:
+      #       deviceID: this
+      #       path: /avm-mobile/server
+      # hold_action:
+      #   action: navigate
+      #   navigation_path: /avm-mobile/server

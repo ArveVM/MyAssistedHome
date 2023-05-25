@@ -1,0 +1,39 @@
+sensor:
+  - platform: powercalc
+    create_group: loft lights all
+    entities:
+      - entity_id: light.loft # ArveVM: 6*4,9W gu10 LED
+        fixed:
+          power: 29
+
+template:
+  - binary_sensor:
+      # - name: Loft Room Status
+      #   unique_id: 7a52217f-fb07-4d88-afcf-d43fc531e320
+      #   icon: mdi:check-circle
+      #   device_class: problem
+      #   # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+      #   state: >
+      #     {{ (states('input_boolean.loft_heater_powerauto') != 'on')
+      #       or (states('sensor.loft_thp_humidity') | float(default=40) < 20) 
+      #       or (states('sensor.loft_thp_humidity') | float(default=40) > 60)
+      #     }}
+      #   attributes:
+      #     heater_powerauto: "{{ 'Problem!' if (states('input_boolean.loft_heater_powerauto') != 'on') else 'OK'}}"
+      #     humidity_above_20: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) < 20) else 'OK'}}"
+      #     humidity_below_60: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) > 60) else 'OK'}}"
+
+      - name: Loft Area Status
+        unique_id: b22a7e58-5a4a-4b73-b570-7009bc7f392a
+        icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ (states('input_boolean.loft_heater_powerauto') != 'on')
+            or (states('sensor.loft_thp_humidity') | float(default=40) < 20) 
+            or (states('sensor.loft_thp_humidity') | float(default=40) > 60)
+          }}
+        attributes:
+          heater_powerauto: "{{ 'Problem!' if (states('input_boolean.loft_heater_powerauto') != 'on') else 'OK'}}"
+          humidity_above_20: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) < 20) else 'OK'}}"
+          humidity_below_60: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) > 60) else 'OK'}}"

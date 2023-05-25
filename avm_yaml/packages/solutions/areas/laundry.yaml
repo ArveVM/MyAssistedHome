@@ -1,0 +1,121 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   04.May.2022
+#   @solution     :   Laundry, michelanious solutions, light and heating
+#   @description  :   Solution to make dumb objects seem smart.
+
+
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Laundry'
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      #power: &power sensor.laundry_washer_2min_median_power
+      #energy: &energy sensor.laundry_washer_energy
+      
+
+  
+input_boolean:
+  laundry_light_auto:
+    name: Laundry Light Auto
+    # initial: off
+    icon: mdi:magic-staff
+
+
+sensor:
+
+  - platform: history_stats
+    name: Laundry Lights time on
+    entity_id: light.laundry_lights_puck
+    state: "on"
+    type: time
+    start: "{{ now().replace(day=now().day-1,hour=23, minute=59, second=50) }}"
+    end: "{{ now() }}"
+
+  - platform: history_stats
+    name: Laundry Lights time on2
+    entity_id: light.laundry_lights_puck
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=23, minute=59, second=50) }}"
+    # end: "{{ now() }}"
+    duration:
+      hours: 24
+
+  - platform: history_stats
+    name: Laundry Lights time on3
+    entity_id: light.laundry_lights_puck
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    end: "{{ now() }}"
+    #duration:
+    #  hours: 24
+
+  - platform: history_stats
+    name: Laundry Lights time on4
+    entity_id: light.laundry_lights_puck
+    state: "on"
+    type: time
+    start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+    # end: "{{ now() }}"
+    duration:
+      hours: 24
+      
+  - platform: history_stats
+    name: Laundry Lights time on5
+    entity_id: light.laundry_lights_puck
+    state: "on"
+    type: time
+    start: "{{ now().replace(day=now().day-1,hour=23, minute=59, second=50) }}"
+    #end: "{{ now() }}"
+    duration:
+      hours: 24
+
+  - platform: powercalc
+    create_group: laundry lights all
+    entities:
+      - entity_id: light.laundry_lights_puck        # AVM: 2x Biltema 46-1025 a 22W 
+        fixed:
+          power: 44
+
+
+template:
+  - binary_sensor:
+      - name: Laundry Room Status
+        unique_id: binary_sensor.laundry_room_status
+        state: >
+          {{ states('input_boolean.laundry_washer_emptying_todo') == 'off'
+          and states('input_boolean.laundry_dryer_emptying_todo') == 'off'
+          and states('input_boolean.laundry_light_auto') == 'on'
+          and states('input_boolean.laundry_heater_powerauto') == 'on'
+          }} 
+      - name: Launcry Area Status    
+        unique_id: 6bdb0359-60d3-45f1-803b-48899915f7a0
+        icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ (states('input_boolean.laundry_heater_powerauto') != 'on')
+            or (states('input_boolean.laundry_light_auto') != 'on')
+            or (states('input_boolean.laundry_dryer_emptying_todo') != 'off')
+            or (states('input_boolean.laundry_washer_emptying_todo') != 'off')
+          }} 
+        attributes:
+          heater_powerauto: "{{ 'Problem!' if (states('input_boolean.laundry_heater_powerauto') != 'on') else 'OK'}}"
+          light_auto: "{{ 'Problem!' if (states('input_boolean.laundry_light_auto') != 'on') else 'OK'}}"
+          dryer_emptying_todo: "{{ 'Problem!' if (states('input_boolean.laundry_dryer_emptying_todo') != 'off') else 'OK'}}"
+          washer_emptying_todo: "{{ 'Problem!' if (states('input_boolean.laundry_washer_emptying_todo') != 'off') else 'OK'}}"
+
+
+
+utility_meter:
+  laundry_freezer_energy_daily: 
+    source: sensor.apex_smartplug_energy
+    name: Laundry Freezer Energy Daily
+    cycle: daily
+  

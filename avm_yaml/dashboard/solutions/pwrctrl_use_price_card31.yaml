@@ -7,7 +7,8 @@ columns: 2
 square: false
 cards:
   - type: custom:mushroom-template-card
-    entity: sensor.priceanalyzer_current_hour_value
+    # entity: sensor.priceanalyzer_current_hour_value
+    entity: sensor.priceanalyzer_price
     secondary: øre/kWh
     primary: >
       {{ states(entity) | round(1) }}

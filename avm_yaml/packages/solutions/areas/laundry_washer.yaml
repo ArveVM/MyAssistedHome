@@ -1,0 +1,259 @@
+###############################################################################
+#   @author       :   ArveVM 
+#   @date         :   09.march.2022
+#   @solution     :   Washer
+#   @description  :   Solution to make dumb appliances seem smart.  
+#   @basic concept: 
+#      Dumb washer is plugged into a socket with a ShellyPluss1pm behind socket
+#      native Shelly-integration provides data from to HA
+#         sensors used:      
+#            sensor.laundry_washer_power       -> need to create statistics 1min to shave off peaks to figure ut when finished.....
+#            sensor.laundry_washer_energy
+#      (it also has a switch wihch one can trun off in case of
+#      extreme powersaving-solutions - some time in the future)
+###############################################################################
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Laundry Washer'
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      power: &power sensor.laundry_washer_2min_median_power
+      power2: &power2 sensor.laundry_washer_puck_power
+      energy: &energy sensor.laundry_washer_puck_energy
+      mqtt_sensor: &mqtt_sensor sensor.laundry_washer_status
+      mqtt_topic: &mqtt_topic house/laundry_washer/status
+      emptying_todo: &emptying_todo input_boolean.laundry_washer_emptying_todo
+      cycle_counter: &cycle_counter counter.laundry_washer_cycle_counter
+      
+  # Add node-anchor as attribute on created sensors:
+    input_boolean.laundry_washer_emptying_todo:
+      <<: *package_attribute
+    sensor.laundry_washer_2min_mean_power:  
+      <<: *package_attribute
+    sensor.laundry_washer_2min_median_power:  
+      <<: *package_attribute
+    sensor.laundry_washer_1min_median_power:  
+      <<: *package_attribute
+    counter.laundry_washer_cycle_counter:
+      <<: *package_attribute
+    sensor.laundry_washer_status:
+      <<: *package_attribute
+    sensor.laundry_washer_cycle_daily:
+      <<: *package_attribute
+    sensor.laundry_washer_cycle_weekly:
+      <<: *package_attribute
+    sensor.laundry_washer_cycle_monthly:
+      <<: *package_attribute
+    sensor.laundry_washer_energy_daily:
+      <<: *package_attribute
+    sensor.laundry_washer_energy_weekly:
+      <<: *package_attribute
+    sensor.laundry_washer_energy_monthly:
+      <<: *package_attribute
+    automation.laundry_washer_set_status:
+      <<: *package_attribute
+    
+
+# Inspiration from https://www.homeautomationguy.io/home-assistant-automations/washing-machine-notifications/
+input_boolean:
+  laundry_washer_emptying_todo:
+    name: "Laundry Washer Emptying toDo"
+    initial: off
+    icon: mdi:washing-machine-alert
+
+
+sensor:
+  # after implementing Shelly+1pm with snubber,, the measurements after finished had peaks,, so implementing 30seconds average to measure against  
+        #denne kan vel slettes?
+  - platform: statistics
+    name: "Laundry Washer 2min mean power"
+    entity_id: *power2
+    state_characteristic: mean
+    #unit_of_measurement: W
+    max_age:
+      # hours: 24
+      minutes: 2
+
+  - platform: statistics
+    name: Laundry Washer 2min median power
+    entity_id: *power2
+    state_characteristic: median
+    #unit_of_measurement: W
+    max_age:
+      # hours: 24
+      minutes: 2
+
+  - platform: statistics
+    name: Laundry Washer 1min median power
+    entity_id: *power2
+    state_characteristic: median
+    #unit_of_measurement: W
+    max_age:
+      # hours: 24
+      minutes: 1
+
+
+  #- platform: mqtt
+  #  name: "Laundry Washer Status"
+  #  state_topic: "house/laundry_washer/status"
+  #  icon: mdi:washing-machine
+
+
+counter:
+  # my own idea of traching number of cycles the device is running
+  laundry_washer_cycle_counter:
+    name: "Laundry Washer Cycle Counter"
+    initial: 1
+    step: 1
+
+
+mqtt:
+  # ArveVM; faking an MQTT-sensor and not input_boolean to disable user interference in UI
+  sensor:
+    - state_topic: *mqtt_topic
+      name: "Laundry Washer Status"
+      icon: mdi:washing-machine
+
+
+utility_meter:
+  # log usage in periods
+  #   cycle string-> How often to reset the counter. 
+  #       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+
+  laundry_washer_cycle_daily: 
+    unique_id: laundry_washer_cycle_daily
+    name: Laundry Washer Cycle Daily
+    source: *cycle_counter
+    cycle: daily
+
+  laundry_washer_cycle_weekly: 
+    unique_id: laundry_washer_cycle_weekly
+    name: Laundry Washer Cycle Weekly
+    source: *cycle_counter
+    cycle: weekly
+
+  laundry_washer_cycle_monthly: 
+    unique_id: laundry_washer_cycle_monthly
+    name: Laundry Washer Cycle Monthly
+    source: *cycle_counter
+    cycle: monthly
+
+  laundry_washer_energy_daily: 
+    source: *energy
+    name: Laundry Washer Energy Daily
+    cycle: daily
+
+  laundry_washer_energy_weekly: 
+    source: *energy
+    name: Laundry Washer Energy Weekly
+    cycle: weekly
+
+  washer_energy_monthly: 
+    source: *energy
+    name: Laundry Washer Energy Monthly
+    cycle: monthly
+
+
+automation:
+  - id: 'laundry_washer_status'
+    alias: "_Laundry Washer; set Status"
+    description: ''
+    mode: single
+    trigger:
+    - id: emptying
+      platform: state
+      entity_id: *emptying_todo
+      to: "off"
+    - id: idle
+      platform: numeric_state
+      entity_id: *power
+      # entity_id: input_number.dishwasher_power_testhelper
+      below: 1
+      for: "00:02:00"
+    - id: running
+      platform: numeric_state
+      entity_id: *power
+      # entity_id: input_number.dishwasher_power_testhelper
+      above: 14
+      for: "00:01:00"
+    - id: finished
+      platform: numeric_state
+      entity_id: *power
+      # entity_id: input_number.washer_power_testhelper
+      below: 5
+      for: "00:01:00"
+
+    condition: []
+    action:                                         # choose for each option:
+    - choose:
+      # Emptying:
+      - conditions:
+        - condition: trigger
+          id: emptying 
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Idle
+            retain: true
+
+      #  - Idle:
+      - conditions:
+        - condition: trigger
+          id: idle  
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Idle
+            retain: true
+
+      #  - Running:
+      - conditions:
+        - condition: trigger
+          id: running
+        sequence:
+        - service: input_boolean.turn_off
+          target:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Running
+            retain: true
+            
+      #  - Finished:
+      - conditions:
+          - condition: trigger
+            id: finished
+          - condition: state
+            entity_id: *mqtt_sensor
+            state: Running
+        sequence:
+        - service: input_boolean.turn_on
+          data:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Finished
+            retain: true
+        - service: counter.increment
+          target:
+            entity_id: *cycle_counter
+        - service: notify.miCasa_Parent_phones_and_HA_notification
+          data:
+            message: 💚 Vaskemaskina er ferdig  -=>  {{ now().strftime('%H:%M') }}
+        - service: tts.google_say
+          data:
+            entity_id: media_player.kitchen_media_players
+            message: Vaskemaskina er ferdig 
+            language: 'no'
+
+      # ELSE (if none of the choose-conditions apply,,,)
+      default: []
+

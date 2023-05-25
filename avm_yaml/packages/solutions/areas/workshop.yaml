@@ -1,0 +1,11 @@
+template:
+  - binary_sensor:
+      - name: Workshop Area Status
+        unique_id: 3298a60b-2288-4480-bb76-f888cfe3eb82
+        icon: mdi:check-circle
+        device_class: problem
+        state: >
+          {{ (states('sensor.hotwater_temp_temperature') < '40')
+          }}
+        attributes:
+          hotwater_above_40: "{{ 'Problem!' if (states('sensor.hotwater_temp_temperature') < '40') else 'OK'}}"

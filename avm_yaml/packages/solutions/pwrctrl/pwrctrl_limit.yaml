@@ -1,0 +1,269 @@
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      solution_attribute_to_entity: &solution_attribute
+        solution: "PwrCtrl Limit"
+      solution_attribute_to_input_entity: &solution_input_attribute
+        solution input to: "PwrCtrl Limit"
+
+input_boolean:
+  pwrctrl_limit_auto:
+    name: PwrCtrl Limit Auto
+
+input_number:
+  pwrctrl_limit_capacity_limit:
+    name: PwrCtrl Limit Capacity Limit
+    min: 2
+    max: 20
+    step: 0.5
+    mode: box
+    unit_of_measurement: "kWh"
+  pwrctrl_limit_capacity_safety:
+    name: PwrCtrl Limit Capacity Safety
+    min: 0
+    max: 20
+    step: 1
+    mode: box
+    unit_of_measurement: "%"
+  pwrctrl_limit_level:
+    name: PwrCtrl Limit Level
+    min: 0
+    max: 10
+    step: 1
+    mode: box
+
+template:
+  # Create trend for the full hour, update every 2-minutes, but first 10-minutes continoue with end-state of last hour
+  - trigger:
+      - platform: time_pattern
+        minutes: "/2" # ArveVM; trigger only every 2 minutes
+      - platform: homeassistant
+        event: start # AVM; trigger at restart HA
+      - platform: event
+        event_type: event_template_reloaded # AVM; trigger at reload Template entities
+    sensor:
+      - name: PwrCtrl Limit fullHour trend
+        unique_id: 60f97937-deb4-47bf-acc1-8bbf844bf6af
+        icon: mdi:strategy
+        unit_of_measurement: "kWh"
+        state: >
+          {% if now().minute < 10 %}
+            {{state_attr('sensor.pwrctrl_use_total_energy_hourly', 'last_period')}}
+          {% else %} 
+            {% set usage = states('sensor.pwrctrl_use_total_energy_hourly') | float %}
+            {% set minutes = now().minute %}
+            {% set seconds = now().second %}
+            {%if minutes%}
+              {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+              {{(usage / percentOfHour) | round (2) }}
+            {%endif%}
+          {% endif %}
+
+      # from Kim/Erlend: Amshan increase possible"
+      # adjusted to give additional consumption in kW for rest of hour as result
+      # deducting safety from tarrif-limit first, then calculating possible rest consumption for hour, then deducting current consumption
+      # then I get the number of KW i can add to the current consumption within current hour - without overstepping tarrif-limit (with safety deducted)
+      - name: "PwrCtr Limit restHour increase possible"
+        unique_id: 5cd06e0a-4361-4214-9237-1ab4c3fa68e3
+        unit_of_measurement: "kW"
+        state: >-
+          {% set currentusage = (states('sensor.pwrctrl_use_total') | float) / 1000 %}
+          {% set hourtrend = states('sensor.pwrctrl_limit_fullhour_trend') | float %}
+          {% set limit = states('input_number.pwrctrl_limit_capacity_limit') | float %}
+          {% set safety = states('input_number.pwrctrl_limit_capacity_safety') | float %}
+          {% set limit = limit * ( 100 - safety ) / 100 %}
+          {% set minutes = now().minute %}
+          {% set seconds = now().second %}
+          {% if minutes %}
+            {% set timeLeft = (3600 - ((minutes * 60) + seconds)) %}
+            {% set restspend = ((limit - hourtrend) * (3600 / timeLeft)) | round(2) %}
+          {{ restspend - currentusage }}
+          {%endif%}
+
+  #      - name: PwrCtrl_Estimate444
+  #        icon: mdi:strategy
+  #        unit_of_measurement: "kWh"
+  #        state: >
+  #          {% if now().minute < 10 %}
+  #            {{state_attr('sensor.evahan_energy_hourly', 'last_period')}}
+  #          {% else %}
+  #            {% set usage = states('sensor.evahan_energy_hourly') | float %}
+  #            {% set minutes = now().minute %}
+  #            {% set seconds = now().second %}
+  #            {%if minutes%}
+  #              {%set percentOfHour = (minutes / 60) + ((seconds / 60) /60) %}
+  #              {{(usage / percentOfHour) | round (2) }}
+  #            {%endif%}
+  #          {% endif %}
+
+  - sensor:
+      - name: PwrCtrl Limit usage percent
+        unique_id: 932fb748-78cf-4688-aeec-d5609cef468f
+        unit_of_measurement: "%"
+        #icon: mdi:radiator
+        attributes:
+          <<: *solution_attribute
+          trend: "{{ states('sensor.pwrctrl_limit_fullhour_trend') | float(default=0) }}"
+          limit: "{{ states('input_number.pwrctrl_limit_capacity_limit') | float(default=9.8) }}"
+          increase: "{{ states('sensor.pwrctr_limit_increase_possible') | float(default=9.8) }}"
+        state: >
+          {% set trend = states('sensor.pwrctrl_limit_fullhour_trend') | float(default=0)%}
+          {% set limit = states('input_number.pwrctrl_limit_capacity_limit') | float(default=9.8) %}
+          {{ (trend / limit *100 ) | int }}
+
+      - name: PwrCtrl Limit powerHourSave counter
+        unique_id: d567a12f-62f4-4970-bdb6-0cdd27e132cf
+        attributes:
+          <<: *solution_attribute
+        state: >
+          {{ states.input_boolean
+          | selectattr('entity_id', 'search', '_powerhoursave$')
+          | selectattr('state', 'eq', 'on') 
+          | list 
+          | count 
+          | int
+          }}
+
+script:
+  pwrctrl_limit_level0:
+    # revert to normal,, shut off all powerhoursave-entities    huge thanks to theawsomegarage.com for code/inspiration on this one  :)
+    alias: PwrCtrl Limit Level0
+    sequence:
+      - repeat:
+          while:
+            - condition: template
+              value_template: "{{ states('sensor.pwrctrl_limit_powerhoursave_counter') >= '1' }}"
+            - condition: template
+              value_template: "{{ states('input_boolean.pwrctrl_limit_auto') == 'on'}}"
+          sequence:
+            - service: homeassistant.turn_off
+              target:
+                entity_id: >
+                  {{ states 
+                  | selectattr('entity_id', 'search', 'input_boolean.*_powerhoursave')
+                  | selectattr('state', 'in', 'on') 
+                  | map(attribute='entity_id') 
+                  | list 
+                  |first 
+                  }}
+            - delay: "00:00:05"
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.pwrctrl_limit_level
+        data:
+          value: 0
+
+  pwrctrl_limit_level1:
+    alias: PwrCtrl Limit Level1
+    sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.entry_heater_powerhoursave
+            - input_boolean.office_heater_powerhoursave
+            - input_boolean.laundry_heater_powerhoursave
+            - input_boolean.loft_heater_powerhoursave
+            - input_boolean.bathroom2_heater_powerhoursave
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.pwrctrl_limit_level
+        data:
+          value: 1
+
+  pwrctrl_limit_level2:
+    alias: PwrCtrl Limit Level2
+    sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.bathroom_heater_powerhoursave
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.pwrctrl_limit_level
+        data:
+          value: 2
+
+  pwrctrl_limit_level3:
+    alias: PwrCtrl Limit Level3
+    sequence:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id:
+            - input_boolean.hotwater_temp_powerhoursave
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.pwrctrl_limit_level
+        data:
+          value: 3
+
+automation:
+  - alias: PwrCtrl Limit PowerHourSave Reset
+    id: 18ecc2b5-96b4-4b5d-a4b5-73c5c09147ae
+    trigger:
+      - platform: time_pattern
+        # Matches every hour at 1 minutes past whole
+        minutes: 1
+    condition: []
+    action:
+      - service: script.pwrctrl_limit_level0
+
+  - alias: PwrCtrl Limit usage
+    id: e6ff48a4-904d-4bb3-b590-f568231abad9
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.pwrctrl_limit_usage_percent
+        above: 95
+      - platform: numeric_state
+        entity_id: sensor.pwrctrl_limit_usage_percent
+        above: 95
+        for: "00:10:00"
+      - platform: numeric_state
+        entity_id: sensor.pwrctrl_limit_usage_percent
+        above: 95
+        for: "00:20:00"
+      - platform: numeric_state
+        entity_id: sensor.pwrctrl_limit_usage_percent
+        above: 95
+        for: "00:30:00"
+    condition:
+      - condition: template
+        value_template: "{{ states('input_boolean.pwrctrl_limit_auto') == 'on'}}"
+    action:
+      - choose:
+          #First turn off some heaters
+          - conditions:
+              - condition: template
+                value_template: "{{ states('input_number.pwrctrl_limit_level') | int == 0 }}"
+            sequence:
+              - service: script.pwrctrl_limit_level1
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pwrctrl_limit_level
+                data:
+                  value: 1
+          #if still aboce,, escalate to level 2
+          - conditions:
+              - condition: template
+                value_template: "{{ states('input_number.pwrctrl_limit_level') | int == 1 }}"
+            sequence:
+              - service: script.pwrctrl_limit_level2
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pwrctrl_limit_level
+                data:
+                  value: 2
+          #if still aboce,, escalate to level 3
+          - conditions:
+              - condition: template
+                value_template: "{{ states('input_number.pwrctrl_limit_level') | int == 2 }}"
+            sequence:
+              - service: script.pwrctrl_limit_level3
+              - service: input_number.set_value
+                target:
+                  entity_id: input_number.pwrctrl_limit_level
+                data:
+                  value: 3

@@ -1,0 +1,203 @@
+###############################################################################
+#   @author       :   AVM 
+#   @date         :   07.march.2022
+#   @solution     :   Dishwasher
+#   @description  :   Solution to make dumb appliances seem smart.  
+#   @basic concept: 
+#      Dumb dishwasher is plugged into a ShellyS smartplug which 
+#      native Shelly integration provides data from to HA
+#         sensors used:sensor.dishwasher_power
+#         sensor.dishwasher_energy
+#      (it also has a switch wihch one can trun off in case of
+#      extreme powersaving-solutions - some time in the future)
+###############################################################################
+
+# AVM; first attempt to use anchors....
+#      in principle,, one can make a 'template' for a solution and re-use on next?
+# https://github.com/thomasloven/hass-config/blob/master/packages/coffeemaker.yaml
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Dishwasher'
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      power: &power sensor.dishwasher_plug_power
+      energy: &energy sensor.dishwasher_plug_energy
+      mqtt_topic: &mqtt_topic house/dishwasher/status
+      emptying_todo: &emptying_todo input_boolean.dishwasher_emptying_todo
+      cycle_counter: &cycle_counter counter.dishwasher_cycle_counter
+
+    # Add node-anchor as attribute on created sensors:
+    input_boolean.laundry_washer_emptying_todo:
+      <<: *package_attribute
+    counter.dishwasher_cycle_counter:
+      <<: *package_attribute
+    sensor.dishwasher_status:
+      <<: *package_attribute
+    sensor.dishwasher_cycle_daily:
+      <<: *package_attribute
+    sensor.dishwasher_cycle_weekly:
+      <<: *package_attribute
+    sensor.dishwasher_cycle_monthly:
+      <<: *package_attribute
+    sensor.dishwasher_energy_daily:
+      <<: *package_attribute
+    sensor.dishwasher_energy_weekly:
+      <<: *package_attribute
+    sensor.dishwasher_energy_monthly:
+      <<: *package_attribute
+    automation.dishwasher_status:
+      <<: *package_attribute
+
+input_boolean:
+  dishwasher_emptying_todo:
+    name: "Dishwasher Emptying toDo"
+    initial: off
+    icon: mdi:dishwasher
+
+
+counter:
+  dishwasher_cycle_counter:
+    name: dishwasher_cycle_counter
+    initial: 1
+    step: 1
+
+
+mqtt:
+  # ArveVM; faking an MQTT-sensor and not input_boolean to disable user interference in UI
+  sensor:
+    - state_topic: *mqtt_topic
+      name: "Dishwasher Status"
+      icon: mdi:dishwasher
+
+utility_meter:
+  # log usage in periods
+  #   cycle string-> How often to reset the counter. 
+  #       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+  dishwasher_cycle_daily: 
+    name: dishwasher_cycle_daily
+    source: *cycle_counter
+    cycle: daily
+  dishwasher_cycle_weekly: 
+    name: dishwasher_cycle_weekly
+    source: *cycle_counter
+    cycle: weekly
+  dishwasher_cycle_monthly: 
+    name: dishwasher_cycle_monthly
+    source: *cycle_counter
+    cycle: monthly
+
+  dishwasher_energy_daily: 
+    name: dishwasher_energy_daily
+    source: *energy
+    cycle: daily
+  dishwasher_energy_weekly: 
+    name: dishwasher_energy_weekly
+    source: *energy
+    cycle: weekly
+  dishwasher_energy_monthly: 
+    name: dishwasher_energy_monthly
+    source: *energy
+    cycle: monthly
+
+
+automation:
+  - id: dishwasher_status_change
+    alias: '_Dishwasher; set Status'
+    description: ''
+    mode: single
+    trigger:     
+    - id: emptying
+      platform: state
+      entity_id: *emptying_todo
+      to: "off"
+    - id: idle
+      platform: numeric_state
+      entity_id: *power
+      below: '0.1'
+      for: "00:01:00"      # which watt-usages should trigger?  (using trigger to enable time-factor of one minute before changing status,,,,)
+    - id: running
+      platform: numeric_state
+      entity_id: *power
+      above: '5'
+      for: "00:00:10"
+    - id: finished
+      platform: numeric_state
+      entity_id: *power
+      below: '2'
+      for: "00:00:03"
+
+    condition: []
+    action:                                         # choose for each option:
+    - choose:      
+
+      # Emptying:
+      - conditions:
+        - condition: trigger
+          id: emptying 
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Idle
+            retain: true
+
+      #  - Idle:            # hmm,,, er denne nødvendig ?
+      - conditions:
+        - condition: trigger
+          id: idle  
+        sequence:
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: 'Off'
+            retain: true
+        - service: input_boolean.turn_off
+          data:
+            entity_id: *emptying_todo
+
+      # Running:
+      - conditions:
+        - condition: trigger
+          id: running
+        sequence:
+        - service: input_boolean.turn_off
+          target:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Running
+            retain: true
+    
+      #  - Finished:
+      - conditions:
+          - condition: trigger
+            id: finished
+          - condition: state
+            entity_id: sensor.dishwasher_status
+            state: Running
+        sequence:
+        - service: input_boolean.turn_on
+          data:
+            entity_id: *emptying_todo
+        - service: mqtt.publish
+          data:
+            topic: *mqtt_topic
+            payload: Finished
+            retain: true
+        - service: counter.increment
+          target:
+            entity_id: *cycle_counter
+        - service: notify.miCasa_Parent_phones_and_HA_notification
+          data:
+            message: 💚 Oppvaskmaskina ferdig  -=>  {{ now().strftime('%H:%M') }}
+        - service: tts.google_say
+          data:
+            entity_id: media_player.kitchen_media_players
+            message: Oppvaskmaskina er ferdig 
+            language: 'no'
+
+      # ELSE (if none of the choose-conditions apply,,,)
+      default: []

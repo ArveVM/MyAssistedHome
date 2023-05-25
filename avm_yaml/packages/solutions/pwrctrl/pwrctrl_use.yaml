@@ -135,9 +135,8 @@ sensor:
         create_utility_meters: true
         ignore_unavailable_state: true
         entities:
-          - entity_id: sensor.dummy
-            fixed:
-              power: "{{ states('sensor.easee1_power') * 1000 }}"
+          - fixed:
+              power: "{{ states('sensor.easee1_power') | round * 1000 }}"
       - create_group: PwrCtrl Use Hotwater
         create_energy_sensor: true
         create_utility_meters: true
