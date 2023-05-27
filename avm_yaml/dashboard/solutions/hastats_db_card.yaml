@@ -1,9 +1,8 @@
-# ArveVM;  https://github.com/ArveVM/HomeAssistantConfig4/edit/master/avm_yaml/packages/solutions/hastats.md
+# ArveVM;  https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
 
 type: vertical-stack
-# title: Recorder DB size
 cards:
-  # Total:
+  # title: Recorder DB size
   - type: custom:mushroom-title-card
     title: Recorder DB File-size
   - type: custom:mushroom-entity-card
@@ -31,6 +30,7 @@ cards:
             name: Recorder database size
             lineMode: curves
 
+  # title: Recorder ROWS
   - type: custom:mushroom-title-card
     title: Recorder DB Row-counts
   - type: grid
@@ -57,7 +57,6 @@ cards:
         icon: mdi:home-assistant
         primary_info: state
         secondary_info: name
-
   - type: custom:history-explorer-card
     cardName: 5a37dc34-9043-4090-9b65-b4acd8262ff0-2
     defaultTimeRange: 6o
