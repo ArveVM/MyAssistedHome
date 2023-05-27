@@ -20,6 +20,54 @@ tabs:
           entity: cover.livingroom_all_covers
           show_position_control: true
 
+        # show battery status of the three blinds:
+        - type: horizontal-stack
+          cards:
+            # - type: custom:mushroom-template-card
+            #   entity: sensor.livingroom_blind1_battery
+            #   secondary: Blind1
+            #   primary: >
+            #     {{ states(entity) | round(1) }}
+            #   icon: mdi:battery
+            #   icon_color: yellow
+            #   tap_action:
+            #     action: more-info
+            #   card_mod: &card_mod_chips
+            #     style: |
+            #       ha-card {
+            #         margin-top: -3px;
+            #         margin-bottom: -12px;
+            #         margin-right: -10px;
+            #         --icon-size: 30px;
+            #       }
+
+            # - type: tile
+            #   entity: sensor.livingroom_blind2_battery
+            - type: tile
+              entity: sensor.livingroom_blind1_battery
+              name: Blind1
+              # card_mod: *card_mod_chips
+            - type: tile
+              entity: sensor.livingroom_blind2_battery
+              name: Blind2
+              # card_mod: *card_mod_chips
+            - type: tile
+              entity: sensor.livingroom_blind3_battery
+              name: Blind3
+              # card_mod: *card_mod_chips
+
+            # - type: custom:mushroom-template-card
+            #   entity: sensor.livingroom_blind3_battery
+            #   secondary: Blind3
+            #   primary: >
+            #     {{ states(entity) | round(1) }}
+            #   icon: mdi:battery
+            #   icon_color: orange
+            #   tap_action:
+            #     action: more-info
+            #   card_mod: *card_mod_chips
+
+
   - attributes:
       label: Single
       icon: mdi:window-shutter
