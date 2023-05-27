@@ -28,31 +28,6 @@ cards:
       - !include ../solutions/mail_chip.yaml
       - !include ../solutions/cpu_chip.yaml
 
-     
-
-      # service: browser_mod.close_popup
-
-      # action: navigate
-      # navigation_path: /avm-mobile/server
-
-      # - type: template
-      #   entity: sensor.priceanalyzer_current_hour_value
-      #   # secondary: øre/kWh
-      #   # primary: >
-      #   content: >
-      #     {{ states(entity) | round(1) }} øre/kWh
-      #   icon: mdi:currency-usd
-      #   icon_color: orange
-      #   tap_action:
-      #     action: more-info
-      #   # card_mod: &card_mod_chips
-      #   #   style: |
-      #   #     ha-card {
-      #   #       margin-top: -3px;
-      #   #       margin-bottom: -12px;
-      #   #       margin-right: -10px;
-      #   #       --icon-size: 30px;
-      #     }
 
       # - type: action
       #   icon: mdi:cctv

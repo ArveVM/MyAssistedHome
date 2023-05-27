@@ -49,6 +49,7 @@ template:
           - states('sensor.hastats_ebd_counters') | float(default=0)
           - states('sensor.hastats_ebd_covers') | float(default=0) 
           - states('sensor.hastats_ebd_device_trackers') | float(default=0)
+          - states('sensor.hastats_ebd_fans') | float(default=0)
           - states('sensor.hastats_ebd_groups') | float(default=0)
           - states('sensor.hastats_ebd_input_booleans') | float(default=0)
           - states('sensor.hastats_ebd_input_datetimes') | float(default=0)
@@ -119,7 +120,7 @@ template:
         state_class: measurement
         state: "{{states.counter | count}}"
 
-      - name: HAstats EbD Covers
+      - name: HAstats EbD covers
         unique_id: hastats_ebd_covers
         state_class: measurement
         state: "{{states.cover | count}}"
@@ -129,7 +130,12 @@ template:
         state_class: measurement
         state: "{{states.device_tracker | count}}"
 
-      - name: HAstats EbD Groups
+      - name: HAstats EbD fans
+        unique_id: hastats_ebd_fans
+        state_class: measurement
+        state: "{{states.fan | count}}"
+
+      - name: HAstats EbD groups
         unique_id: hastats_ebd_groups
         state_class: measurement
         state: "{{states.group | count}}"

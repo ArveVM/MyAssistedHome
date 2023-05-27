@@ -4,8 +4,9 @@
 
 # CATT:
 shell_command:
-  hallway_nest_hub_cast1: "catt -d 'Hallway Nest Hub' cast_site 'http://192.168.2.141:8126/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
-  livingroom_chromecast1: "catt -d 'Livingroom chromecast' cast_site 'http://192.168.2.141:8126/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
+  # hallway_nest_hub_cast1: "catt -d 'Hallway Nest Hub' cast_site 'http://192.168.2.141:8121/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
+  hallway_nest_hub_cast1: !secret hallway_nest_hub_cast1    # show 'nest_hub_view.yaml'
+  livingroom_chromecast1: "catt -d 'Livingroom chromecast' cast_site 'http://192.168.2.141:8121/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
 
 
 input_boolean:
@@ -51,28 +52,28 @@ automation:
     mode: single
     trigger:
       - id: focuschange
-        # platform: template
-        # value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
-        platform: state
-        entity_id: media_player.hallway_nest_hub
-        attribute: app_name
-        not_to: DashCast
+        platform: template
+        value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
+        # platform: state
+        # entity_id: media_player.hallway_nest_hub
+        # attribute: app_name
+        # not_to: DashCast
         # to: "to state"
-      - id: focuschange
-        platform: state
-        entity_id: media_player.hallway_nest_hub
-        not_to: "on"
+      # - id: focuschange
+      #   platform: state
+      #   entity_id: media_player.hallway_nest_hub
+      #   not_to: "on"
         # to: "to state"
-      - id: recast
-        platform: state
-        entity_id: input_boolean.hallway_nest_hub_recast
-        to: "on"
-      - id: off_idle
-        platform: state
-        entity_id: media_player.hallway_nest_hub
-        to: 
-          - "idle"
-          - "off"
+      # - id: recast
+      #   platform: state
+      #   entity_id: input_boolean.hallway_nest_hub_recast
+      #   to: "on"
+      # - id: off_idle
+      #   platform: state
+      #   entity_id: media_player.hallway_nest_hub
+      #   to: 
+      #     - "idle"
+      #     - "off"
       - id: restart
         platform: homeassistant
         event: start
@@ -85,7 +86,8 @@ automation:
           # if it is off,, turn it on before start casting
           - conditions:
               - condition: template
-                value_template: "{{ states('media_player.hallway_nest_hub') == 'off' }}"
+                value_template: "{{15}}"
+                # value_template: "{{ states('media_player.hallway_nest_hub') == 'off' }}"
             sequence:
               - service: media_player.turn_on
                 data: {}

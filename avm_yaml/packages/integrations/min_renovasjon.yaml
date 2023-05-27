@@ -26,62 +26,62 @@
 #    custom_components/min_renovasjon: debug
 
 
-# First setup the Integration according to requirements in documentation: 
-# (this define our home-address/garbage-pickup-location)
-min_renovasjon:
-  street_name: !secret min_renovasjon_street_name
-  house_no: !secret min_renovasjon_house_no
-  street_code: !secret min_renovasjon_street_code
-  county_id: !secret min_renovasjon_county_id
-  date_format: "%d.%m.%Y"
+# # First setup the Integration according to requirements in documentation: 
+# # (this define our home-address/garbage-pickup-location)
+# min_renovasjon:
+#   street_name: !secret min_renovasjon_street_name
+#   house_no: !secret min_renovasjon_house_no
+#   street_code: !secret min_renovasjon_street_code
+#   county_id: !secret min_renovasjon_county_id
+#   date_format: "%d.%m.%Y"
 
 
-# Then add the required sensor for the Integration to populate sensors 
-# for our home (Integration will provide one new sensor for each type of garbage)
-sensor:
-  - platform: min_renovasjon
-    fraction_id:
-      - 1           # sensor.restavfall
-      - 2           # sensor.papp_papir_plast
-      - 3           # sensor.matavfall
-      - 4           # sensor.glas_metallemballasje
-# AVM: not sure about the naming of sensor, since my sensors are named differently 
-# that the ones in the integration-documentation,, perhaps 'fractions' are 
-# named differently for each garbage-company ?     
-# (see my 'papp&papir&plast' which is one sensor, but in documentation separated
-# I guess this is because of my company's specific pickup-schedule)
-
-
-
-
-# hent input til automasjoner herfra; 
-# https://github.com/toakenshield/homeassistant/blob/master/packages/packages_renovasjon.yaml?fbclid=IwAR2INbSGvOxRxZWVltNl9i_UhCWeVcu-h9pa88oYsQMsOsI8l947buatm-c
+# # Then add the required sensor for the Integration to populate sensors 
+# # for our home (Integration will provide one new sensor for each type of garbage)
+# sensor:
+#   - platform: min_renovasjon
+#     fraction_id:
+#       - 1           # sensor.restavfall
+#       - 2           # sensor.papp_papir_plast
+#       - 3           # sensor.matavfall
+#       - 4           # sensor.glas_metallemballasje
+# # AVM: not sure about the naming of sensor, since my sensors are named differently 
+# # that the ones in the integration-documentation,, perhaps 'fractions' are 
+# # named differently for each garbage-company ?     
+# # (see my 'papp&papir&plast' which is one sensor, but in documentation separated
+# # I guess this is because of my company's specific pickup-schedule)
 
 
 
-homeassistant:
-  customize:
+
+# # hent input til automasjoner herfra; 
+# # https://github.com/toakenshield/homeassistant/blob/master/packages/packages_renovasjon.yaml?fbclid=IwAR2INbSGvOxRxZWVltNl9i_UhCWeVcu-h9pa88oYsQMsOsI8l947buatm-c
+
+
+
+# homeassistant:
+#   customize:
     
-    package.node_anchors:
-      customize: &customize
-        package: 'Min Renovasjon - INTEGRATION'
+#     package.node_anchors:
+#       customize: &customize
+#         package: 'Min Renovasjon - INTEGRATION'
     
 
 
-# Then some sensors to calculate how many days until next pickup for each type garbage
-template:
-  - sensor:
+# # Then some sensors to calculate how many days until next pickup for each type garbage
+# template:
+#   - sensor:
 
-      - name: min_renovasjon_next_restavfall
-        unique_id: min_renovasjon_next_restavfall
-        icon: mdi:trash-can
-        state: >
-          {% set seconds = as_timestamp(strptime(states('sensor.restavfall'),'%d.%m.%Y')) - as_timestamp(now().replace(hour=0, minute=0, second=0)) %}
-          {% if (seconds/86400) | round() == 1 %}
-          I morgen
-          {% elif (seconds/86400) | round() == 0 %}
-          I dag
-          {% else %}
-          Om {{(seconds / 86400)|round() }} dager
-          {% endif %}
+#       - name: min_renovasjon_next_restavfall
+#         unique_id: min_renovasjon_next_restavfall
+#         icon: mdi:trash-can
+#         state: >
+#           {% set seconds = as_timestamp(strptime(states('sensor.restavfall'),'%d.%m.%Y')) - as_timestamp(now().replace(hour=0, minute=0, second=0)) %}
+#           {% if (seconds/86400) | round() == 1 %}
+#           I morgen
+#           {% elif (seconds/86400) | round() == 0 %}
+#           I dag
+#           {% else %}
+#           Om {{(seconds / 86400)|round() }} dager
+#           {% endif %}
 
