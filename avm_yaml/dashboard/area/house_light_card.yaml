@@ -1,0 +1,34 @@
+
+# pick up all entities from house_light_group and separate in the lights that are on and then the ones that are off
+
+
+type: vertical-stack
+cards:
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Lights on
+      show_header_toggle: false
+    filter:
+      template: >
+        {{ expand('light.house_lights_group')
+          | selectattr('state', 'eq', 'on')
+          | map(attribute='entity_id')
+          | select('search', 'light.*') 
+          | list 
+          }}
+      exclude: []
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Lights off
+      show_header_toggle: false
+    filter:
+      template: >
+        {{ expand('light.house_lights_group')
+          | selectattr('state', 'eq', 'off')
+          | map(attribute='entity_id')
+          | select('search', 'light.*') 
+          | list 
+          }}
+      exclude: []
