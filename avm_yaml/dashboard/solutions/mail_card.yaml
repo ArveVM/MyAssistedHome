@@ -1,12 +1,12 @@
-# 100% stolen from https://github.com/RonnyRusten/     dashboards/cards/mail_card.yaml
+# 99% stolen from https://github.com/RonnyRusten/     dashboards/cards/mail_card.yaml
 
 type: grid
 columns: 1
 square: false
 cards:
   - type: markdown
-    title: Postleveringer
-    content: >-
+    title: Postleveringar
+    content: >
       ![Image](https://upload.wikimedia.org/wikipedia/commons/5/53/Posten-Norge-Logo.svg)
 
       ***

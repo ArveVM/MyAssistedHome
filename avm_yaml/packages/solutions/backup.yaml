@@ -9,7 +9,7 @@ input_datetime:
 
 script:
   backup_daily:
-    alias: Create backup and cleanup old backups
+    alias: Create backup and log completeion time
     sequence:
       - service: backup.create
         data: {}
@@ -30,5 +30,7 @@ automation:
         at: "03:07:00"
     condition: []
     action:
-      - service: backup.create
+      # - service: backup.create
+      #   data: {}
+      - service: script.backup_daily  # The script above
         data: {}

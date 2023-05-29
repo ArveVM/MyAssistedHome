@@ -32,6 +32,30 @@ tabs:
           collapsible_controls: true
           tap_action:
             action: toggle
+        - type: entities
+          entities:
+            - type: custom:rgb-light-card
+              entity: light.livingroom_light_windowstrip
+              colors:
+                - label: Mom
+                  transition: 2
+                  brightness: 154
+                  rgb_color:
+                    - 255
+                    - 204
+                    - 101
+                - label: Red
+                  rgb_color:
+                    - 255
+                    - 127
+                    - 255
+                  brightness: 220
+                  transition: 1
+                - hs_color:
+                    - 60
+                    - 30
+                  icon_color: '#fff8b0'
+
         - type: custom:mushroom-light-card
           entity: light.livingroom_diningtable
           tap_action:

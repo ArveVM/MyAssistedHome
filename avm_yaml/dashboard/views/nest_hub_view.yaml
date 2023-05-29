@@ -23,68 +23,11 @@ cards:
       - type: custom:mushroom-chips-card
         alignment: center
         chips:
-          - type: weather
-            entity: weather.forecast_mylocation
-            show_conditions: false
-            show_temperature: true
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../solutions/weather_card.yaml
-
-
-          - type: weather
-            entity: weather.mylocation
-            show_conditions: false
-            show_temperature: true
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../solutions/weather_card.yaml
-          # - type: conditional
-          #   conditions:
-          #     - entity: group.office_all_lamps
-          #       state: 'on'
-          #   chip:
-          #     type: template
-          #     icon: mdi:lightbulb
-          #     content: >-
-          #       {{ expand(states.group.office_all_lamps, states.light.master_bedroom_l)
-          #       | selectattr( 'state', 'eq', 'on') | list | count }}
-          #     entity: group.office_all_lamps
-          #     icon_color: amber
-          #     tap_action:
-          #       action: none
-          - !include ../solutions/mail_chip.yaml
-          - !include ../solutions/cpu_chip.yaml
-
-          - !include ../area/house_light_chip.yaml
-          # - type: template
-          #   entity: light.house_lights_group
-          #   # entity2: light.
-          #   content: >
-          #     {% set lights_on = expand(entity)
-          #         | selectattr('state', 'eq', 'on')
-          #         | map(attribute='entity_id')
-          #         | select('search', 'light.*') 
-          #         | list | count %}
-          #     {% set lights_all = expand(entity)
-          #         | map(attribute='entity_id')
-          #         | select('search', 'light.*') 
-          #         | list | count %}
-          #     {{ lights_on}}/{{lights_all}}
-
-          #   icon: mdi:lightbulb-group
+          - !include ../solutions/weather_chip.yaml
+          # - type: weather
+          #   entity: weather.forecast_mylocation
+          #   show_conditions: false
+          #   show_temperature: true
           #   tap_action:
           #     action: fire-dom-event
           #     browser_mod:
@@ -93,37 +36,29 @@ cards:
           #         content:
           #           type: vertical-stack
           #           cards:
-          #             - !include ../area/house_light_card.yaml
-                      # - type: custom:auto-entities
-                      #   card:
-                      #     type: entities
-                      #     title: Lights on
-                      #     show_header_toggle: false
-                      #   filter:
-                      #     template: >
-                      #       {{ expand('light.house_lights_group')
-                      #         | selectattr('state', 'eq', 'on')
-                      #         | map(attribute='entity_id')
-                      #         | select('search', 'light.*') 
-                      #         | list 
-                      #         }}
-                      #     exclude: []
-                      # - type: custom:auto-entities
-                      #   card:
-                      #     type: entities
-                      #     title: Lights off
-                      #     show_header_toggle: false
-                      #   filter:
-                      #     template: >
-                      #       {{ expand('light.house_lights_group')
-                      #         | selectattr('state', 'eq', 'off')
-                      #         | map(attribute='entity_id')
-                      #         | select('search', 'light.*') 
-                      #         | list 
-                      #         }}
-                      #     exclude: []
+          #             - !include ../solutions/weather_card.yaml
 
-                          
+
+          # - type: weather
+          #   entity: weather.mylocation
+          #   show_conditions: false
+          #   show_temperature: true
+          #   tap_action:
+          #     action: fire-dom-event
+          #     browser_mod:
+          #       service: browser_mod.popup
+          #       data:
+          #         content:
+          #           type: vertical-stack
+          #           cards:
+          #             - !include ../solutions/weather_card.yaml
+        
+          - !include ../solutions/mail_chip.yaml
+          
+          - !include ../solutions/cpu_chip.yaml
+
+          - !include ../area/house_light_chip.yaml
+                                    
           - type: template
             entity: sensor.hotwater_soc
             content: >
@@ -184,6 +119,7 @@ cards:
                     type: vertical-stack
                     cards:
                       - !include ../solutions/camera_card.yaml
+          - !include ../solutions/guest_wifi_chip.yaml
 
           - type: action
             icon: mdi:hammer

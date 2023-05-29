@@ -12,34 +12,8 @@ cards:
     alignment: justify
     chips:
       - !include ../solutions/weather_chip.yaml
-      # - type: weather
-      #   entity: weather.mylocation
-      #   show_conditions: false
-      #   show_temperature: true
-      #   tap_action:
-      #     action: fire-dom-event
-      #     browser_mod:
-      #       service: browser_mod.popup
-      #       data:
-      #         content:
-      #           type: vertical-stack
-      #           cards:
-      #             - !include ../solutions/weather_card.yaml
       - !include ../solutions/mail_chip.yaml
       - !include ../solutions/cpu_chip.yaml
-
-
-      # - type: action
-      #   icon: mdi:cctv
-      #   tap_action:
-      #     action: fire-dom-event
-      #     browser_mod:
-      #       service: browser_mod.popup
-      #       data:
-      #         content:
-      #           type: vertical-stack
-      #           cards:
-      #             - !include ../solutions/camera_card.yaml
 
       - type: template
         entity: sensor.hotwater_soc
@@ -108,6 +82,7 @@ cards:
                 cards:
                   - !include ../solutions/ha_toolbox.yaml
 
+      - !include ../solutions/guest_wifi_chip.yaml
       # - type: template
       #   content: >-
       #     {{ states('sensor.pwrctrl_use_total') | round(-2) / 1000 }}kWh

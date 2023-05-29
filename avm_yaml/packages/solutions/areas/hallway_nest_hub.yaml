@@ -16,34 +16,34 @@ input_boolean:
 
 
 script:
-  livingroom_cast_test:
-    alias: Livingroom cast dashboard
+  hallway_nest_hub:
+    alias: _Hallway Nest Hub
     sequence:
+      # - conditions:
+      #     - condition: template
+      #       value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
+      #     - condition: template
+      #       value_template: " {{ state('input_boolean.hallway_nest_hub_recast') == 'on' }} "
+          # - condition: state
+          #   entity_id: input_boolean.hallway_nest_hub_recast
+          #   state: "on"
       - service: media_player.volume_set
         data:
           volume_level: 0
         target:
           entity_id: media_player.hallway_nest_hub
-      - service: shell_command.livingroom_chromecast1
+      - service: shell_command.hallway_nest_hub_cast1
 
-  hallway_nest_hub:
-    alias: Hallway Nest Hub
-    sequence:
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: "{{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }}"
-              - condition: state
-                entity_id: input_boolean.hallway_nest_hub_recast
-                state: "on"
-            sequence:
-              - service: media_player.volume_set
-                data:
-                  volume_level: 0
-                target:
-                  entity_id: media_player.hallway_nest_hub
-              - service: shell_command.hallway_nest_hub_cast1
 
+  # livingroom_cast_test:
+  #   alias: Livingroom cast dashboard
+  #   sequence:
+  #     - service: media_player.volume_set
+  #       data:
+  #         volume_level: 0
+  #       target:
+  #         entity_id: media_player.hallway_nest_hub
+  #     - service: shell_command.livingroom_chromecast1
 
 automation:
   - id: 2a778068-6620-4ae7-8a29-ed7097509333-s
@@ -64,10 +64,10 @@ automation:
       #   entity_id: media_player.hallway_nest_hub
       #   not_to: "on"
         # to: "to state"
-      # - id: recast
-      #   platform: state
-      #   entity_id: input_boolean.hallway_nest_hub_recast
-      #   to: "on"
+      - id: recast
+        platform: state
+        entity_id: input_boolean.hallway_nest_hub_recast
+        to: "on"
       # - id: off_idle
       #   platform: state
       #   entity_id: media_player.hallway_nest_hub

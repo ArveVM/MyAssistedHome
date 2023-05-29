@@ -2,13 +2,13 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
-icon: |-
+icon: >
   {% if is_state('binary_sensor.posten_binary_sensor', 'on') %}
     mdi:mailbox
   {% else %}
     mdi:mailbox-open
   {% endif %}           
-icon_color: |-
+icon_color: >
   {% if is_state('binary_sensor.posten_binary_sensor', 'on') %}
     green
   {% else %}
