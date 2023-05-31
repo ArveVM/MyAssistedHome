@@ -1,0 +1,12 @@
+
+
+type: custom:atomic-calendar-revive
+name: MinRenovasjon - 100days
+entities:
+  - calendar.minrenovasjon
+maxDaysToShow: 100
+showWeekDay: true
+showMultiDay: true
+calShowDescription: true
+refreshInterval: 60
+showLocation: false

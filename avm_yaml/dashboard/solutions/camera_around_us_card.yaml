@@ -1,0 +1,88 @@
+# collection of cameas "around us",,, to show what is happening
+
+
+type: vertical-stack
+cards:
+  - type: picture-glance
+    camera_view: live
+    title: E39-Ørsta - Flåskjær
+    image: https://webkamera.atlas.vegvesen.no/public/kamera?id=1529004_1
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: E39-Kvivsvegen - Kalvatn
+    image: https://webkamera.atlas.vegvesen.no/public/kamera?id=1529016_1
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: Fv. 61 Hareidsdalen
+    image: https://webkamera.atlas.vegvesen.no/public/kamera?id=1529005_2
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: Fv. 5876 Rundebrua
+    image: https://webkamera.atlas.vegvesen.no/public/kamera?id=3000047_1
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: Volda Skisenter - botn
+    image: http://ftp.voldaskisenter.no/ftp/public_html/webcam.jpg
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: Volda Skisenter - topp
+    image: http://ftp.voldaskisenter.no/ftp/public_html/webcam2.jpg
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: Nipe-hyttene - Sandvika mot Ørsta
+    image: http://www.nipe-hyttene.no/webcamnipe/capture1.jpg
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: Nipe-hyttene - Ørstafjorden mot Steinnes
+    image: http://www.nipe-hyttene.no/webcamnipe/cam2/capture2.jpg
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: Ørsta Skisenter - hovedtraseen
+    image: http://www.orstaskisenter.no/img/webkamera/hovudtrase.jpg
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: Ørsta Skisenter - Eitrefjell mot Nottane
+    image: http://www.orstaskisenter.no/img/webkamera/eitrefjell.jpg
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: Bondalen - mot Sæbø (Sunnair)
+    image: http://sunnair.no/webcamera/001.jpg
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: Folkestad - mot Volda (insteholen.com)
+    image: https://insteholen.com/webcam/bilde.jpg
+    entities: []
+  
+  - type: picture-glance
+    camera_view: live
+    title: Bil og Gummiservice - Hovedebygda
+    image: http://213.128.178.142/axis-cgi/mjpg/video.cgi
+    entities: []
+
+  - type: picture-glance
+    camera_view: live
+    title: ElektroserviceØrsta - mot Åmdal
+    image: http://213.128.169.233:1111/jpg/image.jpg?camera=1&overview=0&resolution=1920x1080&videoframeskipmode=empty&timestamp=1685383953472&Axis-Orig-Sw=true
+    entities: []
+  - type: picture-glance
+    camera_view: live
+    title: ElektroserviceØrsta - mot Hovdebygda
+    image: http://213.128.169.233:1112/jpg/image.jpg?camera=1&overview=0&resolution=1920x1080&videoframeskipmode=empty&timestamp=1685383953472&Axis-Orig-Sw=true
+    entities: []
+

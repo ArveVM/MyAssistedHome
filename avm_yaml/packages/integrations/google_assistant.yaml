@@ -13,6 +13,18 @@ google_assistant:
     - light
     - script
   entity_config:
+    ##  new start,, theese should be exposed:
+    # switch.dishwasher_plug:
+      # expose: false
+    input_boolean.hallway_nest_hub_recast:
+      expose: true
+
+
+# icehouse heater and light
+# kidL light and heater
+# KidM light and heater
+# Kitchen lights
+
     # disable sync of certain heaters/appliances:
     #switch.entry_heater_puck:
     #  expose: false

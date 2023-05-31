@@ -24,36 +24,10 @@ cards:
         alignment: center
         chips:
           - !include ../solutions/weather_chip.yaml
-          # - type: weather
-          #   entity: weather.forecast_mylocation
-          #   show_conditions: false
-          #   show_temperature: true
-          #   tap_action:
-          #     action: fire-dom-event
-          #     browser_mod:
-          #       service: browser_mod.popup
-          #       data:
-          #         content:
-          #           type: vertical-stack
-          #           cards:
-          #             - !include ../solutions/weather_card.yaml
-
-
-          # - type: weather
-          #   entity: weather.mylocation
-          #   show_conditions: false
-          #   show_temperature: true
-          #   tap_action:
-          #     action: fire-dom-event
-          #     browser_mod:
-          #       service: browser_mod.popup
-          #       data:
-          #         content:
-          #           type: vertical-stack
-          #           cards:
-          #             - !include ../solutions/weather_card.yaml
         
           - !include ../solutions/mail_chip.yaml
+
+          - !include ../solutions/minrenovasjon_chip.yaml
           
           - !include ../solutions/cpu_chip.yaml
 
@@ -108,17 +82,8 @@ cards:
                     cards:
                       - !include ../cards/car_card.yaml
 
-          - type: action
-            icon: mdi:cctv
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../solutions/camera_card.yaml
+          - !include ../solutions/camera_chip.yaml
+
           - !include ../solutions/guest_wifi_chip.yaml
 
           - type: action
@@ -238,11 +203,16 @@ cards:
                   - type: custom:atomic-calendar-revive
                     entities:
                       - entity: calendar.ha_shared
-                        name: HA-shared
+                        name: Ha-shared
+                      - entity: calendar.minrenovasjon
+                        name: MinRenovasjon
                     firstDayOfWeek: 1
                     maxDaysToShow: 7
                     showWeekDay: true
+                    showMultiDay: true
+                    calShowDescription: true
                     refreshInterval: 60
+                    showLocation: false
 
               # # # ---------   Mental reminder, shold be in conditional with other "Alerts"        -----------
               # - type: custom:mushroom-entity-card
