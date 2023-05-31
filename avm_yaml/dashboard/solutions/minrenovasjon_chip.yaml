@@ -1,4 +1,6 @@
+# https://github.com/ArveVM/MyAssistedHome/wiki/Solution-MinRenovasjon
 # idea from Petro:  https://community.home-assistant.io/t/template-guide-days-away-from-calendar-event/211209
+
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
@@ -40,24 +42,3 @@ double_tap_action:
   action: none
 hold_action:
   action: none
-
-
-
-
-
-
-
-
-
-# {% set midnight = today_at() %}
-# {% set event = state_attr('calendar.minrenovasjon', 'start_time') | as_datetime | as_local %}
-# {% set delta = event - midnight %}
-# {% if delta.days == 0 %}
-#   Today
-# {% elif delta.days == 1 %}
-#   Tomorrow
-# {% elif delta.days == 2 %}
-#   Day After Tomorrow
-# {% else %}
-#   In {{ delta.days }} Days
-# {% endif %}

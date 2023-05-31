@@ -1,4 +1,4 @@
-
+# https://github.com/ArveVM/MyAssistedHome/wiki/Solution-MinRenovasjon
 
 type: custom:atomic-calendar-revive
 name: MinRenovasjon - 100days
@@ -10,3 +10,8 @@ showMultiDay: true
 calShowDescription: true
 refreshInterval: 60
 showLocation: false
+# showMonth: true
+# compactMode: true
+# hoursOnSameLine: true
+# showHours: false
+showHours: false

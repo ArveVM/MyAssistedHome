@@ -7,51 +7,18 @@ google_assistant:
   project_id: !secret google_assistant_project_id
   service_account: !include ../../../secrets_google_assist.json
   report_state: true
-  # expose_by_default: false
-  exposed_domains:
-    - switch
-    - light
-    - script
+  expose_by_default: false
+  # exposed_domains:
+    # - switch
+    # - light
+    # - script
   entity_config:
-    ##  new start,, theese should be exposed:
-    # switch.dishwasher_plug:
-      # expose: false
     input_boolean.hallway_nest_hub_recast:
       expose: true
-
-
-# icehouse heater and light
-# kidL light and heater
-# KidM light and heater
-# Kitchen lights
-
-    # disable sync of certain heaters/appliances:
-    #switch.entry_heater_puck:
-    #  expose: false
-    # disable sync of certain heaters/appliances:
-    switch.dishwasher_plug:
-      expose: false
-    switch.entry_heater_puck:
-      expose: false
-    switch.lanudry_heater_puck:
-      expose: false
-    switch.kitchen_heater_puck:
-      expose: false
-    switch.office_heater:
-      expose: false
-    switch.server_room:
-      expose: false
-    switch.laundry_washer_puck:
-      expose: false
-    switch.laundry_dryer_plug:
-      expose: false
-    switch.workshop_washer:
-      expose: false
-      #name: CUSTOM_NAME_FOR_GOOGLE_ASSISTANT
-      #aliases:
-      #  - BRIGHT_LIGHTS
-      #  - ENTRY_LIGHTS
-      
+  
     light.kid_l_lights_puck:
       expose: true
-      name: lys kid L
+      aliases:
+        - lys kid L
+
+    

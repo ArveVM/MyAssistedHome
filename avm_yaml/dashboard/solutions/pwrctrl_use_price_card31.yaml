@@ -23,7 +23,7 @@ cards:
           margin-right: -10px;
           --icon-size: 30px;
         }
-
+        
   - type: custom:mushroom-template-card
     entity: sensor.pwrctrl_use_total
     secondary: Now
@@ -68,3 +68,4 @@ cards:
     card_mod: *card_mod_chips
     tap_action:
       action: more-info
+
