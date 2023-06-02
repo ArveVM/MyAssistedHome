@@ -20,5 +20,6 @@ google_assistant:
       expose: true
       aliases:
         - lys kid L
-
+    light.kidm_lightbulb:
+      expose: true
     

@@ -86,15 +86,15 @@ sensor:
 
 template:
   - binary_sensor:
-      - name: Laundry Room Status
-        unique_id: binary_sensor.laundry_room_status
-        state: >
-          {{ states('input_boolean.laundry_washer_emptying_todo') == 'off'
-          and states('input_boolean.laundry_dryer_emptying_todo') == 'off'
-          and states('input_boolean.laundry_light_auto') == 'on'
-          and states('input_boolean.laundry_heater_powerauto') == 'on'
-          }} 
-      - name: Launcry Area Status    
+      # - name: Laundry Room Status
+      #   unique_id: binary_sensor.laundry_room_status
+      #   state: >
+      #     {{ states('input_boolean.laundry_washer_emptying_todo') == 'off'
+      #     and states('input_boolean.laundry_dryer_emptying_todo') == 'off'
+      #     and states('input_boolean.laundry_light_auto') == 'on'
+      #     and states('input_boolean.laundry_heater_powerauto') == 'on'
+      #     }} 
+      - name: Laundry Area Status    
         unique_id: 6bdb0359-60d3-45f1-803b-48899915f7a0
         icon: mdi:check-circle
         device_class: problem

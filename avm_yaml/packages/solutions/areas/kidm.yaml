@@ -82,6 +82,26 @@ template:
           - (now() - states( 'input_datetime.kid_m_linen_changed') 
           | as_datetime | as_local ).days }}
 
+  - binary_sensor:
+      - name: KidM Area Status
+        unique_id: 560ff98a-197e-48d0-a78e-a0a9c5e81238
+        state: >
+          {{ states('input_boolean.kidm_light_auto') == 'off'
+
+          }} 
+      - name: Laundry Area Status    
+        unique_id: 6bdb0359-60d3-45f1-803b-48899915f7a0
+        icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ (states('input_boolean.kidm_light_auto') != 'on')
+          }} 
+        attributes:
+          light_auto: "{{ 'Problem!' if (states('input_boolean.kidm_light_auto') != 'on') else 'OK'}}"
+
+
+
 input_datetime:
   kid_m_linen_changed:
     name: KidM linen changed

@@ -118,20 +118,36 @@ template:
           {% set p = states('input_number.hotwater_soc_elementsize') | float %}
           {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
           {{ (kwh / p) | round(2) }}
-        attributes:
-          <<: *solution_attribute
+        # attributes:
+        #   <<: *solution_attribute
 
       - name: "Hotwater SoC chargetime"
         unique_id: hotwater_soc_chargetime
         icon: "mdi:store-24-hour"
-        unit_of_measurement: "t"
+        # unit_of_measurement: "h"
+        # device_class: duration
+        # state_class: measurement
         state: >
           {% set hours = states('sensor.hotwater_soc_chargetime_float') | float %}
           {% set minutes = ((hours % 1) * 60) | int %}
           {% set hours = (hours - (hours % 1)) | int %}
           {{ '%02i:%02i'%(hours, minutes) }}
-        attributes:
-          <<: *solution_attribute
+        # attributes:
+        #   <<: *solution_attribute
+
+      # - name: "Hotwater SoC chargetime2"
+      #   unique_id: hotwater_soc_chargetime2
+      #   icon: "mdi:store-24-hour"
+      #   unit_of_measurement: "h"
+      #   device_class: duration            ## https://community.home-assistant.io/t/understanding-device-class-duration-better/444140/17
+      #   state_class: measurement
+      #   state: >
+      #     {% set p = states('input_number.hotwater_soc_elementsize') | float %}
+      #     {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
+      #     {{ (kwh / p) | round(2) }}
+
+      #   attributes:
+      #     <<: *solution_attribute
 
       # Asbjørn's comments:
       # Fyllingsgrad i bereder avhangig av setpunkt temperatur

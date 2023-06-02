@@ -1,0 +1,17 @@
+
+
+
+
+template:
+  - binary_sensor:
+      - name: Bedroom Area Status    
+        unique_id: 676a715f-093b-48ce-922c-44070a8c6369
+        icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ (states('sensor.bedroom_thp_humidity') | float(default=50) <= 60)
+          }} 
+        attributes:
+          linen_alert: "{{ 'Problem!' if (states('sensor.bedroom_thp_humidity') | float(default=50) <= 60) else 'OK'}}"
+

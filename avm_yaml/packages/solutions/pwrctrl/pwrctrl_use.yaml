@@ -36,8 +36,8 @@ homeassistant:
 template:
   - sensor:
       # get hold of han-port reading, round to use for display (and use to create utility-meters)
-      - name: PwrCtrl Use Total
-        unique_id: pwrctrl_use_total
+      - name: PwrCtrl Use Measured Total
+        unique_id: pwrctrl_use2_total
         unit_of_measurement: W
         attributes:
           <<: *solution_attribute

@@ -54,11 +54,6 @@ automation:
       - id: focuschange
         platform: template
         value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
-        # platform: state
-        # entity_id: media_player.hallway_nest_hub
-        # attribute: app_name
-        # not_to: DashCast
-        # to: "to state"
       # - id: focuschange
       #   platform: state
       #   entity_id: media_player.hallway_nest_hub

@@ -1,0 +1,16 @@
+
+
+
+template:
+  - binary_sensor:
+      - name: KidS Area Status    
+        unique_id: 968dceb7-b9bc-40ee-8e47-46dcc30a1d98
+        icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ (states('alert.kids_linen_alert') != 'idle')
+          }} 
+        attributes:
+          linen_alert: "{{ 'Problem!' if (states('alert.kids_linen_alert') != 'idle') else 'OK'}}"
+

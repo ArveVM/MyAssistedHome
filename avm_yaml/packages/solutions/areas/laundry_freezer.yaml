@@ -1,0 +1,18 @@
+
+
+template:
+  - sensor:
+      - name: Laundry Freezer power1
+        unique_id: 968dceb7-b9bc-40ee-8e47-46dcc30a1d98
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+        state: >
+          {{ 51 | float
+          
+          }}        
+        # might put back on the power-plug, but have enough data for aome average consumption
+
+
+
+

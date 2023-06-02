@@ -157,74 +157,74 @@ cards:
                 cards:
                   - !include livingroom_blinds_card.yaml
 
-      - type: conditional
-        conditions:
-          - entity: binary_sensor.master_bedroom_motion_occupancy
-            state: "on"
-        chip:
-          type: template
-          icon_color: disabled
-          icon: mdi:motion-sensor
-          card_mod: *card_mod_chip_style
+      # - type: conditional
+      #   conditions:
+      #     - entity: binary_sensor.master_bedroom_motion_occupancy
+      #       state: "on"
+      #   chip:
+      #     type: template
+      #     icon_color: disabled
+      #     icon: mdi:motion-sensor
+      #     card_mod: *card_mod_chip_style
 
-      - type: conditional
-        conditions:
-          - entity: climate.bedroom_air_conditioner
-            #state_not: "off"
-            state: "off"
-        chip:
-          type: template
-          icon_color: disabled
-          entity: climate.bedroom_air_conditioner
-          icon: |-
-            {% if is_state(entity, 'heat_cool') %}
-              mdi:sync 
-            {% elif is_state(entity, 'heat') %}
-              mdi:fire
-            {% elif is_state(entity, 'cool') %}
-              mdi:snowflake
-            {% elif is_state(entity, 'dry') %}
-              mdi:water-percent
-            {% elif is_state(entity, 'fan_only') %}
-              mdi:fan
-            {% else %}
-              mdi:air-conditioner
-            {% endif %}
-          card_mod:
-            style: |
-              @keyframes rotation {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-              ha-card {
-                animation: rotation linear infinite;
-                {% if is_state(config.entity, 'fan_only') %}
-                  animation-duration: 2s;
-                {% endif %}
-              }
-      - type: conditional
-        conditions:
-          - entity: binary_sensor.master_bedroom_deck_door_contact
-            state: "on"
-        chip:
-          type: template
-          icon_color: disabled
-          icon: mdi:door-open
-          card_mod: *card_mod_chip_style
+      # - type: conditional
+      #   conditions:
+      #     - entity: climate.bedroom_air_conditioner
+      #       #state_not: "off"
+      #       state: "off"
+      #   chip:
+      #     type: template
+      #     icon_color: disabled
+      #     entity: climate.bedroom_air_conditioner
+      #     icon: |-
+      #       {% if is_state(entity, 'heat_cool') %}
+      #         mdi:sync 
+      #       {% elif is_state(entity, 'heat') %}
+      #         mdi:fire
+      #       {% elif is_state(entity, 'cool') %}
+      #         mdi:snowflake
+      #       {% elif is_state(entity, 'dry') %}
+      #         mdi:water-percent
+      #       {% elif is_state(entity, 'fan_only') %}
+      #         mdi:fan
+      #       {% else %}
+      #         mdi:air-conditioner
+      #       {% endif %}
+      #     card_mod:
+      #       style: |
+      #         @keyframes rotation {
+      #           0% {
+      #             transform: rotate(0deg);
+      #           }
+      #           100% {
+      #             transform: rotate(360deg);
+      #           }
+      #         }
+      #         ha-card {
+      #           animation: rotation linear infinite;
+      #           {% if is_state(config.entity, 'fan_only') %}
+      #             animation-duration: 2s;
+      #           {% endif %}
+      #         }
+      # - type: conditional
+      #   conditions:
+      #     - entity: binary_sensor.master_bedroom_deck_door_contact
+      #       state: "on"
+      #   chip:
+      #     type: template
+      #     icon_color: disabled
+      #     icon: mdi:door-open
+      #     card_mod: *card_mod_chip_style
 
-      - type: conditional
-        conditions:
-          - entity: group.master_bedroom_windows
-            state: "on"
-        chip:
-          type: template
-          icon_color: disabled
-          icon: mdi:window-open
-          card_mod: *card_mod_chip_style
+      # - type: conditional
+      #   conditions:
+      #     - entity: group.master_bedroom_windows
+      #       state: "on"
+      #   chip:
+      #     type: template
+      #     icon_color: disabled
+      #     icon: mdi:window-open
+      #     card_mod: *card_mod_chip_style
 
       # - type: action
       #   card_mod: *card_mod_chip_style

@@ -64,22 +64,22 @@ template:
       # adjusted to give additional consumption in kW for rest of hour as result
       # deducting safety from tarrif-limit first, then calculating possible rest consumption for hour, then deducting current consumption
       # then I get the number of KW i can add to the current consumption within current hour - without overstepping tarrif-limit (with safety deducted)
-      - name: "PwrCtr Limit restHour increase possible"
-        unique_id: 5cd06e0a-4361-4214-9237-1ab4c3fa68e3
-        unit_of_measurement: "kW"
-        state: >-
-          {% set currentusage = (states('sensor.pwrctrl_use_total') | float) / 1000 %}
-          {% set hourtrend = states('sensor.pwrctrl_limit_fullhour_trend') | float %}
-          {% set limit = states('input_number.pwrctrl_limit_capacity_limit') | float %}
-          {% set safety = states('input_number.pwrctrl_limit_capacity_safety') | float %}
-          {% set limit = limit * ( 100 - safety ) / 100 %}
-          {% set minutes = now().minute %}
-          {% set seconds = now().second %}
-          {% if minutes %}
-            {% set timeLeft = (3600 - ((minutes * 60) + seconds)) %}
-            {% set restspend = ((limit - hourtrend) * (3600 / timeLeft)) | round(2) %}
-          {{ restspend - currentusage }}
-          {%endif%}
+      # - name: "PwrCtr Limit restHour increase possible"
+      #   unique_id: 5cd06e0a-4361-4214-9237-1ab4c3fa68e3
+      #   unit_of_measurement: "kW"
+      #   state: >-
+      #     {% set currentusage = (states('sensor.pwrctrl_use_total') | float) / 1000 %}
+      #     {% set hourtrend = states('sensor.pwrctrl_limit_fullhour_trend') | float %}
+      #     {% set limit = states('input_number.pwrctrl_limit_capacity_limit') | float %}
+      #     {% set safety = states('input_number.pwrctrl_limit_capacity_safety') | float %}
+      #     {% set limit = limit * ( 100 - safety ) / 100 %}
+      #     {% set minutes = now().minute %}
+      #     {% set seconds = now().second %}
+      #     {% if minutes %}
+      #       {% set timeLeft = (3600 - ((minutes * 60) + seconds)) %}
+      #       {% set restspend = ((limit - hourtrend) * (3600 / timeLeft)) | round(2) %}
+      #     {{ restspend - currentusage }}
+      #     {%endif%}
 
   #      - name: PwrCtrl_Estimate444
   #        icon: mdi:strategy
