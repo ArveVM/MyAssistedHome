@@ -95,7 +95,7 @@ template:
       #     and states('input_boolean.laundry_heater_powerauto') == 'on'
       #     }} 
       - name: Laundry Area Status    
-        unique_id: 6bdb0359-60d3-45f1-803b-48899915f7a0
+        unique_id: 6bdb0359-60d3-45f1-803b-4f7a0
         icon: mdi:check-circle
         device_class: problem
         # ArveVM; remember - a problem-check should be false, or else you have a problem :)

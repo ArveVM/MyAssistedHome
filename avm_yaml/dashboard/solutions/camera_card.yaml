@@ -1,0 +1,150 @@
+# ArveVM: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/cameras.md
+
+# Card for camera-solution,, using Frigate card now
+# https://github.com/blakeblackshear/frigate/issues/2606
+#     look at comment from mattkasa commented on Jan 19  for an card-update within lovelace card-config!!
+
+type: vertical-stack
+cards:
+  # ArveVM; some mushroom-styles - have no idea what it means ;)
+  - type: custom:tabbed-card
+    styles:
+      "--mdc-theme-primary": orange
+      "--mdc-tab-text-label-color-default": white
+      "--mdc-typography-button-font-size": 10px
+    tabs:
+    
+      - attributes:
+          label: Scan
+          icon: mdi:eye
+        card:
+          type: custom:frigate-card
+          cameras:
+            - camera_entity: camera.garage_front
+            - camera_entity: camera.entry
+          view:
+            scan:
+              enabled: true
+
+      - attributes:
+          label: Camera
+          icon: mdi:video
+        card:
+          type: custom:frigate-card
+          view:
+            default: live
+          live:
+            preload: false
+          media_viewer:
+            auto_play: all
+          image:
+            mode: camera
+          timeline:
+            media: all
+          menu:
+            style: outside
+            position: bottom
+            button_size: 35
+            buttons:
+              # frigate:
+              #   priority: 50
+              #   enabled: true
+              #   alignment: matching
+              # #   icon: frigate
+              # cameras:
+              #   priority: 50
+              #   enabled: true
+              #   alignment: matching
+              #   icon: mdi:video-switch
+              substreams:
+                priority: 50
+                enabled: true
+                icon: mdi:high-definition
+          cameras:
+            # combining main/substream in one view,, toggle with button
+            # for Entry,, substream first,, can toggle HD
+            - camera_entity: camera.entry
+              live_provider: go2rtc
+              dependencies:
+                cameras:
+                  - entry
+            - camera_entity: camera.entry
+              title: EntryHD
+              live_provider: go2rtc
+              id: entry
+              hide: true
+
+            # For garage-front,, would like high-resolution in live stream:
+            - camera_entity: camera.garage_front
+              title: Garage HD
+              live_provider: go2rtc
+              # id: west1
+          
+            # - camera_entity: camera.west1
+            # Negligable difference between resolution on substream and main,, so just stream mainstream
+            - camera_entity: camera.west1
+              live_provider: go2rtc
+
+            # Negligable difference between resolution on substream and main,, so just stream mainstream
+            - camera_entity: camera.kidm
+              live_provider: go2rtc
+              
+      # AVM: add a tab with some stats/control over frigate:
+      - attributes:
+          label: Data
+          icon: mdi:hammer
+        card:
+          type: vertical-stack
+          cards:
+            - type: markdown
+              content: >-
+                # Video-overvåking #
+
+                Status frå Frigate
+
+            - type: custom:auto-entities
+              card:
+                type: entities
+              filter:
+                include:
+                  - entity_id: "*frigate*"
+                exclude:
+                  #- entity_id: "*entry_thp*"
+
+
+      #show stream/pictures of cameras around us (could/should be routed throgh Frigate/go2rtc?)
+      - attributes:
+          label: Around us
+          icon: mdi:video
+        card:
+          !include camera_around_us_card.yaml
+
+
+      #show stream/pictures of generic-cameras (Will be removed once comfortable with Frigate)
+      - attributes:
+          label: Glance-test
+          icon: mdi:video
+        card:
+          type: vertical-stack
+          cards:
+
+            # Add both picture and video of cabled D-link DCS-930LB
+            # mask username:passord by adding full link in secrets
+            - type: horizontal-stack
+              cards:
+                - type: picture-glance
+                  camera_view: live
+                  title: Heime - bilde
+                  image: !secret camera_dlink_office_dcs_930lb_jpeg
+                  tap_action:
+                    action: url
+                    url_path: !secret camera_dlink_office_dcs_930lb_jpeg
+                  entities: []
+                - type: picture-glance
+                  camera_view: live
+                  title: Heime - video
+                  image: !secret camera_dlink_office_dcs_930lb_mjpeg_stream
+                  tap_action:
+                    action: url
+                    url_path: !secret camera_dlink_office_dcs_930lb_mjpeg_stream
+                  entities: []
