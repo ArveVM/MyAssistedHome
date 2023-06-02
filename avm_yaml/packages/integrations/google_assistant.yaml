@@ -7,7 +7,7 @@ google_assistant:
   project_id: !secret google_assistant_project_id
   service_account: !include ../../../secrets_google_assist.json
   report_state: true
-  expose_by_default: false
+  expose_by_default: false          # this means that all entites must explisedly be added below to be synced
   # exposed_domains:
     # - switch
     # - light
