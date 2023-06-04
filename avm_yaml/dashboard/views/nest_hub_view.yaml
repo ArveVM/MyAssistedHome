@@ -3,13 +3,6 @@ title: "Nest Hub"
 path: "nest_hub"
 type: panel
 
-# homeassistant:
-#   customize:
-#     package.node_anchors:
-#       temp1: &temp1 sensor.livingroom_netatmo_temperature
-#       tempout: &tempout sensor.outside_netatmo_temperature
-
-
 cards:
   - type: vertical-stack
     cards:
@@ -35,8 +28,6 @@ cards:
 
           - !include ../solutions/camera_chip.yaml
 
-          - !include ../solutions/guest_wifi_chip.yaml
-          
           - !include ../solutions/guest_wifi_chip.yaml
 
           - !include ../solutions/cert_expiry_chip.yaml
