@@ -1,7 +1,9 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
-type: action
-icon: mdi:cctv
+type: template
+entity: switch.adguard_home_protection
+icon: mdi:shield-alert
+icon_color: "{{ 'disabled' if is_state(entity, 'on' ) else 'red' }}"
 tap_action:
   action: fire-dom-event
   browser_mod:
@@ -10,6 +12,4 @@ tap_action:
       content:
         type: vertical-stack
         cards:
-          - !include camera_card.yaml
-
-                      
+          - !include ../solutions/adguard_card.yaml

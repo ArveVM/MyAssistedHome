@@ -2,21 +2,15 @@
 title: "Nest Hub"
 path: "nest_hub"
 type: panel
-# type: custom:masonry-layout
-# layout:
-#   width: 175
-#   max_cols: 3
 
-homeassistant:
-  customize:
-    package.node_anchors:
-      temp1: &temp1 sensor.livingroom_netatmo_temperature
-      tempout: &tempout sensor.outside_netatmo_temperature
-
+# homeassistant:
+#   customize:
+#     package.node_anchors:
+#       temp1: &temp1 sensor.livingroom_netatmo_temperature
+#       tempout: &tempout sensor.outside_netatmo_temperature
 
 
 cards:
-
   - type: vertical-stack
     cards:
       # #####  first a row of chips   ############################################################################################
@@ -24,7 +18,11 @@ cards:
         alignment: center
         chips:
           - !include ../solutions/weather_chip.yaml
-        
+
+          - !include ../solutions/todo_chip.yaml
+
+          - !include ../solutions/carcharging_chip.yaml
+
           - !include ../solutions/mail_chip.yaml
 
           - !include ../solutions/minrenovasjon_chip.yaml
@@ -33,61 +31,18 @@ cards:
 
           - !include ../area/house_light_chip.yaml
                                     
-          - type: template
-            entity: sensor.hotwater_soc
-            content: >
-              {{states(entity) | int }}%
-            icon: mdi:thermometer-water
-            icon_color: >
-              {% set t=states(entity) | float(default=3) %}
-              {% if t >= 40 %}
-                white
-              {% elif t >= 20 %}
-                orange
-              {% else %}
-                red
-              {% endif %}
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../cards/hotwater_card.yaml
-
-          - type: template
-            entity: sensor.gullbilen_state_of_charge
-            content: >
-              {{states(entity) | float(default=61) | int }}%
-            icon: mdi:car
-            # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'disabled' }}"
-            icon_color: >
-              {% set t=states(entity) | float(default=61) %}
-              {% if t >= 50 %}
-                white
-              {% elif t >= 35 %}
-                orange
-              {% else %}
-                red
-              {% endif %}
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../cards/car_card.yaml
+          - !include ../cards/hotwater_soc_chip.yaml
 
           - !include ../solutions/camera_chip.yaml
 
           - !include ../solutions/guest_wifi_chip.yaml
+          
+          - !include ../solutions/guest_wifi_chip.yaml
 
           - !include ../solutions/cert_expiry_chip.yaml
 
+          - !include ../solutions/adguard_chip.yaml
+          
           - type: action
             icon: mdi:hammer
             tap_action:
@@ -105,8 +60,6 @@ cards:
       - type: horizontal-stack
         cards:
 
-
-
           # #####  Then main  - LEFT SIDE  ############################################################################################
           - type: vertical-stack
             cards:
@@ -114,30 +67,9 @@ cards:
               # # ---------   POWER !!        -----------
               - !include ../solutions/pwrctrl_use_price_card3.yaml
 
-              # # #####  Then main  - LEFT-left SIDE  ############################################################################################
-              # - type: horizontal-stack
-              #   cards:
-              #     - type: vertical-stack
-              #       cards:
-              #         - !include ../solutions/pwrctrl_use_price_card31.yaml
-
-
-              #         # # ----------  Calendar-row -----------        
-              #         - type: vertical-stack
-              #           cards:
-              #             - type: custom:mushroom-template-card
-              #               primary: Hello, {{user}}
-              #               secondary: 7-days listing of calendar HA-shared,, click to refresh
-              #               icon: mdi:home
-              #               tap_action:
-              #                 action: call-service
-              #                 service: homeassistant.reload_config_entry
-              #                 data: {}
-              #                 target:
-              #                   entity_id: calendar.ha_shared'
-
               - type: horizontal-stack
                 cards:
+
                   # #####  Then main  - LEFT-LEFT SIDE  ############################################################################################
                   - type: vertical-stack
                     cards:
@@ -154,10 +86,6 @@ cards:
                           target:
                             entity_id: calendar.ha_shared'
 
-                      # - type: custom:mushroom-entity-card
-                      #   entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-                      #   name: Certificate expiry date
-
                       - type: custom:auto-entities
                         card:
                           type: entities
@@ -165,7 +93,6 @@ cards:
                           show_header_toggle: false
                         filter:
                           include:
-                            # - integration: shelly 
                             - entity_id: switch.bathroom_heater_puck
                             - entity_id: switch.bathroom2_heater_puck
                             - entity_id: light.christmas_tree
@@ -216,95 +143,34 @@ cards:
                     refreshInterval: 60
                     showLocation: false
 
-              # # # ---------   Mental reminder, shold be in conditional with other "Alerts"        -----------
-              # - type: custom:mushroom-entity-card
-              #   entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-              #   name: Certificate expiry date
-              # - type: custom:mushroom-entity-card
-              #   entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-              #   name: Certificate expiry
-              #   layout: vertical
-              #   secondary_info: state
-
           # #####  Then main  - RIGHT SIDE  ############################################################################################
           - type: vertical-stack
             cards:
-              # # ---------   Area-cards, swipe over two "pages"        -----------
-              # - type: custom:swipe-card
-              #   parameters:
-              #   start_card: 1
-              #   simulateTouch: true
-              #   spaceBetween: 8
-              #   preventInteractionOnTransition: true
-              #   freeMode: true
-              #   cards:
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  # - !include ../cards/blank_card.yaml
+                  - !include ../area/livingroom_area_card.yaml
+                  - !include ../area/kitchen_area_card.yaml
+                  - !include ../area/laundry_area_card.yaml
 
-                  # Card/page1:
-                  # - type: vertical-stack
-                  #   cards:
-                  #     # - type: custom:mushroom-template-card
-                      #   primary: Hello, {{user}}
-                      #   secondary: 7-days listing of calendar HA-shared,, click to refresh
-                      #   icon: mdi:home
-                      #   tap_action:
-                      #     action: call-service
-                      #     service: homeassistant.reload_config_entry
-                      #     data: {}
-                      #     target:
-                      #       entity_id: calendar.ha_shared
-                      # - type: custom:atomic-calendar-revive
-                      #   entities:
-                      #     - entity: calendar.ha_shared
-                      #       name: HA-shared
-                      #   firstDayOfWeek: 1
-                      #   maxDaysToShow: 7
-                      #   showWeekDay: true
-                      #   refreshInterval: 60
+                  - !include ../area/bathroom_area_card.yaml
+                  - !include ../area/loft_area_card.yaml
+                  - !include ../area/hallway_area_card.yaml                  
+                  
+                  - !include ../area/kidl_area_card.yaml
+                  - !include ../area/kidm_area_card.yaml
+                  - !include ../area/kids_area_card.yaml
 
-                  # Card/page2:
-                  - type: grid
-                    columns: 3
-                    square: false
-                    cards:
-                      - !include ../area/livingroom_area_card.yaml
-                      - !include ../area/kitchen_area_card.yaml
-                      - !include ../area/laundry_area_card.yaml
+                  - !include ../area/bathroom2_area_card.yaml
+                  - !include ../area/office_area_card.yaml
+                  - !include ../area/entry_area_card.yaml
 
-                      - !include ../area/bathroom_area_card.yaml
-                      - !include ../area/loft_area_card.yaml
-                      - !include ../area/hallway_area_card.yaml
-                      
-                      
-                      - !include ../area/kidl_area_card.yaml
-                      - !include ../area/kidm_area_card.yaml
-                      - !include ../area/kids_area_card.yaml
+                  - !include ../area/workshop_area_card.yaml
+                  - !include ../area/serverroom_area_card.yaml
+                  - !include ../area/icehouse_area_card.yaml
 
-                      - !include ../area/bathroom2_area_card.yaml
-                      - !include ../area/office_area_card.yaml
-                      - !include ../area/entry_area_card.yaml
-
-                      - !include ../area/workshop_area_card.yaml
-                      - !include ../area/serverroom_area_card.yaml
-                      
-                      - !include ../area/icehouse_area_card.yaml
-                  #     - !include ../cards/blank_card.yaml
-
-                      - !include ../area/garage_area_card.yaml
-                      - !include ../area/outside_area_card.yaml
-                      - !include ../area/bedroom_area_card.yaml
-
-
-                  # Card/page3:
-                  # - type: grid
-                  #   columns: 2
-                  #   square: false
-                  #   cards:
-                    
-                  #     - !include ../area/office_area_card.yaml
-
-                  #     - !include ../area/entry_area_card.yaml
-                  #     - !include ../area/workshop_area_card.yaml
-
-                      # - !include ../area/serverroom_area_card.yaml
-                  #     - !include ../cards/blank_card.yaml
-                      
+                  - !include ../area/garage_area_card.yaml
+                  - !include ../area/outside_area_card.yaml
+                  - !include ../area/bedroom_area_card.yaml

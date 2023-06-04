@@ -1,10 +1,10 @@
 title: "Home"
 path: "Home_mobile"
-homeassistant:
-  customize:
-    package.node_anchors:
-      temp1: &temp1 sensor.livingroom_netatmo_temperature
-      tempout: &tempout sensor.outside_netatmo_temperature
+# homeassistant:
+#   customize:
+#     package.node_anchors:
+#       temp1: &temp1 sensor.livingroom_netatmo_temperature
+#       tempout: &tempout sensor.outside_netatmo_temperature
 
 cards:
   # # ----------  Chips-row 0 -----------
@@ -17,33 +17,16 @@ cards:
     freeMode: true
     cards:
       # Card/page1:
-      # - type: vertical-stack
       - type: custom:mushroom-chips-card
         alignment: justify
         chips:
           - !include ../solutions/guest_wifi_chip.yaml
           
           - !include ../solutions/cert_expiry_chip.yaml
+          
+          - !include ../solutions/todo_chip.yaml
 
-          - type: template
-            entity: switch.adguard_home_protection
-            icon: mdi:shield-alert
-            icon_color: "{{ 'disabled' if is_state(entity, 'on' ) else 'red' }}"
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../solutions/adguard_card.yaml
-
-          #- type: conditional
-          #  conditions:
-          #    - entity: sensor.todo_counter
-          #      state_not: "0"
-          #  chip:
+          - !include ../solutions/adguard_chip.yaml
 
           - type: template
             icon: mdi:soccer
@@ -65,9 +48,13 @@ cards:
         alignment: justify
         chips:
           - !include ../solutions/weather_chip.yaml
+
           - !include ../solutions/todo_chip.yaml
+          
           - !include ../solutions/carcharging_chip.yaml
+          
           - !include ../solutions/mail_chip.yaml
+          
           - !include ../solutions/cpu_chip.yaml
 
           - !include ../cards/hotwater_soc_chip.yaml
@@ -102,7 +89,6 @@ cards:
     cards:
       # # ---------   POWER !!        -----------
 
-      # - !include ../cards/priceanalyzer_01_copy.yaml
       - !include ../solutions/pwrctrl_use_price_card.yaml
 
       # # ---------   Area-cards, swipe over two "pages"        -----------
@@ -131,6 +117,8 @@ cards:
                 entities:
                   - entity: calendar.ha_shared
                     name: HA-shared
+                  - entity: calendar.minrenovasjon
+                    name: MinRenovasjon
                 firstDayOfWeek: 1
                 maxDaysToShow: 7
                 showWeekDay: true
