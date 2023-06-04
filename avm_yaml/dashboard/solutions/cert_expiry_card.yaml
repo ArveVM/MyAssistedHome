@@ -1,0 +1,19 @@
+
+
+
+type: vertical-stack
+cards:
+  - type: custom:mushroom-entity-card
+    entity: sensor.cert_expiry_main_duckdns_org
+    # name: Certificate expiry date
+  - type: custom:mushroom-entity-card
+    entity: sensor.cert_expiry_main_duckdns_org
+    name: Certificate expiry
+    layout: vertical
+    secondary_info: state
+  - type: custom:mushroom-entity-card
+    entity: sensor.cert_expiry_ha_prod_duckdns_org
+    name: Certificate expiry date
+  - type: custom:mushroom-entity-card
+    entity: sensor.cert_expiry_ha_test_duckdns_org
+    name: Certificate expiry date

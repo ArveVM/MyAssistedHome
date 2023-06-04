@@ -91,7 +91,7 @@ cards:
             content: >
               {{states(entity) | float(default=61) | int }}%
             icon: mdi:car
-            # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'grey' }}"
+            # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'disabled' }}"
             icon_color: >
               {% set t=states(entity) | float(default=61) %}
               {% if t >= 50 %}

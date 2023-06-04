@@ -12,7 +12,7 @@ icon_color: >
   {% if is_state('binary_sensor.posten_binary_sensor', 'on') %}
     green
   {% else %}
-    grey
+    disabled
   {% endif %}
 tap_action:
   action: fire-dom-event

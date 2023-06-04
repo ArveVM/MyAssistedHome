@@ -8,127 +8,142 @@ homeassistant:
 
 cards:
   # # ----------  Chips-row 0 -----------
-  - type: custom:mushroom-chips-card
-    alignment: justify
-    chips:
-      - !include ../solutions/weather_chip.yaml
-      - !include ../solutions/mail_chip.yaml
-      - !include ../solutions/cpu_chip.yaml
+  - type: custom:swipe-card
+    parameters:
+    start_card: 2
+    simulateTouch: true
+    spaceBetween: 4
+    preventInteractionOnTransition: true
+    freeMode: true
+    cards:
+      # Card/page1:
+      # - type: vertical-stack
+      - type: custom:mushroom-chips-card
+        alignment: justify
+        chips:
+          - !include ../solutions/guest_wifi_chip.yaml
+          
+          - !include ../solutions/cert_expiry_chip.yaml
 
-      - type: template
-        entity: sensor.hotwater_soc
-        content: >
-          {{states(entity) | int }}%
-        icon: mdi:thermometer-water
-        icon_color: >
-          {% set t=states(entity) | float(default=3) %}
-          {% if t >= 40 %}
-            white
-          {% elif t >= 20 %}
-            orange
-          {% else %}
-            red
-          {% endif %}
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:
-              content:
-                type: vertical-stack
-                cards:
-                  - !include ../cards/hotwater_card.yaml
+          - type: template
+            entity: switch.adguard_home_protection
+            icon: mdi:shield-alert
+            icon_color: "{{ 'disabled' if is_state(entity, 'on' ) else 'red' }}"
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../solutions/adguard_card.yaml
 
-      - type: template
-        entity: sensor.gullbilen_state_of_charge
-        content: >
-          {{states(entity) | float(default=61) | int }}%
-        icon: mdi:car
-        # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'grey' }}"
-        icon_color: >
-          {% set t=states(entity) | float(default=61) %}
-          {% if t >= 50 %}
-            white
-          {% elif t >= 35 %}
-            orange
-          {% else %}
-            red
-          {% endif %}
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:
-              content:
-                type: vertical-stack
-                cards:
-                  - !include ../cards/car_card.yaml
+          #- type: conditional
+          #  conditions:
+          #    - entity: sensor.todo_counter
+          #      state_not: "0"
+          #  chip:
 
-      # - type: action
-      #   icon: mdi:cog
-      #   tap_action:
-      #     action: navigate
-      #     navigation_path: "/config/dashboard"
+          - type: template
+            icon: mdi:soccer
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: custom:teamtracker-card
+                        entity: sensor.liverpool
 
-      - type: action
-        icon: mdi:hammer
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:
-              content:
-                type: vertical-stack
-                cards:
-                  - !include ../solutions/ha_toolbox.yaml
 
-      - !include ../solutions/guest_wifi_chip.yaml
-      # - type: template
-      #   content: >-
-      #     {{ states('sensor.pwrctrl_use_total') | round(-2) / 1000 }}kWh
-      #   icon: mdi:flash
-      #   tap_action:
-      #     action: fire-dom-event
-      #     browser_mod:
-      #       service: browser_mod.popup
-      #       data:
-      #         content:
-      #           type: vertical-stack
-      #           cards:
-      #             - !include ../cards/pwrctrl_save_card.yaml
 
-      # - type: template
-      #   entity: switch.adguard_home_protection
-      #   icon: mdi:shield-alert
-      #   icon_color: "{{ 'grey' if is_state(entity, 'on' ) else 'red' }}"
-      #   tap_action:
-      #     action: fire-dom-event
-      #     browser_mod:
-      #       service: browser_mod.popup
-      #       data:
-      #         content:
-      #           type: vertical-stack
-      #           cards:
-      #             - !include ../solutions/adguard_card.yaml
+      # Card/page2 - StartPage:
+      - type: custom:mushroom-chips-card
+        alignment: justify
+        chips:
+          - !include ../solutions/weather_chip.yaml
+          - !include ../solutions/carcharging_chip.yaml
+          - !include ../solutions/mail_chip.yaml
+          - !include ../solutions/cpu_chip.yaml
 
-      #- type: conditional
-      #  conditions:
-      #    - entity: sensor.todo_counter
-      #      state_not: "0"
-      #  chip:
+          - type: template
+            entity: sensor.hotwater_soc
+            content: >
+              {{states(entity) | int }}%
+            icon: mdi:thermometer-water
+            icon_color: >
+              {% set t=states(entity) | float(default=3) %}
+              {% if t >= 40 %}
+                white
+              {% elif t >= 20 %}
+                orange
+              {% else %}
+                red
+              {% endif %}
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../cards/hotwater_card.yaml
 
-      # - type: template
-      #   icon: mdi:soccer
-      #   tap_action:
-      #     action: fire-dom-event
-      #     browser_mod:
-      #       service: browser_mod.popup
-      #       data:
-      #         content:
-      #           type: vertical-stack
-      #           cards:
-      #             - type: custom:teamtracker-card
-      #               entity: sensor.liverpool
+
+      # Card/page3:
+      - type: custom:mushroom-chips-card
+        alignment: left
+        chips:
+
+          # - type: action
+          #   icon: mdi:cog
+          #   tap_action:
+          #     action: navigate
+          #     navigation_path: "/config/dashboard"
+
+          # - type: template
+          #   entity: sensor.gullbilen_state_of_charge
+          #   content: >
+          #     {{states(entity) | float(default=61) | int }}%
+          #   icon: mdi:car
+          #   # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'disabled' }}"
+          #   icon_color: >
+          #     {% set t=states(entity) | float(default=61) %}
+          #     {% if t >= 50 %}
+          #       white
+          #     {% elif t >= 35 %}
+          #       orange
+          #     {% else %}
+          #       red
+          #     {% endif %}
+          #   tap_action:
+          #     action: fire-dom-event
+          #     browser_mod:
+          #       service: browser_mod.popup
+          #       data:
+          #         content:
+          #           type: vertical-stack
+          #           cards:
+          #             - !include ../solutions/carcharging_card.yaml
+
+
+
+          - type: action
+            icon: mdi:hammer
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../solutions/ha_toolbox.yaml
+
 
   - type: vertical-stack
     cards:
@@ -196,12 +211,3 @@ cards:
               - !include ../area/outside_area_card.yaml
               - !include ../area/garage_area_card.yaml
 
-      # # ---------   Mental reminder, shold be in conditional with other "Alerts"        -----------
-      - type: custom:mushroom-entity-card
-        entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-        name: Certificate expiry date
-      - type: custom:mushroom-entity-card
-        entity: sensor.cert_expiry_timestamp_e220_duckdns_org
-        name: Certificate expiry
-        layout: vertical
-        secondary_info: state

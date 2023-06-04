@@ -1,0 +1,94 @@
+# lovelace_gen
+
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: status
+      icon: mdi:wrench
+    card:
+      type: vertical-stack
+      cards:
+        - entity: sensor.gullbilen_state_of_charge
+          type: custom:multiple-entity-row
+          name: "Gullbil:"
+          toggle: false
+          state_header: State
+          entities:
+            - entity: sensor.gullbilen_target_state_of_charge
+              name: Target
+
+  - attributes:
+      label: Settings
+      icon: mdi:ev-plug-type2
+    card:
+      type: vertical-stack
+      cards:
+        - type: vertical-stack
+          cards:
+            - !include ../cards/easee_card.yaml
+
+            - type: custom:charger-card
+              entity: sensor.easee1_status
+              image: default
+              compact_view: false
+              chargerImage: Red
+
+  - attributes:
+      label: History
+      icon: mdi:chart-line
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:history-explorer-card
+          cardName: history-hotwater
+          lineMode: stepped
+          header: hide
+          uiLayout:
+            toolbar: top
+            selector: hide
+          stateColors:
+            binary_sensor.off: red
+            binary_sensor.on: green
+            sensor.off: red
+            sensor.on: green
+          graphs:
+            - type: line
+              entities:
+                - entity: sensor.hotwater_temp_temperature
+                  name: Hotwater temp
+                  color: "#3e95cd"
+                  fill: rgba(151,187,205,0.15)
+                - entity: sensor.hotwater_temp_mixscrew_filtererd_temperature
+                  name: Mixscrew filtered
+                - entity: sensor.priceanalyzer_vvb
+                  name: Termostat Target
+                - entity: sensor.hotwater_puck_bottom_temperature
+                  color: "#ee3452"
+                  fill: rgba(0,0,0,0)
+            - type: timeline
+              title: Non-numerical sensors
+              entities:
+                - entity: switch.hotwater_puck
+                  name: Switch
+                - entity: input_boolean.hotwater_temp_thermostat_output
+                  name: Gen Th
+                - entity: input_boolean.hotwater_temp_powerauto
+                  name: Auto
+                - entity: input_boolean.hotwater_temp_powersave
+                  name: P-save
+                - entity: input_boolean.hotwater_temp_powerboost
+                  name: P-boost
+                - entity: input_boolean.hotwater_temp_powerhoursave
+                  name: PH-save
+                - entity: sensor.hotwater_temp_power
+                  name: Power
+                - type: attribute
+                  entity: climate.bathroom_heater_thermostat
+                  attribute: preset_mode
+                  name: Term. Mode
+                - entity: sensor.hotwater_puck_input_power

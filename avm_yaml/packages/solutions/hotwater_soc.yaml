@@ -110,30 +110,33 @@ template:
       # Beregner tid det tar for å varme bereder til settpunkt temperatur-
       # p = bereder element i kW                                          #ArveVM: moved to input number
       # kWh = energi for å verme til settpunkt
-      - name: "Hotwater SoC chargetime float"
-        unique_id: hotwater_soc_chargetime_float
-        icon: "mdi:lightning-bolt-outline"
-        unit_of_measurement: "t"
-        state: >
-          {% set p = states('input_number.hotwater_soc_elementsize') | float %}
-          {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
-          {{ (kwh / p) | round(2) }}
-        # attributes:
-        #   <<: *solution_attribute
+      # - name: "Hotwater SoC chargetime float"
+      #   unique_id: hotwater_soc_chargetime_float
+      #   icon: "mdi:lightning-bolt-outline"
+      #   unit_of_measurement: "t"
+      #   state: >
+      #     {% set p = states('input_number.hotwater_soc_elementsize') | float %}
+      #     {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
+      #     {{ (kwh / p) | round(2) }}
+      #   attributes:
+      #     <<: *solution_attribute
 
       - name: "Hotwater SoC chargetime"
         unique_id: hotwater_soc_chargetime
         icon: "mdi:store-24-hour"
-        # unit_of_measurement: "h"
-        # device_class: duration
-        # state_class: measurement
+        device_class: duration
+        unit_of_measurement: "h"
+        state_class: measurement
         state: >
-          {% set hours = states('sensor.hotwater_soc_chargetime_float') | float %}
-          {% set minutes = ((hours % 1) * 60) | int %}
-          {% set hours = (hours - (hours % 1)) | int %}
-          {{ '%02i:%02i'%(hours, minutes) }}
-        # attributes:
-        #   <<: *solution_attribute
+          {% set p = states('input_number.hotwater_soc_elementsize') | float %}
+          {% set kwh = states('sensor.hotwater_soc_energy_chargable') | float %}
+          {{ (kwh / p) | round(2) }}
+        # {% set hours = states('sensor.hotwater_soc_chargetime_float') | float %}
+        # {% set minutes = ((hours % 1) * 60) | int %}
+        # {% set hours = (hours - (hours % 1)) | int %}
+        # {{ '%02i:%02i'%(hours, minutes) }}
+        attributes:
+          <<: *solution_attribute
 
       # - name: "Hotwater SoC chargetime2"
       #   unique_id: hotwater_soc_chargetime2
