@@ -65,33 +65,13 @@ cards:
         alignment: justify
         chips:
           - !include ../solutions/weather_chip.yaml
+          - !include ../solutions/todo_chip.yaml
           - !include ../solutions/carcharging_chip.yaml
           - !include ../solutions/mail_chip.yaml
           - !include ../solutions/cpu_chip.yaml
 
-          - type: template
-            entity: sensor.hotwater_soc
-            content: >
-              {{states(entity) | int }}%
-            icon: mdi:thermometer-water
-            icon_color: >
-              {% set t=states(entity) | float(default=3) %}
-              {% if t >= 40 %}
-                white
-              {% elif t >= 20 %}
-                orange
-              {% else %}
-                red
-              {% endif %}
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../cards/hotwater_card.yaml
+          - !include ../cards/hotwater_soc_chip.yaml
+
 
 
       # Card/page3:
@@ -104,33 +84,6 @@ cards:
           #   tap_action:
           #     action: navigate
           #     navigation_path: "/config/dashboard"
-
-          # - type: template
-          #   entity: sensor.gullbilen_state_of_charge
-          #   content: >
-          #     {{states(entity) | float(default=61) | int }}%
-          #   icon: mdi:car
-          #   # icon_color: "{{ 'green' if is_state(entity, >= 50 ) else 'disabled' }}"
-          #   icon_color: >
-          #     {% set t=states(entity) | float(default=61) %}
-          #     {% if t >= 50 %}
-          #       white
-          #     {% elif t >= 35 %}
-          #       orange
-          #     {% else %}
-          #       red
-          #     {% endif %}
-          #   tap_action:
-          #     action: fire-dom-event
-          #     browser_mod:
-          #       service: browser_mod.popup
-          #       data:
-          #         content:
-          #           type: vertical-stack
-          #           cards:
-          #             - !include ../solutions/carcharging_card.yaml
-
-
 
           - type: action
             icon: mdi:hammer
