@@ -1,0 +1,306 @@
+type: custom:charger-card
+entity: sensor.easee1_status
+customCardTheme: theme_custom
+chargerImage: Red
+brand: easee
+show_leds: true
+details:
+  name:
+    entity_id: sensor.easee1_status
+    attribute: name
+  location:
+    entity_id: sensor.easee1_status
+    attribute: site_name
+  status:
+    entity_id: sensor.easee1_status
+  substatus:
+    entity_id: sensor.easee1_reason_for_no_current
+  smartcharging:
+    entity_id: switch.easee1_smart_charging
+  currentlimits:
+    - 0
+    - 6
+    - 10
+    - 16
+    - 20
+    #- 25
+    #- 32
+  statetext:
+    disconnected: disconnected
+    awaiting_start: awaiting_start
+    charging: charging
+    completed: completed
+    error: error
+    ready_to_charge: ready_to_charge
+  collapsiblebuttons:
+    group1:
+      text: click_for_group1
+      icon: mdi:speedometer
+    group2:
+      text: click_for_group2
+      icon: mdi:information
+    group3:
+      text: click_for_group3
+      icon: mdi:cog
+  info_left:
+    - entity_id: binary_sensor.easee1_online
+      text: online
+  info_right:
+    - entity_id: sensor.easee1_voltage
+      text: voltage
+      unit_show: true
+    - entity_id: sensor.easee1_power
+      text: power
+      unit_show: true
+  group1:
+    - entity_id: sensor.easee1_dynamic_charger_limit
+      text: dyn_charger_limit
+      service: easee.set_charger_dynamic_limit
+      service_data:
+        charger_id: !secret easee1_charger_id
+        current: "#SERVICEVAL#"
+    - entity_id: sensor.easee1_dynamic_circuit_limit
+      text: dyn_circuit_limit
+      service: easee.set_charger_circuit_dynamic_limit
+      service_data:
+        charger_id: !secret easee1_charger_id
+        currentP1: "#SERVICEVAL#"
+    - entity_id: sensor.easee1_max_charger_limit
+      text: max_charger_limit
+      service: easee.set_charger_max_limit
+      service_data:
+        charger_id: !secret easee1_charger_id
+        current: "#SERVICEVAL#"
+    - entity_id: sensor.easee1_max_circuit_limit
+      text: max_circuit_limit
+      service: easee.set_circuit_max_limit
+      service_data:
+        charger_id: !secret easee1_charger_id
+        currentP1: "#SERVICEVAL#"
+    - entity_id: sensor.easee1_offline_circuit_limit
+      text: offline_circuit_limit
+      service: easee.set_charger_circuit_offline_limit
+      service_data:
+        charger_id: !secret easee1_charger_id
+        currentP1: "#SERVICEVAL#"
+  group2:
+    - entity_id: binary_sensor.easee1_online
+      text: online
+    - entity_id: sensor.easee1_voltage
+      text: voltage
+      unit_show: true
+    - entity_id: sensor.easee1_power
+      text: power
+      unit_show: true
+    - entity_id: sensor.easee1_current
+      text: charger_current
+      unit_show: true
+    - entity_id: sensor.easee1_circuit_current
+      text: circuit_current
+      unit_show: true
+    - entity_id: sensor.easee1_energy_per_hour
+      text: energy_per_hour
+      unit_show: true
+    - entity_id: sensor.easee1_session_energy
+      text: session_energy
+      unit_show: true
+    - entity_id: sensor.easee1_lifetime_energy
+      text: lifetime_energy
+      unit_show: true
+  group3:
+    - entity_id: switch.easee1_is_enabled
+      text: enabled
+    - entity_id: switch.easee1_enable_idle_current
+      text: idle_current
+    - entity_id: binary_sensor.easee1_cable_locked
+      text: cable_locked
+    - entity_id: switch.easee1_cable_locked_permanently
+      text: perm_cable_locked
+    - entity_id: switch.easee1_smart_charging
+      text: smart_charging
+    - entity_id: sensor.easee1_cost_per_kwh
+      text: cost_per_kwh
+    - entity_id: binary_sensor.easee1_update_available
+      text: update_available
+    - entity_id: binary_sensor.easee1_basic_schedule
+      text: schedule
+  stats:
+    default:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: switch.easee1_cable_locked_permanently
+        text: cable_locked
+      - entity_id: binary_sensor.easee1_basic_schedule
+        text: schedule
+    disconnected:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: switch.easee1_cable_locked_permanently
+        text: cable_locked
+      - entity_id: calculated
+        text: used_limit
+        unit: A
+        unit_show: true
+        calc_function: min
+        calc_entities:
+          - entity_id: sensor.easee1_dynamic_charger_limit
+          - entity_id: sensor.easee1_dynamic_circuit_limit
+          - entity_id: sensor.easee1_max_charger_limit
+          - entity_id: sensor.easee1_max_circuit_limit
+          - entity_id: sensor.easee1_offline_circuit_limit
+    awaiting_start:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: binary_sensor.easee1_basic_schedule
+        text: schedule
+      - entity_id: switch.easee1_smart_charging
+        text: smart_charging
+      - entity_id: calculated
+        text: used_limit
+        unit: A
+        unit_show: true
+        calc_function: min
+        calc_entities:
+          - entity_id: sensor.easee1_dynamic_charger_limit
+          - entity_id: sensor.easee1_dynamic_circuit_limit
+          - entity_id: sensor.easee1_max_charger_limit
+          - entity_id: sensor.easee1_max_circuit_limit
+          - entity_id: sensor.easee1_offline_circuit_limit
+    charging:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: sensor.easee1_energy_per_hour
+        text: energy_per_hour
+        unit_show: true
+      - entity_id: sensor.easee1_circuit_current
+        text: circuit_current
+        unit_show: true
+      - entity_id: sensor.easee1_output_limit
+        text: output_limit
+        unit_show: true
+      - entity_id: sensor.easee1_current
+        text: current
+        unit_show: true
+      - entity_id: sensor.easee1_power
+        text: power
+        unit_show: true
+    completed:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: binary_sensor.easee1_basic_schedule
+        text: schedule
+      - entity_id: calculated
+        text: used_limit
+        unit: A
+        unit_show: true
+        calc_function: min
+        calc_entities:
+          - entity_id: sensor.easee1_dynamic_charger_limit
+          - entity_id: sensor.easee1_dynamic_circuit_limit
+          - entity_id: sensor.easee1_max_charger_limit
+          - entity_id: sensor.easee1_max_circuit_limit
+          - entity_id: sensor.easee1_offline_circuit_limit
+    error:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: binary_sensor.easee1_basic_schedule
+        text: schedule
+    ready_to_charge:
+      - entity_id: sensor.easee1_session_energy
+        text: session_energy
+        unit_show: true
+      - entity_id: binary_sensor.easee1_basic_schedule
+        text: schedule
+      - entity_id: calculated
+        text: used_limit
+        unit: A
+        unit_show: true
+        calc_function: min
+        calc_entities:
+          - entity_id: sensor.easee1_dynamic_charger_limit
+          - entity_id: sensor.easee1_dynamic_circuit_limit
+          - entity_id: sensor.easee1_max_charger_limit
+          - entity_id: sensor.easee1_max_circuit_limit
+          - entity_id: sensor.easee1_offline_circuit_limit
+  toolbar_left:
+    default:
+      - {}
+    disconnected:
+      - {}
+    awaiting_start:
+      - service: easee.stop
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: stop
+        icon: hass:stop
+      - service: easee.resume
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: resume
+        icon: hass:play
+      - service: easee.override_schedule
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: override
+        icon: hass:motion-play
+    charging:
+      - service: easee.stop
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: stop
+        icon: hass:stop
+      - service: easee.pause
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: pause
+        icon: hass:pause
+    completed:
+      - service: easee.stop
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: stop
+        icon: hass:stop
+      - service: easee.override_schedule
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: override
+        icon: hass:motion-play
+    error:
+      - service: easee.reboot
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: reboot
+        icon: hass:restart
+    ready_to_charge:
+      - service: easee.stop
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: stop
+        icon: hass:stop
+      - service: easee.override_schedule
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: override
+        icon: hass:motion-play
+  toolbar_right:
+    default:
+      - service: persistent_notification.create
+        service_data:
+          message: Firmware update is available, but only possible when disconnected!
+          title: Update
+        text: update
+        icon: mdi:file-download
+        conditional_entity: binary_sensor.easee1_update_available
+    disconnected:
+      - service: easee.update_firmware
+        service_data:
+          charger_id: !secret easee1_charger_id
+        text: update
+        icon: mdi:file-download
+        conditional_entity: binary_sensor.easee1_update_available

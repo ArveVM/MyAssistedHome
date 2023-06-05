@@ -16,27 +16,29 @@ tabs:
         - entity: sensor.gullbilen_state_of_charge
           type: custom:multiple-entity-row
           name: "Gullbil:"
+          state_color: true
           toggle: false
           state_header: State
           entities:
             - entity: sensor.gullbilen_target_state_of_charge
               name: Target
 
+
   - attributes:
-      label: Settings
+      label: Easee
       icon: mdi:ev-plug-type2
     card:
       type: vertical-stack
       cards:
         - type: vertical-stack
           cards:
-            - !include ../cards/easee_card.yaml
+            - !include carcharging_easee_card.yaml
 
-            - type: custom:charger-card
-              entity: sensor.easee1_status
-              image: default
-              compact_view: false
-              chargerImage: Red
+            # - type: custom:charger-card
+            #   entity: sensor.easee1_status
+            #   image: default
+            #   compact_view: false
+            #   chargerImage: Red
 
   - attributes:
       label: History

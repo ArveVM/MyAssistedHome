@@ -55,6 +55,8 @@ cards:
           
           - !include ../solutions/mail_chip.yaml
           
+          - !include ../solutions/minrenovasjon_chip.yaml
+          
           - !include ../solutions/cpu_chip.yaml
 
           - !include ../cards/hotwater_soc_chip.yaml
