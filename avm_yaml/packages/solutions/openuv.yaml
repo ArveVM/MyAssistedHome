@@ -1,0 +1,17 @@
+
+
+automation:
+  - alias: "_OpenUV reload integration"
+    # unique_id: 4668fb62-c1d9-42e0-b7c5-97682407b2d5
+    trigger:
+      platform: time_pattern
+      minutes: "/20"
+    condition:
+      condition: numeric_state
+      entity_id: sun.sun
+      value_template: "{{ state.attributes.elevation }}"
+      above: 10
+    action:
+      service: homeassistant.update_entity
+      target:
+        entity_id: sensor.current_uv_index
