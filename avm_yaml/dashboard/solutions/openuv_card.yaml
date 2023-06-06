@@ -1,62 +1,136 @@
+# lovelace_gen
+
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: status
+      icon: mdi:wrench
+    card:
+      type: custom:apexcharts-card
+      header:
+        show: true
+        title: Temperatur 24h
+      now:
+        show: true
+        label: Nå
+      graph_span: 1d
+      update_delay: 30m
+      hours_12: false
+      span:
+        start: day
+      apex_config:
+        stroke:
+          width: 2
+        dataLabels:
+          enabled: true
+        fill:
+          type: gradient
+          gradient:
+            inverseColors: false
+            opacityFrom: 0.6
+            opacityTo: 0.6
+            stops:
+              - -10
+              - 10
+              - 50
+              - 75
+              - 1000
+        yaxis:
+          - id: temperature
+            show: true
+            decimalsInFloat: 1
+            floating: false
+            forceNiceScale: true
+            extend_to: end
+      series:
+        - entity: sensor.outside_netatmo_temperature
+          yaxis_id: temperature
+          extend_to: now
+          name: temperature
+          type: area
+          color: red
+        - entity: sensor.current_uv_index
+          yaxis_id: temperature
+          extend_to: now
+          name: temperature
+          type: area
+          color: yellow
+        - entity: weather.mylocation_hourly
+          yaxis_id: temperature
+          extend_to: end
+          name: temperature
+          type: area
+          color: red
+          data_generator: |
+            return entity.attributes.forecast.map((entry) => {
+              return [new Date(entry.datetime), entry.temperature];
+            });      
+
+  - attributes:
+      label: Entities
+      icon: mdi:wrench
+    card:
+      type: custom:auto-entities
+      card:
+        type: entities
+      filter:
+        include:
+          # - entity_id: "*kidl_xplora*"
+          - integration: openuv
+        exclude:
+          #- entity_id: "*entry_thp*"
+
+  - attributes:
+      label: History
+      icon: mdi:chart-line
+    card:
+      type: custom:history-explorer-card
+      cardName: history-openuv
+      lineMode: stepped
+      header: hide
+      uiLayout:
+        toolbar: top
+        selector: hide
+      stateColors:
+        binary_sensor.off: red
+        binary_sensor.on: green
+        sensor.off: red
+        sensor.on: green
+      graphs:
+        - type: timeline
+          title: Non-numerical sensors
+          entities:
+            - entity: sensor.current_ozone_level
+              # name: Switch
+            - entity: sensor.ha_last_reboot
+            - entity: binary_sensor.protection_window
+              # name: Gen Th
+            - entity: sensor.current_uv_level
+              # name: Auto
+            # - entity: input_boolean.hotwater_temp_powersave
+              # name: P-save
+        - type: line
+          entities:
+            - entity: sensor.current_uv_index
+              name: Current UV
+              color: "#3e95cd"
+              fill: rgba(151,187,205,0.15)
+            - entity: sensor.max_uv_index
+              name: Max UV
+        - type: line
+          entities:
+            - entity: sensor.skin_type_1_safe_exposure_time
+              name: Skintype1 safe time
+              color: yellow
+            - entity: sensor.skin_type_2_safe_exposure_time
+              color: orange
+              # fill: rgba(0,0,0,0)
+              name: Skintype2 safe time
 
 
 
-type: custom:apexcharts-card
-header:
-  show: true
-  title: Temperatur 24h
-now:
-  show: true
-  label: Nå
-graph_span: 1d
-update_delay: 30m
-hours_12: false
-span:
-  start: day
-apex_config:
-  stroke:
-    width: 2
-  dataLabels:
-    enabled: true
-  fill:
-    type: gradient
-    gradient:
-      inverseColors: false
-      opacityFrom: 0.6
-      opacityTo: 0.6
-      stops:
-        - -10
-        - 10
-        - 50
-        - 75
-        - 1000
-  yaxis:
-    - id: temperature
-      show: true
-      decimalsInFloat: 1
-      floating: false
-      forceNiceScale: true
-      extend_to: end
-series:
-  - entity: sensor.outside_netatmo_temperature
-    yaxis_id: temperature
-    extend_to: now
-    name: temperature
-    type: area
-    color: red
-  - entity: sensor.current_uv_index
-    yaxis_id: temperature
-    extend_to: now
-    name: temperature
-    type: area
-    color: yellow
-  - entity: weather.mylocation_hourly
-    yaxis_id: temperature
-    extend_to: end
-    name: temperature
-    type: area
-    color: red
-    data_generator: |
-      return entity.attributes.forecast.map((entry) => {
-        return [new Date(entry.datetime), entry.temperature];
-      });      
