@@ -1,8 +1,8 @@
 
 
 automation:
-  - alias: "_OpenUV reload integration"
-    # unique_id: 4668fb62-c1d9-42e0-b7c5-97682407b2d5
+  - alias: OpenUV - reload uv-entities
+    id: 4668fb62-c1d9-42e0-b7c5-97682407b2d5sdf
     trigger:
       platform: time_pattern
       minutes: "/20"
@@ -10,8 +10,22 @@ automation:
       condition: numeric_state
       entity_id: sun.sun
       value_template: "{{ state.attributes.elevation }}"
-      above: 10
+      above: 13
+    action:
+      service: homeassistant.update_entity
+      # service: homeassistant.reload_config_entry
+      target:
+        entity_id: sensor.current_uv_index
+
+  - alias: OpenUV - update protection window
+    id: bb89b57e-8d6a-43ae-9436-903a2f5cee78
+    trigger:
+      - platform: time
+        at: "09:01:00"
+      - platform: time
+        at: "12:00:00"
     action:
       service: homeassistant.update_entity
       target:
-        entity_id: sensor.current_uv_index
+        entity_id: binary_sensor.protection_window
+        

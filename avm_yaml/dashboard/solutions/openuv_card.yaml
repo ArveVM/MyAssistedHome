@@ -105,6 +105,8 @@ tabs:
         - type: timeline
           title: Non-numerical sensors
           entities:
+            - entity: binary_sensor.protection_window
+              attribute: start_uv
             - entity: sensor.current_ozone_level
               # name: Switch
             - entity: sensor.ha_last_reboot

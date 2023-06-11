@@ -41,6 +41,8 @@ cards:
                       - type: custom:teamtracker-card
                         entity: sensor.liverpool
 
+          - !include ../solutions/openuv_chip.yaml
+
 
 
       # Card/page2 - StartPage:

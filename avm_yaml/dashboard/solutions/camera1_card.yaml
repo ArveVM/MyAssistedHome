@@ -1,0 +1,29 @@
+
+
+
+
+
+type: custom:frigate-card
+view:
+  default: live
+live:
+  preload: false
+media_viewer:
+  auto_play: all
+image:
+  mode: camera
+timeline:
+  media: all
+menu:
+  style: outside
+  position: bottom
+  button_size: 35
+  buttons:
+    substreams:
+      priority: 50
+      enabled: true
+      icon: mdi:high-definition
+cameras:
+  # Negligable difference between resolution on substream and main,, so just stream mainstream
+  - camera_entity: camera.kidm
+    live_provider: go2rtc

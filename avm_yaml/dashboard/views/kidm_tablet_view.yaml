@@ -1,5 +1,5 @@
-title: "KidS"
-path: "tablet_home"
+title: "KidM"
+path: "KidM_home"
 homeassistant:
   customize:
     package.node_anchors:
@@ -15,6 +15,8 @@ cards:
                                
       - !include ../solutions/openuv_chip.yaml      
 
+      # - !include ../solutions/camera1_chip.yaml      
+
       - type: template
         icon: mdi:refresh
         tap_action:
@@ -24,5 +26,16 @@ cards:
             data: {}
 
 
-  - !include ../area/kids_area_card.yaml
-      
+  - !include ../area/kidm_area_card.yaml
+
+  # - !include ../solutions/camera1_card.yaml
+    
+
+  - type: tile
+    entity: light.kidm_lightbulb
+    icon: mdi:lamp
+    color: yellow
+    features:
+      - type: "light-brightness"    
+                 
+  - !include ../solutions/calendar_7days_card.yaml

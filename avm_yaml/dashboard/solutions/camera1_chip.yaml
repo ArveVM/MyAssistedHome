@@ -1,0 +1,17 @@
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: template
+# entity: binary_sensor.protection_window
+icon: mdi:cctv
+# icon: "{{ 'mdi:sunglasses' if is_state(entity, 'on' ) else 'mdi:glasses' }}"
+# icon_color: "{{ 'red' if is_state(entity, 'on' ) else 'none' }}"
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include ../solutions/camera1_card.yaml
+

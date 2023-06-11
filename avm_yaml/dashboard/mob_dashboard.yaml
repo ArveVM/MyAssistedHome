@@ -12,5 +12,6 @@ views:
   - !include views/test.yaml
   - !include view_energy_usage.yaml
   - !include views/server_view.yaml
-  - !include views/kids_tablet_view.yaml
 
+  - !include views/kids_tablet_view.yaml
+  - !include views/kidm_tablet_view.yaml

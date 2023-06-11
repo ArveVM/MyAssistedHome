@@ -33,6 +33,13 @@ lovelace:
       show_in_sidebar: false
       filename: avm_yaml/dashboard/kids_tablet_dashboard.yaml
 
+    kidm-tablet:
+      mode: yaml
+      title: KidM Tablet
+      icon: mdi:soccer
+      show_in_sidebar: false
+      filename: avm_yaml/dashboard/kidm_tablet_dashboard.yaml
+
 
 #  resources:
   # Duplicates needed for casting...

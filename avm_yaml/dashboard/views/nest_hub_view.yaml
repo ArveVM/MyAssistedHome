@@ -120,19 +120,21 @@ cards:
 
 
                   # # #####  Then main  - LEFT-RIGHT SIDE  ############################################################################################
-                  - type: custom:atomic-calendar-revive
-                    entities:
-                      - entity: calendar.ha_shared
-                        name: Ha-shared
-                      - entity: calendar.minrenovasjon
-                        name: MinRenovasjon
-                    firstDayOfWeek: 1
-                    maxDaysToShow: 7
-                    showWeekDay: true
-                    showMultiDay: true
-                    calShowDescription: true
-                    refreshInterval: 60
-                    showLocation: false
+                  - !include ../solutions/calendar_7days_card.yaml
+                  
+                  # - type: custom:atomic-calendar-revive
+                  #   entities:
+                  #     - entity: calendar.ha_shared
+                  #       name: Ha-shared
+                  #     - entity: calendar.minrenovasjon
+                  #       name: MinRenovasjon
+                  #   firstDayOfWeek: 1
+                  #   maxDaysToShow: 7
+                  #   showWeekDay: true
+                  #   showMultiDay: true
+                  #   calShowDescription: true
+                  #   refreshInterval: 60
+                  #   showLocation: false
 
           # #####  Then main  - RIGHT SIDE  ############################################################################################
           - type: vertical-stack
