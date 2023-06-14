@@ -57,6 +57,7 @@ template:
           - states('sensor.hastats_ebd_input_selects') | float(default=0)
           - states('sensor.hastats_ebd_input_texts') | float(default=0)
           - states('sensor.hastats_ebd_lights') | float(default=0)
+          - states('sensor.hastats_ebd_locks') | float(default=0)
           - states('sensor.hastats_ebd_media_players') | float(default=0)
           - states('sensor.hastats_ebd_numbers') | float(default=0)
           - states('sensor.hastats_ebd_persistent_notifications') | float(default=0)
@@ -170,6 +171,12 @@ template:
         state_class: measurement
         icon: mdi:lightbulb
         state: "{{states.light | count}}"
+
+      - name: HAstats EbD locks
+        unique_id: hastats_ebd_locks
+        state_class: measurement
+        icon: mdi:lock
+        state: "{{states.lock | count}}"
 
       - name: HAstats EbD media players
         unique_id: hastats_ebd_media_players

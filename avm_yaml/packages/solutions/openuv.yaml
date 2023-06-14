@@ -5,7 +5,7 @@ automation:
     id: 4668fb62-c1d9-42e0-b7c5-97682407b2d5sdf
     trigger:
       platform: time_pattern
-      minutes: "/20"
+      minutes: "/30"
     condition:
       condition: numeric_state
       entity_id: sun.sun

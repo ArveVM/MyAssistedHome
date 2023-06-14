@@ -12,6 +12,21 @@ cards:
     alignment: justify
     chips:
       - !include ../solutions/weather_chip.yaml
+
+      - type: action
+        icon: mdi:cctv
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - camera_view: auto
+                    type: picture-glance
+                    entities: []
+                    camera_image: camera.kidm
                                
       - !include ../solutions/openuv_chip.yaml      
 

@@ -24,6 +24,26 @@ menu:
       enabled: true
       icon: mdi:high-definition
 cameras:
+  # combining main/substream in one view,, toggle with button
+  # for Entry,, substream first,, can toggle HD
+  - camera_entity: camera.entry
+    live_provider: go2rtc
+    dependencies:
+      cameras:
+        - entry
+  - camera_entity: camera.entry
+    title: EntryHD
+    live_provider: go2rtc
+    id: entry
+    hide: true
+
+  # For garage-front,, would like high-resolution in live stream:
+  - camera_entity: camera.garage_front
+    title: Garage HD
+    live_provider: go2rtc
+    # id: west1
+
+  # - camera_entity: camera.west1
   # Negligable difference between resolution on substream and main,, so just stream mainstream
-  - camera_entity: camera.kidm
+  - camera_entity: camera.west1
     live_provider: go2rtc
