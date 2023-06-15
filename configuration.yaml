@@ -32,7 +32,8 @@
 #   then sub-folders will add next levels of cascaded configuration 
 
 homeassistant:
-  packages: !include_dir_named avm_yaml/packages
+  packages: !include_dir_named packages
+  # packages: !include_dir_named avm_yaml/packages
 
 
   # enable auto-login for nest hub - must be configured before loading packages

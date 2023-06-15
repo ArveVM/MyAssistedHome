@@ -23,7 +23,7 @@ default_config:
 #       and add config where needed
 
 # add automations-file that is enabled in GUI:
-automation: !include ../../../automations.yaml
+automation: !include ../../automations.yaml
 # copied from mrRRs config,, own folder for functionality-view Yaml-editable-only-automations:
 #automation yaml_editable: !include_dir_list ../../entities/automation_yaml
 
@@ -36,7 +36,7 @@ automation: !include ../../../automations.yaml
 
 # AVM: enable UI-Minimalist-themes
 frontend:
-  themes: !include_dir_merge_named ../../../themes
+  themes: !include_dir_merge_named ../../themes
 
 #hardware        #AVM: added in 2022.6  
 #history:
@@ -58,8 +58,8 @@ frontend:
 #person:
 #schedule:        #AVM: added in 2022.9
 
-scene: !include ../../../scenes.yaml
-script: !include ../../../scripts.yaml
+scene: !include ../../scenes.yaml
+script: !include ../../scripts.yaml
 
 #ssdp:
 #stream:

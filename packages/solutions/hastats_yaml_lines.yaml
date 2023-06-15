@@ -1,0 +1,90 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+# count number of enabled YAML-lines in my config,,
+# idea nipped from;  https://www.youtube.com/watch?v=OFky6pYj1KE
+
+homeassistant:
+  customize:
+    # Add state-class to enable long term statistics:
+    sensor.hastats_yaml_line_total_count:
+      state_class: measurement
+    sensor.hastats_yaml_line_custcomp_count:
+      state_class: measurement
+    sensor.hastats_yaml_line_avm_yaml_count:
+      state_class: measurement
+    sensor.hastats_yaml_line_dashboard_count:
+      state_class: measurement
+    sensor.hastats_yaml_line_packages_count:
+      state_class: measurement
+    
+    # Add node-ancors as variables internally in this yaml-file
+    package.node_anchors:
+      scan_int: &scan_int 86400    # (Define time in seconds between each update, 86400 is once a day)
+
+
+command_line:
+  # - sensor:
+  #     name: HAstats YAML line TOTAL count 2
+  #     unique_id: hastats_yaml_line_total_count2
+  #     command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
+  #     unit_of_measurement: "lines"
+  #     scan_interval: *scan_int
+
+  - sensor:
+      name: HAstats YAML line TOTAL count
+      unique_id: hastats_yaml_line_total_count
+      command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
+      unit_of_measurement: "lines"
+      scan_interval: *scan_int
+
+  - sensor:
+      name: HAstats YAML line CustComp count
+      unique_id: hastats_yaml_line_custcomp_count
+      command: " find /config/custom_components -name '*.yaml' | xargs cat | wc -l"
+      unit_of_measurement: "lines"
+      scan_interval: *scan_int
+      
+  - sensor:
+      name: HAstats YAML line AVM_yaml count
+      unique_id: hastats_yaml_line_avm_yaml_count
+      command: " find /config/avm_yaml -name '*.yaml' | xargs cat | wc -l"
+      unit_of_measurement: "lines"
+      scan_interval: *scan_int
+
+  - sensor:
+      name: HAstats YAML line Dashboard count
+      unique_id: hastats_yaml_line_dashboard_count
+      command: " find /config/avm_yaml/dashboard -name '*.yaml' | xargs cat | wc -l"
+      unit_of_measurement: "lines"
+      scan_interval: *scan_int
+
+  - sensor:
+      name: "HAstats YAML line Packages count"
+      unique_id: hastats_yaml_line_packages_count
+      command: " find /config/avm_yaml/packages -name '*.yaml' | xargs cat | wc -l"
+      unit_of_measurement: "lines"
+      scan_interval: *scan_int
+
+# sensor:
+  # count number of enabled YAML-lines in my config,,
+  # idea nipped from;  https://www.youtube.com/watch?v=OFky6pYj1KE
+  # - name: "HAstats YAML line TOTAL count"
+  #   unique_id: hastats_yaml_line_total_count
+  #   platform: command_line
+  #   command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
+  #   unit_of_measurement: "lines"
+  # - name: "HAstats YAML line AVM_yaml count"
+  #   unique_id: hastats_yaml_line_avm_yaml_count
+  #   platform: command_line
+  #   command: " find /config/avm_yaml -name '*.yaml' | xargs cat | wc -l"
+    # unit_of_measurement: "lines"
+  # - name: "HAstats YAML line Dashboard count"
+  #   unique_id: hastats_yaml_line_dashboard_count
+  #   platform: command_line
+  #   command: " find /config/avm_yaml/dashboard -name '*.yaml' | xargs cat | wc -l"
+  #   unit_of_measurement: "lines"
+  # - name: "HAstats YAML-line Packages count"
+  #   unique_id: hastats_yaml_line_packages_count
+  #   platform: command_line
+  #   command: " find /config/avm_yaml/packages -name '*.yaml' | xargs cat | wc -l"
+  #   unit_of_measurement: "lines"

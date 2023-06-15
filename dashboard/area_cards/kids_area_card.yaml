@@ -1,0 +1,172 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.hallway_thp_temperature
+      humidity1: &humidity1 sensor.hallway_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+    }
+  # AVM; replace with this if I ever get to control the lights in the office :)
+  #  ha-card {
+  #    height: 102px;
+  #    {% if is_state('light.loft', 'on') %}
+  #      background: rgba(255, 152, 0, 0.1);
+  #    {% endif %}
+  #  }
+cards:
+  # First the main-card:
+  - type: custom:mushroom-template-card
+    primary: KidS
+    secondary: >-
+      {{states('sensor.hallway_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
+    icon: mdi:teddy-bear
+    entity: light.kidm_lightbulb
+    tap_action:
+      action: none
+    icon_color: disabled
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+  # Then the row of chips below. Align chips with alignment and adjust spacing on each chip (margin-left)
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+
+      - entity: media_player.smartclock_kids
+        type: template
+        icon: mdi:cast
+        icon_color: |-
+          {% set state=states(entity) %}
+          {% if state=='playing' %}
+          blue
+          {% elif state=='paused' %}
+          orange
+          {% elif state=='idle' %}
+          yellow
+          {% else %}
+          disabled
+          {% endif %}
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: custom:tabbed-card
+                options: {}
+                styles:
+                  "--mdc-theme-primary": orange
+                  "--mdc-tab-text-label-color-default": white
+                  "--mdc-typography-button-font-size": 10px
+                tabs:
+                  - attributes:
+                      label: status
+                      icon: mdi:cast
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.smartclock_kids
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+                          media_controls:
+                            - on_off
+                            - shuffle
+                            - previous
+                            - play_pause_stop
+                            - next
+                            - repeat
+                  - attributes:
+                      label: settings
+                      icon: mdi:wrench
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.smartclock_kids
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+
+
+      - type: template
+        entity: sensor.kids_tablet_battery_level
+        # https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/926
+        icon: |2
+                    {% set bl = states(entity) | int %}
+                    {% if bl < 10 %} mdi:battery-outline
+                    {% elif bl < 20 %} mdi:battery-10
+                    {% elif bl < 30 %} mdi:battery-20
+                    {% elif bl < 40 %} mdi:battery-30
+                    {% elif bl < 50 %} mdi:battery-40
+                    {% elif bl < 60 %} mdi:battery-50
+                    {% elif bl < 70 %} mdi:battery-60
+                    {% elif bl < 80 %} mdi:battery-70
+                    {% elif bl < 90 %} mdi:battery-80
+                    {% elif bl < 100 %} mdi:battery-90
+                    {% elif bl == 100 %} mdi:battery
+                    {% else %} mdi:battery-unknown
+                    {% endif %}
+        # state_color: true
+        icon_color: |2-
+                    {% set bl = states(entity) | int %}
+                    {% if bl < 30 %} red
+                    {% elif bl < 60 %} orange
+                    {% elif bl <= 100 %} green
+                    {% else %} disabled
+                    {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action: 
+          action: more-info
+
+
+      - type: template
+        entity: binary_sensor.kids_area_status
+        icon: mdi:check-circle
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - kids_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

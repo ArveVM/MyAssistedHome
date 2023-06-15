@@ -31,7 +31,7 @@ lovelace:
       title: KidS Tablet
       icon: mdi:teddy-bear
       show_in_sidebar: false
-      filename: avm_yaml/dashboard/kids_tablet_dashboard.yaml
+      filename: dashboard/kids_tablet_dashboard.yaml
 
     kidm-tablet:
       mode: yaml
@@ -39,17 +39,4 @@ lovelace:
       icon: mdi:soccer
       show_in_sidebar: false
       filename: avm_yaml/dashboard/kidm_tablet_dashboard.yaml
-
-
-#  resources:
-  # Duplicates needed for casting...
-  #   info-source:  https://community.home-assistant.io/t/custom-element-doesnt-exist-but-only-when-casting/140458/14
-#  - url: /local/community/history-explorer-card/history-explorer-card.js
-#    type: module
-#  - url: /local/community/lovelace-fold-entity-row/fold-entity-row.js
-#    type: module
-
-#  - url: /local/community/button-card/button-card.js
-#    type: module
-
 

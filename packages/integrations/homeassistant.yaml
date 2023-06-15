@@ -10,3 +10,7 @@ homeassistant:
   internal_url: !secret HA_internal_url
   external_url: !secret HA_external_url
 #ArveVM; test to see if i can get cast dashboard to work
+
+
+  packages: !include_dir_named ../../../../packages
+ # packages: !include_dir_named packages
