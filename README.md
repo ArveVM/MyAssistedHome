@@ -7,18 +7,10 @@
 - Below you find an overview of the the configuration, and in chapters links to config/devices currently being used, links to blog/video posts, and other HA enthusists that provided inspiration and configs to help build this config. 
 <br />
 
-
-
-## All of the code is free to use; I only ask that you Star this repo.
+### All of the code is free to use; I only ask that you 'Star' this repo.
 
 <br />
 
-**I'm now moving documentation to the github-wiki, but are trying to get a top-down stucture which is about like this;**
-<img width="462" alt="image" src="https://user-images.githubusercontent.com/96014323/217190421-5449c9b5-5d6c-49ba-9dbe-157564f659a8.png">
-
-Direct link:  https://github.com/ArveVM/MyAssistedHome/wiki
-
-<br />
 <br />
 
 ## Wiki - Table of contents:
