@@ -1,0 +1,162 @@
+# lovelace_gen
+
+# ArveM: a bit of instructions:
+  # this card is supposed to be called with different entities from different areas:
+  # sample code for popup with office-heater data from the Office area card:
+        # tap_action:
+        #   action: fire-dom-event
+        #   browser_mod:
+        #     service: browser_mod.popup
+        #     data:
+        #       content: !include
+        #         - ../solutions/heater_card.yaml
+        #         - entity: input_boolean.office_heater_powerboost
+        #           powerauto: input_boolean.office_heater_powerauto
+        #           powerboost: input_boolean.office_heater_powerboost
+        #           powersave: input_boolean.office_heater_powersave
+        #           powerhoursave: input_boolean.office_heater_powerhoursave
+        #           powerswitch: switch.office_heater_plug
+        #           power: sensor.office_heater_plug_power
+        #           area_temp: *temp1
+        #           area_temp_compare: sensor.house_average_temperature
+        #           area_humidity: *humidity1
+        #           area_humidity_compare: sensor.house_average_temperature
+        #           longterm_target: input_number.office_heater_longterm_target
+        #           thermostat_target: sensor.office_heater_thermostat_target
+        #           thermostat_output: input_boolean.office_heater_thermostat_output
+
+
+
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: status
+      icon: mdi:radiator
+    card:
+      type: vertical-stack
+      cards:
+        - entity: "{{ powerboost }}"
+          type: custom:multiple-entity-row
+          name: "Heating:"
+          toggle: true
+          state_header: Boost
+          entities:
+            - entity: "{{ power }}"
+              name: Heating
+        - !include
+          - house_temp_comp_card.yaml
+          - entity: "{{ area_temp }}"
+            area_temp_compare: "{{ area_temp_compare }}"
+        - !include
+          - house_humidity_comp_card.yaml
+          - entity: "{{ area_humidity }}"
+            area_humidity_compare: "{{ area_humidity_compare }}"
+
+  - attributes:
+      label: Settings
+      icon: mdi:wrench
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - entity: "{{ area_temp }}"
+              type: custom:multiple-entity-row
+              name: "Local input:"
+              toggle: false
+              state_header: Area temp
+            - type: divider
+            - entity: "{{ powerauto }}"
+            - entity: "{{ thermostat_target }}"
+              type: custom:multiple-entity-row
+              name: "Auto-settings:"
+              state_header: ShortTarget
+              entities:
+                - entity: "{{ longterm_target }}"
+                  name: LongTarget
+                - entity: sensor.priceanalyzer
+                  name: Priceanalyzer
+            - entity: "{{ powersave }}"
+              type: custom:multiple-entity-row
+              name: "Override:"
+              toggle: true
+              state_header: PowerSave
+              entities:
+                - entity: "{{ powerboost }}"
+                  name: Boost
+                  toggle: true
+                - entity: "{{ powerhoursave }}"
+                  name: PowerHourSave
+                  toggle: true
+            - type: divider
+            - entity: "{{ power }}"
+              type: custom:multiple-entity-row
+              name: "Heating:"
+              toggle: false
+              state_header: Power
+              entities:
+                - entity: "{{ powerswitch }}"
+                  name: Heating
+                  toggle: true
+            - type: divider
+
+  - attributes:
+      label: History
+      icon: mdi:chart-line
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:history-explorer-card
+          cardName: history-heaters
+          header: hide # The hide option will remove the header entirely
+          uiLayout:
+            toolbar: top
+            selector: hide #bottom
+          stateColors:
+            binary_sensor.off: red
+            binary_sensor.on: green
+          graphs:
+            - type: line
+              entities:
+                - entity: "{{ area_temp }}"
+                  name: Area temp
+                  color: red
+                  fill: rgba(151,187,205,0.15)
+                  lineMode: curves
+                - entity: "{{ thermostat_target }}"
+                  name: Short Target
+                  suffix: °C
+                  color: lime
+                  lineMode: stepped
+                - entity: "{{ longterm_target }}"
+                  name: Long Target
+                  suffix: °C
+                  color: green
+                  lineMode: stepped
+                - entity: "{{ area_temp_compare }}"
+                  name: ComparableAverage
+                  suffix: °C
+                  color: orange
+                  lineMode: curves
+            - type: timeline
+              title: Non-numerical sensors
+              entities:
+                #- entity: binary_sensor.loft_heater_puck_input
+                #  name: Local Th
+                - entity: "{{ thermostat_output }}"
+                  name: Gen Th
+                - entity: "{{ powerauto }}"
+                  name: Auto
+                - entity: "{{ powerboost }}"
+                  name: Boost
+                - entity: "{{ powersave }}"
+                  name: P-save
+                - entity: "{{ powerhoursave }}"
+                  name: PH-save
+                - entity: "{{ powerswitch }}"
+                  name: Heat

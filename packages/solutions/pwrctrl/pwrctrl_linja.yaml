@@ -1,0 +1,41 @@
+# solution to provide input to Prizeanalyzer of 
+# actual power-proces besides the spot-price from Nordpool
+
+
+template:
+    sensor:
+      # Create sensor to caluclate the additional cost to the Nordpool-spot-price
+      - name: PwrCtrl Linja addcost
+        unique_id: d9726a0f-a34a-4eeb-9d05-4308ecc2e0c9
+        icon: mdi:strategy
+        unit_of_measurement: "NOK"
+        state: >
+          {% set hour = now().hour %}
+          {% set month = now().month %}
+          {% set year = now().year %}
+
+          {% set hour_start_night = 22 %}
+          {% set hour_start_day   = 6 %}
+
+          {% set spot_markup      = 0.029%}
+          {% set enova_fee        = 0.0125 %}
+          {% set state_fee        = 0.198 %}
+          
+          {% if month >= 7  %}
+            {% set transport_night  = 0.3667 - state_fee - enova_fee %}
+            {% set transport_day    = 0.4542 - state_fee - enova_fee %}
+          {% else %}
+            {% set transport_night  = 0.1500 %}
+            {% set transport_day    = 0.2250 %}
+          {% endif %}
+
+          {% set fee = spot_markup %}
+          {% set fee = fee + enova_fee %}
+          {% set fee = fee + state_fee %}
+
+          {% if hour >= hour_start_night or hour < hour_start_day %}
+            {% set fee = fee + transport_night %}
+          {% else%}
+            {% set fee = fee + transport_day %}
+          {% endif %}
+          {{ fee | round(4)}}

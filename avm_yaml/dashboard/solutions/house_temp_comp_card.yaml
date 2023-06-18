@@ -1,0 +1,61 @@
+# lovelace_gen
+
+# credits to Tommy Welle Jacobsson - HA-Norge-FacebookGroup for giving me the tip on this type config
+
+# and the brilliant ThomasLoven for lovelace_gen
+# use the following code to trigger card with whatever variables you would like (for me; for each area)
+#      - !include
+#        - ../../solutions/house_temp_comp_card.yaml
+#        - entity: *temp1
+#          area_temp_compare: sensor.house_average_temperature       #change to whatever you want to compare with
+
+type: custom:stack-in-card
+cards:
+  - type: grid
+    square: false
+    columns: 2
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: "{{ entity }}"
+        primary_info: state
+        secondary_info: name
+        name: Temp this area
+        icon_color: green
+      - type: custom:mushroom-entity-card
+        entity: "{{ area_temp_compare }}"
+        primary_info: state
+        secondary_info: name
+        name: Average temp
+        icon_color: orange
+
+  - type: custom:mini-graph-card
+    entities:
+      - entity: "{{ entity }}"
+        name: Temp this area
+        color: "#00bb33"
+      - entity: "{{ area_temp_compare }}"
+        name: Compare
+        color: orange
+      - color: yellow
+        entity: sun.sun
+        name: Sun
+        show_line: false
+        show_fill: true
+        show_points: false
+        show_legend: false
+        y_axis: secondary
+    hours_to_show: 24
+    line_width: 3
+    font_size: 50
+    animate: true
+    show:
+      name: false
+      icon: false
+      state: false
+      legend: false
+      fill: fade
+    state_map:
+      - value: below_horizon
+        label: Night
+      - value: above_horizon
+        label: Day
