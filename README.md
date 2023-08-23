@@ -19,6 +19,9 @@
 |[Wiki-home](https://github.com/ArveVM/MyAssistedHome/wiki/Home)| Startpage for documentation, the disclaimer, mentors and inspirators, princples, setup, the journey, base config, presentation and functionality add|
 |||
 |[3. Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions)   |About my method(s) for grouping "everything HA" in Solutions|
+|[3.1. General Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions#general-solutions) ||
+|[3.2. Area-specific Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions#area-specific-solutions) ||
+|[3.3. Backend-specific Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions#backend-solutions) ||
 |||
 <br />
 <br />
