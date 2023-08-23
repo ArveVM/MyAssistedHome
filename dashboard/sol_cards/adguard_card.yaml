@@ -2,49 +2,94 @@
 
 type: vertical-stack
 cards:
+  - type: horizontal-stack
+    cards:
+    - type: markdown
+      content: |
+        # [Adguard Solution](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Adguard)
+      
+    - type: markdown      
+      content: |
+        # [About Adguard](https://adguard.com/en/welcome.html)
+
   - type: markdown
     content: |
-      AdGuard filter 
+      ---     
+      Active web-filter for ALL devices on home network.
+      Home Assistant can turn off ad-filter if needed - turn off Home Filtering, and note exact time and device where issues occured and report to the administrator
 
-      Active filter for ALL devices on home network.
-      Home Assistant can turn off ad-filter  
-      if needed - turn off Home Filtering, 
-      and note exact time and device where issues occured 
-      and report to the administrator
-      more info on AdGuard: https://adguard.com/en/welcome.html
-
-  - type: entities
+  - entity: switch.adguard_home_filtering
+    type: custom:multiple-entity-row
+    name: "Protection/Filter:"
+    toggle: true
+    state_header: Filter ON
     entities:
       - entity: switch.adguard_home_protection
-      - entity: switch.adguard_home_filtering
-      - type: divider
-      - entity: input_datetime.adguard_filter_off_timer
+        name: Protection
+        toggle: true
+      #   toggle: true
+      # - entity: switch.adguard_home_filtering
+      #   name: Filtering
+      #   toggle: true
+      # - entity: timer.adguard_filter_off
+      #   name: Pause countdown
       - type: button
-        name: Pause Adguard ad-filtering
+        name: Pause filtering
         icon: mdi:pause
         tap_action:
           action: call-service
           # confirmation:
           #   text: Are you sure you want to pause AdGuard?
-          service: script.adguard_filter_off
-      - entity: timer.adguard_filter_off
-        name: Time left before filter activated again
-      - type: divider
+          service: script.adguard_home_filter_off
+      # - entity: switch.adguard_home_filtering
+      #   name: Filtering
+      #   toggle: true
+
+  - type: custom:fold-entity-row
+    head:
+      entity: timer.adguard_home_filter_off
+      name: "Adguard pause"
+    entities:    
+      - entity: input_datetime.adguard_home_filter_off_timer
+
+  # - type: entity
+  #   entity: switch.adguard_home_protection
+
+  # - type: entities
+  #   entities:
+  #     - entity: switch.adguard_home_protection
+  #     - entity: switch.adguard_home_filtering
+  #     - type: divider
+  #     - entity: input_datetime.adguard_filter_off_timer
+  #     - type: button
+  #       name: Pause Adguard ad-filtering
+  #       icon: mdi:pause
+  #       tap_action:
+  #         action: call-service
+  #         # confirmation:
+  #         #   text: Are you sure you want to pause AdGuard?
+  #         service: script.adguard_filter_off
+  #     - entity: timer.adguard_filter_off
+  #       name: Time left before filter activated again
+  #     - type: divider
+
 
   - type: custom:fold-entity-row
     head:
       type: section
-      label: "Adguard entities"
+      label: "List all Adguard entities"
     entities:    
       - type: custom:auto-entities
         card:
           type: entities
         filter:
           include:
-            - entity_id: "*adguard_home_*"
+            - entity_id: "*adguard_home*"
+            # - entity_id: "*adguard_home_*"
           exclude:
             - entity_id: switch.adguard_home_protection
             - entity_id: switch.adguard_home_filtering
+            - entity_id: switch.unraid1_docker_adguard_home
         sort:
           method: entity_id
           reverse: true

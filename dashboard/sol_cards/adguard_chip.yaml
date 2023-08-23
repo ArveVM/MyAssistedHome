@@ -1,7 +1,7 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
-entity: switch.adguard_home_protection
+entity: switch.adguard_home_filtering
 icon: mdi:shield-alert
 icon_color: "{{ 'disabled' if is_state(entity, 'on' ) else 'red' }}"
 tap_action:
@@ -12,5 +12,4 @@ tap_action:
       content:
         type: vertical-stack
         cards:
-          # - !include ../solutions/adguard_card.yaml
           - !include adguard_card.yaml
