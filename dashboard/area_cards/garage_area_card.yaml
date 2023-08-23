@@ -23,7 +23,7 @@ card_mod:
 cards:
   - type: custom:mushroom-template-card
     primary: Garage
-    secondary: >-
+    secondary: >
       {{states('sensor.garage_thp_temperature') | round(1,'', 11) }}°C -
       {{states('sensor.garage_thp_humidity') | round(0,'', 55)}}%
     icon: mdi:garage

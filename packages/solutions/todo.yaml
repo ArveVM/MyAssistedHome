@@ -10,12 +10,12 @@ template:
       - name: "toDo Counter"
         unique_id: sensor.todo_counter
         icon: mdi:list-status
-        state: >-
+        state: >
           {{ states.input_boolean
-          | selectattr('entity_id', 'search', '_todo$')
-          | selectattr('state', 'eq', 'on') 
-          | list 
-          | count 
+              | selectattr('entity_id', 'search', '_todo$')
+              | selectattr('state', 'eq', 'on') 
+              | list 
+              | count 
           }}
         attributes:
           solution: ToDo

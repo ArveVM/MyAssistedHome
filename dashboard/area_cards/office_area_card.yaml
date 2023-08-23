@@ -23,7 +23,7 @@ card_mod:
 cards:
   - type: custom:mushroom-template-card
     primary: Office
-    secondary: >-
+    secondary: >
       {{states('sensor.office_thp_temperature') | round(1,'', 19)}}°C -
       {{states('sensor.office_thp_humidity') | round(0,'', 44)}}%
     icon: mdi:desk

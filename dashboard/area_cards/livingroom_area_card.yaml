@@ -22,7 +22,7 @@ cards:
   - type: custom:mushroom-template-card
     entity: light.livingroom_lights_z2m
     primary: Livingroom
-    secondary: >-
+    secondary: >
       {{states('sensor.livingroom_netatmo_temperature')}}°C -
       {{states('sensor.livingroom_netatmo_humidity') | int}}%
     multiline_secondary: false

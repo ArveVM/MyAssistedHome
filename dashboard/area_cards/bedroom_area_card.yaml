@@ -24,7 +24,7 @@ cards:
   # First the main-card:
   - type: custom:mushroom-template-card
     primary: Bedroom
-    secondary: >-
+    secondary: >
       {{states('sensor.bedroom_thp_temperature') | round(1,'', 19)}}°C -
       {{states('sensor.bedroom_thp_humidity') | round(0,'', 44)}}%
     icon: mdi:bed
@@ -54,14 +54,6 @@ cards:
           --chip-spacing: 0;
         }
     chips:
-      # - type: template
-      #   entity: switch.kids_heater_puck
-      #   icon: mdi:radiator
-      #   icon_color: >
-      #     {{ 'blue' if states('sensor.kids_heater_puck_power') > '20' else 'disabled' }}
-      #   tap_action:
-      #     action: more-info
-
 
       - type: template
         entity: binary_sensor.bedroom_area_status

@@ -31,11 +31,11 @@ template:
           {% set temp3 = states('sensor.hallway_thp_temperature') | float(default=20) %}
           {{ ((temp1 + temp2 + temp3) / 3) | round(1) }}
         attributes:
-          Temp1 Livingroom: >-
+          Temp1 Livingroom: >
             {{states('sensor.livingroom_netatmo_temperature') | float(default=20) | round(1) }}
-          Temp2 Kitchen: >-
+          Temp2 Kitchen: >
             {{states('sensor.kitchen_thp_temperature') | float(default=20) | round(1) }}
-          Temp3 Hallway: >-
+          Temp3 Hallway: >
             {{states('sensor.hallway_thp_temperature') | float(default=20) | round(1) }}
 
       - name: House Average Humidity
@@ -48,11 +48,11 @@ template:
           {% set h3 = states('sensor.hallway_thp_humidity') | float(default=45) %}
           {{ ((h1 + h2 + h3) / 3) | round(1) }}
         attributes:
-          Humidity1 Livingroom: >-
+          Humidity1 Livingroom: >
             {{states('sensor.livingroom_netatmo_humidity') | float(default=45) | round(1) }}
-          Humidity2 Kitchen: >-
+          Humidity2 Kitchen: >
             {{states('sensor.kitchen_thp_humidity') | float(default=45) | round(1) }}
-          Humidity3 Hallway: >-
+          Humidity3 Hallway: >
             {{states('sensor.hallway_thp_humidity') | float(default=45) | round(1) }}
 
 script:

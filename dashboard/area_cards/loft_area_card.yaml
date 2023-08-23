@@ -19,7 +19,7 @@ card_mod:
 cards:
   - type: custom:mushroom-template-card
     primary: Loft
-    secondary: >-
+    secondary: >
       {{states('sensor.loft_thp_temperature') | round(1) }}°C -
       {{states('sensor.loft_thp_humidity') | int}}%
     icon: mdi:home-roof

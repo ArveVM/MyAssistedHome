@@ -81,7 +81,7 @@ template:
         unique_id: hotwater_soc_energy_stored
         icon: "mdi:lightning-bolt-outline"
         unit_of_measurement: "kWh"
-        state: >-
+        state: >
           {% set l = states('input_number.hotwater_soc_tanksize') | float %}
           {% set t2 = states('sensor.hotwater_soc_average_temperature') | float %}
           {% set k = 4.186 %}

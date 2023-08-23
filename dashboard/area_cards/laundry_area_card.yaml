@@ -20,7 +20,7 @@ cards:
   - type: custom:mushroom-template-card
     entity: light.laundry_lights_puck
     primary: Laundry
-    secondary: >-
+    secondary: >
       {{states('sensor.laundry_thp_temperature') | round(1,'', 19)}}°C -
       {{states('sensor.laundry_thp_humidity') | round(0,'', 44)}}%
     multiline_secondary: false

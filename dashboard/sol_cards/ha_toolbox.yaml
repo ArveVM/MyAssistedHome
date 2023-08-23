@@ -28,7 +28,7 @@ cards:
                   show_temperature: true
 
                 - type: template
-                  content: >-
+                  content: >
                     HA:{{states('sensor.processor_use')}}%
                     unR:{{states('sensor.glances_cpu_used') | int }}%
                   icon: mdi:cpu-64-bit
@@ -86,23 +86,16 @@ cards:
                         path: /config/dashboard
 
                 - type: section
-                  label: HA-addons
-                - type: weblink
-                  name: BackupGoogle-addon - dashboard
-                  url: >
-                    http://homeassistant.local:8123/hassio/ingress/cebe7a76_hassio_google_drive_backup
-                  icon: mdi:backup-restore
-                - type: weblink
-                  name: File Editor-addon - dashboard
-                  url: http://homeassistant.local:8123/hassio/ingress/core_configurator
-                  icon: mdi:wrench
-                - type: section
                   label: "External-stuff (prereq=LAN-access!!):"
                 - type: weblink
                   name: UDMP - Firewall++
                   url: https://192.168.2.1/login?redirect=%2F
                   icon: mdi:ip-network
                 - type: divider
+                - type: weblink
+                  name: Homepage
+                  url: http://192.168.2.141:3003/
+                  icon: mdi:ip-network
                 - type: weblink
                   name: unRaid - mgmt dashboard
                   url: http://192.168.2.141/Dashboard

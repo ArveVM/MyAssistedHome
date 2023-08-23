@@ -52,7 +52,7 @@ template:
         icon: mdi:power-plug
         attributes:
           <<: *solution_attribute
-        state: >-
+        state: >
           {% set main = states('sensor.pwrctrl_use_total') | int(default=0)%}
           {{max(0,main
           - states('sensor.pwrctrl_use_grouped_power') | int(default=0)
@@ -63,7 +63,7 @@ template:
         icon: mdi:power-plug
         attributes:
           <<: *solution_attribute
-        state: >-
+        state: >
           {% set main = states('sensor.pwrctrl_use_total') | int(default=0)%}
           {{min(0,main
           - states('sensor.pwrctrl_use_grouped_power') | int(default=0)
@@ -75,7 +75,7 @@ template:
         icon: mdi:power-plug
         attributes:
           <<: *solution_attribute
-        state: >-
+        state: >
           {% set main = states('sensor.power_usage_total') | int(default=0)%}
           {{min(0,main
           - states('sensor.power_usage_carcharger') | int(default=0)

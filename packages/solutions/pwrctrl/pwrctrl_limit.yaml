@@ -67,7 +67,7 @@ template:
       # - name: "PwrCtr Limit restHour increase possible"
       #   unique_id: 5cd06e0a-4361-4214-9237-1ab4c3fa68e3
       #   unit_of_measurement: "kW"
-      #   state: >-
+      #   state: >
       #     {% set currentusage = (states('sensor.pwrctrl_use_total') | float) / 1000 %}
       #     {% set hourtrend = states('sensor.pwrctrl_limit_fullhour_trend') | float %}
       #     {% set limit = states('input_number.pwrctrl_limit_capacity_limit') | float %}

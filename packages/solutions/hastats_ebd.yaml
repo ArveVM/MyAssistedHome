@@ -37,7 +37,7 @@ template:
       - name: HAstats EbD total checksum
         unique_id: hastats_ebd_total_checksum
         state_class: measurement
-        state: >-
+        state: >
           {{states('sensor.hastats_ebd_total') | float(default=0)
           - states('sensor.hastats_ebd_alerts') | float(default=0)
           - states('sensor.hastats_ebd_automations') | float(default=0)

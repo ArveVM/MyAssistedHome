@@ -21,7 +21,7 @@ cards:
   - type: custom:mushroom-template-card
     entity: light.kidm_lightbulb
     primary: KidM
-    secondary: >-
+    secondary: >
       {{states('sensor.hallway_thp_temperature') | round(1,'', 19)}}°C -
       {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
     multiline_secondary: false

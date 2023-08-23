@@ -101,7 +101,7 @@ cards:
           type: vertical-stack
           cards:
             - type: markdown
-              content: >-
+              content: >
                 # Video-overvåking #
 
                 Status frå Frigate

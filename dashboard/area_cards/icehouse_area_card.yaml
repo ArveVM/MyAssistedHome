@@ -13,7 +13,7 @@ cards:
   - type: custom:mushroom-template-card
     entity: light.icehouse_light_bulbs
     primary: IceHouse
-    secondary: >-
+    secondary: >
       {{states('sensor.icehouse_thp_temperature') | round(0,'', 11)}}°C
     icon: mdi:ice-cream
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"

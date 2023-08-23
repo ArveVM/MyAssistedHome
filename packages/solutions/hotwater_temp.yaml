@@ -79,7 +79,7 @@ template:
         unit_of_measurement: "°C"
         attributes:
           <<: *solution_attribute
-        state: >-
+        state: >
           {%set bottom = states('sensor.hotwater_puck_bottom_temperature.state') | float(default=45) %}
           {%set top = states('sensor.hotwater_temp_mixscrew_filtererd_temperature') | float(default=55) %}
           {{bottom - top}}
@@ -100,7 +100,7 @@ template:
         state_class: measurement
         attributes:
           <<: *solution_attribute
-        state: >-
+        state: >
           {%set bottom = states.sensor.hotwater_puck_bottom_temperature.state | float(default=45) %}
           {%set top = states.sensor.hotwater_puck_mixscrew_temperature.state | float(default=55) %}
           {{(bottom + top)/2}}

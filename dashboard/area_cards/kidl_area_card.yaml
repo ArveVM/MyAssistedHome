@@ -20,7 +20,7 @@ cards:
   # First the main-card:
   - type: custom:mushroom-template-card
     primary: KidL
-    secondary: >-
+    secondary: >
       {{states('sensor.kidl_floor_heater_local_temperature') | round(1,'', 19)}}°C -
       {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
     icon: mdi:google-downasaur
