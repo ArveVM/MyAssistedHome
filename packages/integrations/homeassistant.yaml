@@ -12,5 +12,5 @@ homeassistant:
 #ArveVM; test to see if i can get cast dashboard to work
 
 
-  packages: !include_dir_named ../../../../packages
+  # packages: !include_dir_named ../../../../packages
  # packages: !include_dir_named packages
