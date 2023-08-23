@@ -1,0 +1,80 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.outside_light1', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  - type: custom:mushroom-template-card
+    primary: Outside
+    secondary: >-
+      {{states('sensor.outside_netatmo_temperature') | round(1,'', 11)}}°C -
+      {{states('sensor.outside_netatmo_humidity') | round(0,'', 55)}}%
+    icon: mdi:cloud
+    #icon_color: disabled
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    entity: light.outside_light1
+    tap_action: none
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    #card_mod:
+    #  style: |
+    #    :host([dark-mode]) {
+    #      background: rgba(var(--rgb-primary-background-color), 0.2);
+    #    }
+    #    :host {
+    #      background: rgba(var(--rgb-primary-text-color), 0.025);
+    #    }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: action
+        icon_color: yellow
+        icon: mdi:lightbulb
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include outside_light_card.yaml
+
+      - type: action
+        icon: mdi:devices
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/outside
+
+      - type: template
+        entity: binary_sensor.entry_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action: none

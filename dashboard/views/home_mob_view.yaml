@@ -1,0 +1,149 @@
+title: "Home"
+path: "Home_mobile"
+
+
+cards:
+  # # ----------  Chips-row 0 -----------
+  - type: custom:swipe-card
+    parameters:
+    start_card: 2
+    simulateTouch: true
+    spaceBetween: 4
+    preventInteractionOnTransition: true
+    freeMode: true
+    cards:
+      # Card/page1:
+      - type: custom:mushroom-chips-card
+        alignment: justify
+        chips:
+          - !include ../sol_cards/guest_wifi_chip.yaml
+          
+          - !include ../sol_cards/cert_expiry_chip.yaml
+          
+          - !include ../sol_cards/todo_chip.yaml
+
+          - !include ../sol_cards/adguard_chip.yaml
+
+          - type: template
+            icon: mdi:soccer
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - type: custom:teamtracker-card
+                        entity: sensor.liverpool
+
+          - !include ../sol_cards/openuv_chip.yaml
+
+
+
+      # Card/page2 - StartPage:
+      - type: custom:mushroom-chips-card
+        alignment: justify
+        chips:
+          - !include ../sol_cards/weather_chip.yaml
+
+          - !include ../sol_cards/todo_chip.yaml
+          
+          - !include ../sol_cards/carcharging_chip.yaml
+          
+          - !include ../sol_cards/mail_chip.yaml
+          
+          - !include ../sol_cards/minrenovasjon_chip.yaml
+          
+          - !include ../sol_cards/cpu_chip.yaml
+
+          - !include ../sol_cards/hotwater_soc_chip.yaml
+
+
+
+      # Card/page3:
+      - type: custom:mushroom-chips-card
+        alignment: left
+        chips:
+
+          - type: action
+            icon: mdi:hammer
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../sol_cards/ha_toolbox.yaml
+
+          - !include ../sol_cards/fuel_app_chip.yaml
+
+  - type: vertical-stack
+    cards:
+      # # ---------   POWER !!        -----------
+
+      - !include ../sol_cards/pwrctrl_use_price_card.yaml
+
+      # # ---------   Area-cards, swipe over two "pages"        -----------
+      - type: custom:swipe-card
+        parameters:
+        start_card: 2
+        simulateTouch: true
+        spaceBetween: 8
+        preventInteractionOnTransition: true
+        freeMode: true
+        cards:
+          # Card/page1:
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Hello, {{user}}
+                secondary: 7-days listing of calendar HA-shared,, click to refresh
+                icon: mdi:home
+                tap_action:
+                  action: call-service
+                  service: homeassistant.reload_config_entry
+                  data: {}
+                  target:
+                    entity_id: calendar.ha_shared
+              - type: custom:atomic-calendar-revive
+                entities:
+                  - entity: calendar.ha_shared
+                    name: HA-shared
+                  - entity: calendar.minrenovasjon
+                    name: MinRenovasjon
+                firstDayOfWeek: 1
+                maxDaysToShow: 7
+                showWeekDay: true
+                refreshInterval: 60
+
+          # Card/page2:
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - !include ../area_cards/livingroom_area_card.yaml
+              - !include ../area_cards/kitchen_area_card.yaml
+              - !include ../area_cards/laundry_area_card.yaml
+              - !include ../area_cards/loft_area_card.yaml
+              - !include ../area_cards/bathroom_area_card.yaml
+              - !include ../area_cards/hallway_area_card.yaml
+              - !include ../area_cards/office_area_card.yaml
+              - !include ../area_cards/serverroom_area_card.yaml
+
+          # Card/page3:
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - !include ../area_cards/kidl_area_card.yaml
+              - !include ../area_cards/kidm_area_card.yaml
+              - !include ../area_cards/kids_area_card.yaml
+              - !include ../area_cards/bathroom2_area_card.yaml
+              - !include ../area_cards/entry_area_card.yaml
+              - !include ../area_cards/icehouse_area_card.yaml
+              - !include ../area_cards/outside_area_card.yaml
+              - !include ../area_cards/garage_area_card.yaml
+

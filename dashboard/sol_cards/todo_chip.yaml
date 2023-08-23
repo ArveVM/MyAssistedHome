@@ -1,0 +1,26 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+type: conditional
+conditions:
+  - entity: sensor.todo_counter
+    state_not: "0"
+chip:
+  type: template
+  icon_color: disabled
+  icon: mdi:format-list-checks
+  tap_action:
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        content:
+          type: custom:auto-entities
+          card:
+            type: entities
+            title: "ToDo-tasks:"
+          filter:
+            include:
+              - entity_id: "*todo"
+            exclude:
+              - state: "off"
+

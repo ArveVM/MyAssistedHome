@@ -1,0 +1,153 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: Forecast
+      icon: mdi:weather-sunny-alert
+    card:
+      type: vertical-stack
+      cards:
+        - type: vertical-stack
+          cards:
+            - type: weather-forecast
+              entity: weather.mylocation
+              secondary_info_attribute: wind_speed
+              name: E220
+              show_current: true
+              show_forecast: true
+            - type: weather-forecast
+              entity: weather.mylocation_hourly
+              secondary_info_attribute: wind_bearing
+              show_current: false
+              show_forecast: true
+            - type: iframe
+              url: !secret yr_weather_link
+              # aspect_ratio: 110%
+              aspect_ratio: 110%
+
+  - attributes:
+      label: Sun and moon
+      icon: mdi:sun-angle
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:horizon-card
+          use12hourClock: false
+        - type: entity
+          entity: sun.sun
+          content_info: none
+        - type: entity
+          entity: sensor.moon_phase
+
+  - attributes:
+      label: Tide
+      icon: mdi:waves
+    card:
+      type: vertical-stack
+      cards:
+        - type: glance
+          entities:
+            - entity: sensor.mylocation_tide_ebb_flow
+            - entity: sensor.mylocation_tide_state
+            - entity: binary_sensor.mylocation_tide_ebbing
+            - entity: binary_sensor.mylocation_tide_flowing
+          show_name: false
+        - type: "custom:apexcharts-card"
+          graph_span: 36h
+          span:
+            offset: +24h
+          now:
+            show: true
+            label: Now
+          header:
+            show: true
+            title: Tidewater
+            show_states: true
+          series:
+            - entity: sensor.mylocation_tide_main
+              name: Prediction
+              show:
+                extremas: time
+                in_header: before_now
+                legend_value: false
+              data_generator: |
+                return entity.attributes.data.map((entry) => {
+                  return [new Date(entry.datetime).getTime(), entry.prediction];
+                });
+            - entity: sensor.mylocation_tide_main
+              name: Forecast
+              show:
+                in_header: before_now
+                legend_value: false
+              data_generator: |
+                return entity.attributes.data.map((entry) => {
+                  return [new Date(entry.datetime).getTime(), entry.forecast];
+                });
+            - entity: sensor.mylocation_tide_main
+              name: Observation
+              show:
+                in_header: before_now
+                legend_value: false
+              data_generator: |
+                return entity.attributes.data.map((entry) => {
+                  return [new Date(entry.datetime).getTime(), entry.observation];
+                });
+        - type: entities
+          entities:
+            - entity: sensor.mylocation_tide_main
+            - entity: sensor.mylocation_tide_next
+            - entity: sensor.mylocation_tide_time_to_next
+            - entity: sensor.mylocation_tide_next_high
+            - entity: sensor.mylocation_tide_time_to_next_high
+            - entity: sensor.mylocation_tide_next_low
+            - entity: sensor.mylocation_tide_time_to_next_low
+        - type: history-graph
+          entities:
+            - entity: sensor.mylocation_tide_ebb_flow
+            - entity: sensor.mylocation_tide_state
+          hours_to_show: 24
+          refresh_interval: 0
+        - type: horizontal-stack
+          cards:
+            - type: conditional
+              conditions:
+                - entity: binary_sensor.mylocation_tide_ebbing
+                  state: "on"
+              card:
+                type: glance
+                entities:
+                  - entity: binary_sensor.mylocation_tide_ebbing
+                show_name: false
+                show_state: false
+            - type: conditional
+              conditions:
+                - entity: binary_sensor.mylocation_tide_flowing
+                  state: "on"
+              card:
+                type: glance
+                entities:
+                  - entity: binary_sensor.mylocation_tide_flowing
+                show_name: false
+                show_state: false
+
+  - attributes:
+      label: test
+      icon: mdi:hammer
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-chips-card
+          chips:
+            - type: template
+              content: >-
+                {% if states.sun.sun %} {{
+                (as_timestamp(states.sun.sun.attributes.next_rising)) |
+                timestamp_custom(('%H:%M') )}} {% endif %}
+                - {% if states.sun.sun %} {{
+                (as_timestamp(states.sun.sun.attributes.next_setting)) |
+                timestamp_custom(('%H:%M') )}} {% endif %}
+              icon: mdi:weather-sunset-up

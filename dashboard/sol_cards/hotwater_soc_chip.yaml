@@ -1,0 +1,66 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+type: template
+entity: sensor.hotwater_soc
+# content: >
+#   {{states(entity) | int }}%
+icon: mdi:thermometer-water
+icon_color: >
+  {% set t=states(entity) | float(default=3) %}
+  {% if t >= 40 %}
+    white
+  {% elif t >= 20 %}
+    orange
+  {% else %}
+    red
+  {% endif %}
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include hotwater_card.yaml
+card_mod:
+  #AVM; radial-gradient gives thickness of the actual outer circle
+  # many thanks to RhysB for the idea/concept: https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/4904
+  style: |
+    ha-card:before {
+      content: "";
+      position: absolute;
+      height: var(--chip-height);
+      width: var(--chip-height);
+      border-radius: 70%;
+      background: radial-gradient(var(--card-background-color) 68%, transparent 0%), 
+        conic-gradient(rgb(var(--rgb-disabled)) {{ (states(config.entity) |float ) }}% 0%, 
+        var(--card-background-color) 0% 100%);
+    }
+
+
+
+
+# # ArveVM; follow link for further documentation and appraisals:
+# # https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
+
+# type: "custom:button-card"
+# template: chip_icon_double_state
+# variables:
+#   ulm_chip_icon_double_state_icon: "🚰"
+#   ulm_chip_icon_double_state_entity_1: sensor.hotwater_soc
+#   ulm_chip_icon_double_state_entity_2: sensor.hotwater_soc_average_temperature
+
+# tap_action:
+#   action: fire-dom-event
+#   browser_mod:
+#     service: browser_mod.popup
+#     data:
+#       content:
+#         type: vertical-stack
+#         cards:
+#           - !include hotwater_soc_card.yaml
+
+# # hold_action:
+# #   action: navigate
+# #   navigation_path: Workshop

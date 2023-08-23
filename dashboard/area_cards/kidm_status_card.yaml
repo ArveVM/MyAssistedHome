@@ -1,0 +1,79 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: status
+      icon: mdi:hospital
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-entity-card
+          entity: binary_sensor.kidm_area_status
+        - type: markdown
+          content: |
+            Area Status checkpoints:
+              {% set ns = namespace(count = 0) %}
+              {% for attr in states.binary_sensor.kidm_area_status.attributes %}
+              {%- if not attr=="friendly_name" 
+                  and not attr=="unit_of_measurement"
+                  and not attr=="device_class"
+                  and not attr=="solution"     
+                  and not attr=="icon" -%}
+              {%- set ns.count = ns.count+1 %}
+              #{{ ns.count }} - {{attr}}      = {{states.binary_sensor.kidm_area_status.attributes [attr] }}
+              {%- endif %}
+              {%- endfor %}
+            Total count: {{ns.count}}
+
+  - attributes:
+      label: D&E
+      icon: mdi:list-box
+    card:
+      type: custom:restriction-card
+      restrictions:
+        block:
+          exemptions:
+            - user: !secret Restriction_admin1
+            - user: !secret Restriction_admin2
+            - user: !secret Restriction_admin3
+      card:
+        type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Area devices
+            secondary: ""
+            icon: mdi:devices
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.sequence
+                data:
+                  sequence:
+                    - service: browser_mod.navigate
+                      data:
+                        deviceID: THIS
+                        path: /config/areas/area/kidm
+                    - service: browser_mod.close_popup
+                      data:
+                        deviceID: THIS
+
+          - type: entities
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  type: section
+                  label: "Enteties with 'KidM' in name"
+                entities:
+                  - type: custom:auto-entities
+                    show_empty: false
+                    card:
+                      type: entities
+                    filter:
+                      include:
+                        - entity_id: "*kidm*"
+                          options:
+                            secondary_info: last-changed

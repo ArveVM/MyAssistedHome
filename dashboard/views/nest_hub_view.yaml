@@ -1,0 +1,169 @@
+
+title: "Nest Hub"
+path: "nest_hub"
+type: panel
+
+cards:
+  - type: vertical-stack
+    cards:
+      # #####  first a row of chips   ############################################################################################
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips:
+          - !include ../sol_cards/weather_chip.yaml
+
+          - !include ../sol_cards/todo_chip.yaml
+
+          - !include ../sol_cards/carcharging_chip.yaml
+
+          - !include ../sol_cards/mail_chip.yaml
+
+          - !include ../sol_cards/minrenovasjon_chip.yaml
+          
+          - !include ../sol_cards/cpu_chip.yaml
+
+          - !include ../area_cards/house_light_chip.yaml
+                                    
+          - !include ../sol_cards/hotwater_soc_chip.yaml
+
+          - !include ../sol_cards/camera_chip.yaml
+
+          - !include ../sol_cards/guest_wifi_chip.yaml
+
+          - !include ../sol_cards/cert_expiry_chip.yaml
+
+          - !include ../sol_cards/adguard_chip.yaml
+          
+          - type: action
+            icon: mdi:hammer
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  content:
+                    type: vertical-stack
+                    cards:
+                      - !include ../sol_cards/ha_toolbox.yaml
+
+
+      # #####  Then main   ############################################################################################
+      - type: horizontal-stack
+        cards:
+
+          # #####  Then main  - LEFT SIDE  ############################################################################################
+          - type: vertical-stack
+            cards:
+
+              # # ---------   POWER !!        -----------
+              - !include ../sol_cards/pwrctrl_use_price_card3.yaml
+
+              - type: horizontal-stack
+                cards:
+
+                  # #####  Then main  - LEFT-LEFT SIDE  ############################################################################################
+                  - type: vertical-stack
+                    cards:
+                      - !include ../sol_cards/pwrctrl_use_price_card31.yaml
+
+                      - type: custom:mushroom-template-card
+                        primary: Hello, {{user}}
+                        secondary: 7-days listing of calendar HA-shared,, click to refresh
+                        icon: mdi:home
+                        tap_action:
+                          action: call-service
+                          service: homeassistant.reload_config_entry
+                          data: {}
+                          target:
+                            entity_id: calendar.ha_shared'
+
+                      - type: custom:auto-entities
+                        card:
+                          type: entities
+                          title: Shellys unavailable
+                          show_header_toggle: false
+                        filter:
+                          include:
+                            - entity_id: switch.bathroom_heater_puck
+                            - entity_id: switch.bathroom2_heater_puck
+                            - entity_id: light.christmas_tree
+                            - entity_id: switch.dishwasher_plug
+                            - entity_id: switch.entry_heater_puck
+                            - entity_id: switch.freezerdownstairs
+                            - entity_id: switch.garage_dad
+                            - entity_id: switch.garage_t
+                            - entity_id: light.hallway_switch_up_2_2
+                            - entity_id: switch.hotwater_puck
+                            - entity_id: light.kidl_light_puck
+                            - entity_id: light.kidm_lightbulb
+                            - entity_id: switch.kitchen_heater
+                            - entity_id: switch.kitchen_heatpump
+                            - entity_id: switch.kitchen_switch1
+                            - entity_id: switch.laundry_dryer_plug
+                            - entity_id: switch.laundry_freezer
+                            - entity_id: switch.laundry_heater_puck
+                            - entity_id: light.laundry_lights_puck
+                            - entity_id: switch.laundry_washer_puck
+                            - entity_id: light.livingroom_lounge
+                            - entity_id: light.livingroom_diningtable
+                            - entity_id: light.loft      
+                            - entity_id: switch.loft_heater_plug
+                            - entity_id: switch.office_heater_plug
+                            - entity_id: switch.server_rack_plug
+                            - entity_id: switch.workshop_washer
+                          exclude:
+                            - state: "off"
+                            - state: "on"
+                            # - entity_category: sensors
+                            # - entity_category: config
+                            # - entity_category: diagnostics
+
+
+                  # # #####  Then main  - LEFT-RIGHT SIDE  ############################################################################################
+                  - !include ../sol_cards/calendar_7days_card.yaml
+                  
+                  # - type: custom:atomic-calendar-revive
+                  #   entities:
+                  #     - entity: calendar.ha_shared
+                  #       name: Ha-shared
+                  #     - entity: calendar.minrenovasjon
+                  #       name: MinRenovasjon
+                  #   firstDayOfWeek: 1
+                  #   maxDaysToShow: 7
+                  #   showWeekDay: true
+                  #   showMultiDay: true
+                  #   calShowDescription: true
+                  #   refreshInterval: 60
+                  #   showLocation: false
+
+          # #####  Then main  - RIGHT SIDE  ############################################################################################
+          - type: vertical-stack
+            cards:
+              - type: grid
+                columns: 3
+                square: false
+                cards:
+                  # - !include ../cards/blank_card.yaml
+                  - !include ../area_cards/livingroom_area_card.yaml
+                  - !include ../area_cards/kitchen_area_card.yaml
+                  - !include ../area_cards/laundry_area_card.yaml
+
+                  - !include ../area_cards/bathroom_area_card.yaml
+                  - !include ../area_cards/loft_area_card.yaml
+                  - !include ../area_cards/hallway_area_card.yaml                  
+                  
+                  - !include ../area_cards/kidl_area_card.yaml
+                  - !include ../area_cards/kidm_area_card.yaml
+                  - !include ../area_cards/kids_area_card.yaml
+
+                  - !include ../area_cards/bathroom2_area_card.yaml
+                  - !include ../area_cards/office_area_card.yaml
+                  - !include ../area_cards/entry_area_card.yaml
+
+                  - !include ../area_cards/workshop_area_card.yaml
+                  - !include ../area_cards/serverroom_area_card.yaml
+                  - !include ../area_cards/icehouse_area_card.yaml
+
+                  - !include ../area_cards/garage_area_card.yaml
+                  - !include ../area_cards/outside_area_card.yaml
+                  - !include ../area_cards/bedroom_area_card.yaml

@@ -1,0 +1,316 @@
+title: Server
+path: server
+cards:
+  # # # ----------   stack of stacks   -----------
+  # - stack level1 - just to keep everyting in one column so sorting is same on pc/mobile
+  - type: vertical-stack
+    cards:
+      # # # ----------   view-header   -----------
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: back
+
+              - type: template
+                content: "- - server/HA"
+
+      # ---------   gamle chips   -----------
+      - type: horizontal-stack
+        cards:
+          - type: "custom:button-card"
+            color_type: blank-card
+
+          - type: custom:button-card
+            entity: sensor.glances_core_0_temperature
+            icon: mdi:cpu-64-bit
+            aspect_ratio: 1/1
+            name: HA
+            styles:
+              card:
+                - background-color: "#000044"
+                - border-radius: 10%
+                - padding: 10%
+                - color: ivory
+                - font-size: 12px
+                - text-shadow: 0px 0px 5px black
+                - text-transform: capitalize
+              grid:
+                - grid-template-areas: '"i temp" "n n" "cpu cpu" "ram ram" "disk disk"'
+                - grid-template-columns: 1fr 1fr
+                - grid-template-rows: 1fr min-content min-content min-content min-content
+              name:
+                - font-weight: bold
+                - font-size: 13px
+                - color: white
+                - align-self: middle
+                - justify-self: start
+                - padding-bottom: 6px
+              img_cell:
+                - justify-content: start
+                - align-items: start
+                - margin: none
+              icon:
+                - color: |
+                    [[[
+                      if (entity.state < 60) 
+                        return 'green'; 
+                      if (entity.state >= 80
+                      && entity.state < 80)
+                        return 'yellow';
+                      else return 'red';
+                    ]]]
+                - width: 70%
+                - margin-top: "-10%"
+              custom_fields:
+                temp:
+                  - align-self: start
+                  - justify-self: end
+                cpu:
+                  - padding-bottom: 2px
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": '[[[ if (states["sensor.processor_use"].state > 80) return "red"; ]]]'
+                ram:
+                  - padding-bottom: 2px
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": >-
+                      [[[ if (states["sensor.memory_use_percent"].state > 80) return "red";
+                      ]]]
+                disk:
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": >-
+                      [[[ if (states["sensor.disk_use_percent"].state > 80) return "red";
+                      ]]]
+            custom_fields:
+              temp: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:thermometer"
+                    style="width: 12px; height: 12px; color: yellow;">
+                    </ha-icon><span>${entity.state}°C</span>`
+                ]]]
+              cpu: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:server"
+                    style="width: 12px; height: 12px; color: green;">
+                    </ha-icon><span>CPU: <span style="color: var(--text-color-sensor);">${states['sensor.processor_use'].state}%</span></span>`
+                ]]]
+              ram: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:memory"
+                    style="width: 12px; height: 12px; color: deepskyblue;">
+                    </ha-icon><span>RAM: <span style="color: var(--text-color-sensor);">${states['sensor.memory_use_percent'].state}%</span></span>`
+                ]]]
+              disk: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:harddisk"
+                    style="width: 12px; height: 12px; color: deepskyblue;">
+                    </ha-icon><span>DISK: <span style="color: var(--text-color-sensor);">${states['sensor.disk_use_percent'].state}%</span></span>`
+                ]]]
+
+          - type: custom:button-card
+            entity: sensor.glances_core_0_temperature
+            icon: mdi:cpu-64-bit
+            aspect_ratio: 1/1
+            name: unR
+            styles:
+              card:
+                - background-color: "#000044"
+                - border-radius: 10%
+                - padding: 10%
+                - color: ivory
+                - font-size: 12px
+                - text-shadow: 0px 0px 5px black
+                - text-transform: capitalize
+              grid:
+                - grid-template-areas: '"i temp" "n n" "cpu cpu" "ram ram" "disk disk"'
+                - grid-template-columns: 1fr 1fr
+                - grid-template-rows: 1fr min-content min-content min-content min-content
+              name:
+                - font-weight: bold
+                - font-size: 13px
+                - color: white
+                - align-self: middle
+                - justify-self: start
+                - padding-bottom: 6px
+              img_cell:
+                - justify-content: start
+                - align-items: start
+                - margin: none
+              icon:
+                - color: |
+                    [[[
+                      if (entity.state < 60) 
+                        return 'green'; 
+                      if (entity.state >= 80
+                      && entity.state < 80)
+                        return 'yellow';
+                      else return 'red';
+                    ]]]
+                - width: 70%
+                - margin-top: "-10%"
+              custom_fields:
+                temp:
+                  - align-self: start
+                  - justify-self: end
+                cpu:
+                  - padding-bottom: 2px
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": '[[[ if (states["sensor.glances_cpu_used"].state > 80) return "red"; ]]]'
+                ram:
+                  - padding-bottom: 2px
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": >-
+                      [[[ if (states["sensor.memory_use_percent"].state > 80) return "red";
+                      ]]]
+                disk:
+                  - align-self: middle
+                  - justify-self: start
+                  - "--text-color-sensor": >-
+                      [[[ if (states["sensor.disk_use_percent"].state > 80) return "red";
+                      ]]]
+            custom_fields:
+              temp: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:thermometer"
+                    style="width: 12px; height: 12px; color: yellow;">
+                    </ha-icon><span>${entity.state}°C</span>`
+                ]]]
+              cpu: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:server"
+                    style="width: 12px; height: 12px; color: green;">
+                    </ha-icon><span>CPU: <span style="color: var(--text-color-sensor);">${states['sensor.glances_cpu_used'].state}%</span></span>`
+                ]]]
+              ram: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:memory"
+                    style="width: 12px; height: 12px; color: deepskyblue;">
+                    </ha-icon><span>RAM: <span style="color: var(--text-color-sensor);">${states['sensor.glances_ram_used_percent'].state}%</span></span>`
+                ]]]
+              disk: |
+                [[[
+                  return `<ha-icon
+                    icon="mdi:harddisk"
+                    style="width: 12px; height: 12px; color: deepskyblue;">
+                    </ha-icon><span>DISK: <span style="color: var(--text-color-sensor);">${states['sensor.disk_use_percent'].state}%</span></span>`
+                ]]]
+
+          - type: "custom:button-card"
+            color_type: blank-card
+
+      # ---------   grafer   -----------
+      - type: vertical-stack
+        cards:
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.glances_cpu_used
+                name: unRaid CPU
+              - entity: sensor.processor_use
+                name: HA CPU
+              - entity: sensor.docker_frigate_1cpu
+                name: Frigate CPU
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.glances_ram_used_percent
+                name: unRaid RAM
+              - entity: sensor.memory_use_percent
+                name: HA RAM
+              - entity: sensor.docker_frigate_memory_percent
+                name: HA RAM
+
+      # # ---------    EntityCheck - body   -----------
+      - type: vertical-stack
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: custom:fold-entity-row
+              head:
+                type: section
+                label: Unavailable Entities
+              # type: entities
+              # title: Unavailable Entities
+            filter:
+              include:
+                - state: unavailable
+                  sort:
+                    method: name
+            show_empty: false
+
+          - type: entities
+            # idea from: https://community.home-assistant.io/t/wth-why-cant-i-easily-see-which-devices-sensors-are-not-working/221662/10
+            title: Zigbee Entities
+            entities:
+              - type: custom:auto-entities
+                card:
+                  type: custom:fold-entity-row
+                  head:
+                    type: section
+                    label: Sort by Last Seen
+                filter:
+                  include:
+                    - attributes:
+                        linkquality: null
+                      options:
+                        type: attribute
+                        attribute: linkquality
+                        secondary_info: last-updated
+                    - attributes:
+                        linkquality: "> 0"
+                      options:
+                        type: attribute
+                        attribute: linkquality
+                        suffix: LQI
+                        secondary_info: last-updated
+                sort:
+                  method: last_updated
+                  reverse: false
+              - type: custom:auto-entities
+                card:
+                  type: custom:fold-entity-row
+                  head:
+                    type: section
+                    label: Sort by Link Quality
+                filter:
+                  include:
+                    - attributes:
+                        linkquality: null
+                      options:
+                        type: attribute
+                        attribute: linkquality
+                        secondary_info: last-updated
+                      sort:
+                        method: name
+                    - attributes:
+                        linkquality: ">= 0"
+                      options:
+                        type: attribute
+                        attribute: linkquality
+                        suffix: LQI
+                        secondary_info: last-updated
+                      sort:
+                        method: attribute
+                        attribute: linkquality
+                        numeric: true
+
+      - !include ../sol_cards/hastats_card.yaml
+      # # ---------    Count HA YAML-lines   -----------
+#      - !include ../solutions/hastats_integrations_count.yaml
+#ff
+
+# # ---------    Count HA YAML-lines   -----------
+#      - !include ../solutions/hastats_yaml_lines_count.yaml
+
+# # ---------    Count HA entities by domain   -----------
+#      - !include ../solutions/hastats_entities_by_domain.yaml

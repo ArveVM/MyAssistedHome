@@ -1,0 +1,109 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.bathroom2_thp_temperature
+      humidity1: &humidity1 sensor.bathroom2_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+    }
+  # AVM; replace with this if I ever get to control the lights in the bathroom :)
+  #  ha-card {
+  #    height: 102px;
+  #    {% if is_state('light.loft', 'on') %}
+  #      background: rgba(255, 152, 0, 0.1);
+  #    {% endif %}
+  #  }
+cards:
+  - type: custom:mushroom-template-card
+    primary: Bathroom2
+    secondary: >-
+      {{states('sensor.bathroom2_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.bathroom2_thp_humidity') | round(0,'', 44) }}%
+    icon: mdi:shower
+    #entity: light.loft
+    tap_action:
+      action: none
+    #  action: toggle
+    #icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: template
+        entity: switch.bathroom2_heater_puck
+        icon: mdi:radiator
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content: !include
+                - ../sol_cards/heater_card.yaml
+                - entity: input_boolean.bathroom2_heater_powerboost
+                  powerauto: input_boolean.bathroom2_heater_powerauto
+                  powerboost: input_boolean.bathroom2_heater_powerboost
+                  powersave: input_boolean.bathroom2_heater_powersave
+                  powerhoursave: input_boolean.bathroom2_heater_powerhoursave
+                  powerswitch: switch.bathroom2_heater_puck
+                  power: sensor.bathroom2_heater_puck_power
+                  area_temp: *temp1
+                  area_temp_compare: sensor.house_average_temperature
+                  area_humidity: *humidity1
+                  area_humidity_compare: sensor.house_average_temperature
+                  longterm_target: input_number.bathroom2_heater_longterm_target
+                  thermostat_target: sensor.bathroom2_heater_thermostat_target
+                  thermostat_output: input_boolean.bathroom2_heater_thermostat_output
+
+      - type: template
+        card_mod: *card_mod_chip_style
+        entity: binary_sensor.bathroom2_area_status
+        icon: mdi:check-circle
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - bathroom2_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

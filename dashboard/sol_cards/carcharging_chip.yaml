@@ -1,0 +1,56 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+type: template
+entity: sensor.gullbilen_state_of_charge
+icon: mdi:car
+icon_color: >
+  {% set t=states(entity) | float(default=61) %}
+  {% if t >= 50 %}
+    white
+  {% elif t >= 35 %}
+    orange
+  {% else %}
+    red
+  {% endif %}
+# content: '{{ (states(entity) | float ) | round(0) }}% SoC'
+content: ''
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include carcharging_card.yaml
+card_mod:
+  #AVM; radial-gradient gives thickness of the actual outer circle
+  # many thanks to RhysB for the idea/concept: https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/4904
+  style: |
+    ha-card:before {
+      content: "";
+      position: absolute;
+      height: var(--chip-height);
+      width: var(--chip-height);
+      border-radius: 70%;
+      background: radial-gradient(var(--card-background-color) 68%, transparent 0%), 
+        conic-gradient(rgb(var(--rgb-disabled)) {{ (states(config.entity) |float ) }}% 0%, 
+        var(--card-background-color) 0% 100%);
+    }
+
+#original from RhysB:
+# card_mod:
+#   style: |
+#     ha-card:before {
+#       content: "";
+#       position: absolute;
+#       height: var(--chip-height);
+#       width: var(--chip-height);
+#       border-radius: 70%;
+#       background: radial-gradient(var(--card-background-color) 60%, transparent 0%), 
+#         conic-gradient(rgb(var(--rgb-disabled)) {{ (states(config.entity) |float ) | round(0) }}% 0%, 
+#         var(--card-background-color) 0% 100%);
+#     }
+#     ::slotted(ha-icon) {
+#       margin-right: 0.4em !important;
+#     }

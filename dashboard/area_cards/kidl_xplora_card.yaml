@@ -1,0 +1,48 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: Status
+      icon: mdi:state-machine
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - entity: binary_sensor.kidl_explora_state
+            - entity: binary_sensor.kidl_xplora_safezone
+            - entity: sensor.kidl_xplora_battery
+
+  - attributes:
+      label: Map
+      icon: mdi:map-check
+    card:
+      type: vertical-stack
+      cards:
+        - type: map
+          aspect_ratio: 16:9
+          default_zoom: 15
+          auto_fit: true
+          hours_to_show: 18
+          entities:
+            - device_tracker.kidl_xplora_tracker
+            - zone.home
+
+  - attributes:
+      label: AutoEntities
+      icon: mdi:creation
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          card:
+            type: entities
+          filter:
+            include:
+              - entity_id: "*kidl_xplora*"
+            exclude:
+              #- entity_id: "*entry_thp*"

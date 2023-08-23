@@ -1,0 +1,155 @@
+# ArveVM; add ref to PwrCtrl Use -
+# and in that a ref to PriceAnalyzer
+
+# Code:
+
+type: custom:stack-in-card
+
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        entity: sensor.priceanalyzer_price
+        secondary: øre/kWh
+        primary: >
+          {{ states(entity) | round(1) }}
+        icon: mdi:currency-usd
+        icon_color: orange
+        tap_action:
+          action: more-info
+        card_mod: &card_mod_chips
+          style: |
+            ha-card {
+              margin-top: -3px;
+              margin-bottom: -12px;
+              margin-right: -10px;
+              --icon-size: 30px;
+            }
+
+      - type: custom:mushroom-template-card
+        entity: sensor.pwrctrl_use_total
+        secondary: Now
+        primary: >
+          {{ ( states(entity) |int / 1000) | round(1) }} kW
+        icon: mdi:flash
+        icon_color: blue
+        card_mod: *card_mod_chips
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include pwrctrl_save_card.yaml
+
+      - type: custom:mushroom-template-card
+        entity: sensor.pwrctrl_limit_fullhour_trend
+        secondary: Hour trend
+        primary: >
+          {{ states(entity) | round(1) }} kWh
+        name: Grid
+        icon: mdi:flash
+        icon_color: green
+        card_mod: *card_mod_chips
+        tap_action:
+          action: more-info
+
+  - type: custom:apexcharts-card
+    card_mod:
+      style: |
+        ha-card {
+          margin-top: -10px;
+          margin-bottom: -8px;
+        }
+    header:
+      show_states: true
+      show: false
+    now:
+      show: true
+    graph_span: 48h
+    span:
+      start: day
+    update_interval: 10min
+    apex_config:
+      chart:
+        height: 150
+      # annotations:
+      #   xaxis:
+      #     - x: EVAL:new Date().setHours(0,0,0,0) # This will return last midnight
+      legend:
+        show: false
+      xaxis:
+        tooltip:
+          enabled: false
+        labels:
+          format: HH
+        # stroke
+        header:
+          show: false
+          show_states: false
+          colorize_states: true
+    yaxis:
+      - id: one
+        show: true
+        decimals: 0
+        max: auto
+        min: ~90
+        apex_config:
+          show: true,
+          forceNiceScale: true
+
+      - id: header
+        show: false
+
+    series:
+      - name: Price today
+        entity: sensor.priceanalyzer
+        float_precision: 0
+        unit: Øre/kWh
+        yaxis_id: one
+        offset: "-1min"
+        type: line
+        curve: stepline
+        stroke_width: 2
+        extend_to: now
+        color: blue
+        show:
+          legend_value: false
+          in_header: false
+          extremas: true
+        data_generator: |
+          let today =  entity.attributes.raw_today.map((entry) => {
+            return [new Date(entry.start), (entry.value) ];
+          });
+          return today;
+
+      - name: Price tomorrow
+        entity: sensor.priceanalyzer
+        # https://github.com/RomRider/apexcharts-card#confirmation-options
+        # add popup to usage    - and the same for limit
+        float_precision: 0
+        unit: Øre/kWh
+        yaxis_id: one
+        offset: "-1min"
+        type: line
+        curve: stepline
+        stroke_width: 2
+        extend_to: now
+        color: blue
+        show:
+          legend_value: false
+          in_header: false
+          extremas: true
+        data_generator: |
+          if(entity.attributes.tomorrow_valid) 
+          {let tomorrow = entity.attributes.raw_tomorrow.map((entry) => 
+            {
+                  return [new Date(entry.start), (entry.value) ];
+                });
+            return tomorrow;
+          }
+

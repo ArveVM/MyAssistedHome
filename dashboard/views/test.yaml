@@ -1,0 +1,76 @@
+title: "test"
+path: "test"
+cards:
+  # # ----------  Chips-row 1 -----------
+  #- type: custom:swipe-card
+  #  cards:
+  - type: custom:mushroom-chips-card
+    chips:
+      - type: menu
+      - !include ../sol_cards/openuv_chip.yaml 
+
+  # - !include ../solutions/camera1_card.yaml 
+  - !include ../sol_cards/fuel_app_card.yaml 
+
+  # - !include ../solutions/openuv_card.yaml
+
+  # - !include ../solutions/carcharging_card.yaml
+  # - !include ../solutions/carcharging_easee_card.yaml
+
+
+  # - type: custom:auto-entities
+  #   card:
+  #     type: entities
+  #     title: Shellys unavailable
+  #   filter:
+  #     include:
+  #       # - integration: shelly 
+  #       - entity_id: switch.bathroom_heater_puck
+  #       - entity_id: switch.bathroom2_heater_puck
+  #       - entity_id: light.christmas_tree
+  #       - entity_id: switch.dishwasher_plug
+  #       - entity_id: switch.entry_heater_puck
+  #       - entity_id: switch.freezerdownstairs
+  #       - entity_id: switch.garage_dad
+  #       - entity_id: switch.garage_t
+  #       - entity_id: light.hallway_switch_up_2_2
+  #       - entity_id: switch.hotwater_puck
+  #       - entity_id: light.kidl_light_puck
+  #       - entity_id: light.kidm_lightbulb
+  #       - entity_id: switch.kitchen_heater
+  #       - entity_id: switch.kitchen_heatpump
+  #       - entity_id: switch.kitchen_switch1
+  #       - entity_id: switch.laundry_dryer_plug
+  #       - entity_id: switch.laundry_freezer
+  #       - entity_id: switch.laundry_heater_puck
+  #       - entity_id: light.laundry_lights_puck
+  #       - entity_id: switch.laundry_washer_puck
+  #       - entity_id: light.livingroom_lounge
+  #       - entity_id: light.livingroom_diningtable
+  #       - entity_id: light.loft      
+  #       - entity_id: switch.loft_heater_plug
+  #       - entity_id: switch.office_heater_plug
+  #       - entity_id: switch.server_rack_plug
+  #       - entity_id: switch.workshop_washer
+  #     exclude:
+  #       - state: "off"
+  #       - state: "on"
+  #       # - entity_category: sensors
+  #       # - entity_category: config
+  #       # - entity_category: diagnostics
+        
+
+
+  # - !include ../solutions/pwrctrl_use_price_card.yaml
+  # - !include ../solutions/pwrctrl_use_price_card2.yaml
+  # # - !include ../solutions/pwrctrl_use_price_card3.yaml
+
+
+  # - !include ../cards/nordpool_3days.yaml
+  # - !include ../cards/nordpool_test.yaml
+  # # - !include ../cards/priceanalyzer_02_copy.yaml
+
+#  - !include ../cards/priceanalyzer_03.yaml
+  #  - !include ../cards/pwrctrl_energyscore_card.yaml
+  #  - !include ../cards/alert_card.yaml
+

@@ -1,0 +1,80 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.icehouse_light_bulbs', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  - type: custom:mushroom-template-card
+    entity: light.icehouse_light_bulbs
+    primary: IceHouse
+    secondary: >-
+      {{states('sensor.icehouse_thp_temperature') | round(0,'', 11)}}°C
+    icon: mdi:ice-cream
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    tap_action: none
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: template
+        entity: light.icehouse_light_bulbs
+        icon_color: "{{ 'yellow' if is_state(entity, 'on') else 'disabled' }}"
+        icon: mdi:lightbulb
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: toggle
+
+      - type: template
+        entity: switch.icehouse_heater
+        icon: mdi:radiator
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: toggle
+
+      - type: action
+        icon: mdi:devices
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/icehouse
+
+      - type: template
+        entity: binary_sensor.entry_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action: none

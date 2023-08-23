@@ -1,0 +1,110 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.hallway_thp_temperature
+      humidity1: &humidity1 sensor.hallway_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.entry', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  - type: custom:mushroom-template-card
+    primary: Entry
+    secondary: >-
+      {{states('sensor.entry_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.entry_thp_humidity') | round(0,'', 44) }}%
+    icon: mdi:hanger
+    #icon_color: disabled
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    entity: light.kidm_lightbulb
+    tap_action: none
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    #card_mod:
+    #  style: |
+    #    :host([dark-mode]) {
+    #      background: rgba(var(--rgb-primary-background-color), 0.2);
+    #    }
+    #    :host {
+    #      background: rgba(var(--rgb-primary-text-color), 0.025);
+    #    }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: template
+        entity: switch.entry_heater_puck
+        icon: mdi:radiator
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content: !include
+                - ../sol_cards/heater_card.yaml
+                - entity: input_boolean.entry_heater_powerboost
+                  powerauto: input_boolean.entry_heater_powerauto
+                  powerboost: input_boolean.entry_heater_powerboost
+                  powersave: input_boolean.entry_heater_powersave
+                  powerhoursave: input_boolean.entry_heater_powerhoursave
+                  powerswitch: switch.entry_heater_plug
+                  power: sensor.entry_heater_puck_power
+                  area_temp: *temp1
+                  area_temp_compare: sensor.house_average_temperature
+                  area_humidity: *humidity1
+                  area_humidity_compare: sensor.house_average_temperature
+                  longterm_target: input_number.entry_heater_longterm_target
+                  thermostat_target: sensor.entry_heater_thermostat_target
+                  thermostat_output: input_boolean.entry_heater_thermostat_output
+
+      # entry-door,, parking here until I create a area-card for Entry
+      - type: template
+        entity: binary_sensor.entry_door_contact
+        #icon: mdi:door-closed
+        icon: "{{ 'mdi:door-closed' if is_state(entity, 'off') else 'mdi:door-open' }}"
+        icon_color: "{{ 'green' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: action
+        icon: mdi:devices
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/entry
+
+      - type: template
+        entity: binary_sensor.entry_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action: none

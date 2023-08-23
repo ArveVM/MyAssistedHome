@@ -1,0 +1,77 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: light
+      icon: mdi:lightbulb
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-light-card
+          entity: light.kidm_lightbulb
+          primary_info: name
+          icon_type: icon
+          use_light_color: true
+          show_brightness_control: true
+          show_color_control: true
+          show_color_temp_control: true
+          collapsible_controls: false
+          tap_action:
+            action: toggle
+          
+
+  - attributes:
+      label: Scenes
+      icon: mdi:movie
+    card:
+      type: grid
+      columns: 2
+      square: false
+      cards:
+        - type: custom:mushroom-template-card
+          primary: Early Morning
+          secondary: ""
+          icon: mdi:clock
+          tap_action:
+            action: call-service
+            service: scene.turn_on
+            target:
+              entity_id: scene.kidm_earlymorning
+
+        - type: custom:mushroom-template-card
+          primary: Morning
+          secondary: ""
+          icon: mdi:clock
+          tap_action:
+            action: call-service
+            service: scene.turn_on
+            target:
+              entity_id: scene.kidm_morning
+              
+        - type: custom:mushroom-template-card
+          primary: Daytime
+          secondary: ""
+          icon: mdi:clock
+          tap_action:
+            action: call-service
+            service: scene.turn_on
+            target:
+              entity_id: scene.kidm_daytime
+                  
+
+  - attributes:
+      label: Settings
+      icon: mdi:wrench
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - input_boolean.kidm_light_auto
+            - input_boolean.kidm_morninglight_auto
+            - input_datetime.kidm_earlymorning_lights
+            - input_datetime.kidm_morning_lights

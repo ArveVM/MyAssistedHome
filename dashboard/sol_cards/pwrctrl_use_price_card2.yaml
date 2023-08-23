@@ -1,0 +1,120 @@
+# ArveVM; add ref to PwrCtrl Use -
+# and in that a ref to PriceAnalyzer
+
+type: custom:apexcharts-card
+header:
+  show_states: true
+  # title: PriceAnalyzer (graph incl dag-takst)
+  # show: true
+now:
+  show: true
+graph_span: 48h
+span:
+  start: day
+apex_config:
+  chart:
+    height: 200
+
+yaxis:
+  - id: one
+    show: true
+    decimals: 0
+    max: auto
+    min: ~90
+    apex_config:
+      show: true,
+      forceNiceScale: true
+
+  - id: header
+    show: false
+
+series:
+  - name: Price today
+    entity: sensor.priceanalyzer
+    float_precision: 0
+    unit: Øre/kWh
+    yaxis_id: one
+    offset: "-1min"
+    type: line
+    curve: stepline
+    stroke_width: 2
+    extend_to: now
+    color: orange
+    # color: orange
+    show:
+      legend_value: false
+      in_header: false
+      extremas: true
+    data_generator: |
+      let today =  entity.attributes.raw_today.map((entry) => {
+        return [new Date(entry.start), (entry.value) ];
+      });
+      return today;
+
+  - name: Price tomorrow
+    entity: sensor.priceanalyzer
+    # https://github.com/RomRider/apexcharts-card#confirmation-options
+    # add popup to usage    - and the same for limit
+    float_precision: 0
+    unit: Øre/kWh
+    yaxis_id: one
+    offset: "-1min"
+    type: line
+    curve: stepline
+    stroke_width: 2
+    extend_to: now
+    color: orange
+    show:
+      legend_value: false
+      in_header: false
+      extremas: true
+    data_generator: |
+      if(entity.attributes.tomorrow_valid) 
+      {let tomorrow = entity.attributes.raw_tomorrow.map((entry) => 
+        {
+              return [new Date(entry.start), (entry.value) ];
+            });
+        return tomorrow;
+      }
+
+  - name: Price current hour
+    entity: sensor.priceanalyzer_price
+    yaxis_id: header
+    float_precision: 1
+    unit: Øre/kWh
+    show:
+      in_header: true
+      in_chart: false
+    color: "#0080FF"
+
+  - name: Consumption now
+    entity: sensor.pwrctrl_use_total_filtered_power
+    yaxis_id: header
+    transform: "return x / 1000 ;"
+    float_precision: 2
+    unit: kW
+    show:
+      in_header: true
+      in_chart: false
+    color: vivid blue #"#0080FF"
+    # tap_action:
+    #   action: fire-dom-event
+    #   browser_mod:
+    #     service: browser_mod.popup
+    #     data:
+    #       content:
+    #         type: vertical-stack
+    #         cards:
+    #           - !include ../cards/pwrctrl_save_card.yaml
+    # hold_action: more-info
+
+  - name: Hourly trend
+    entity: sensor.pwrctrl_limit_fullhour_trend
+    yaxis_id: header
+    float_precision: 2
+    unit: kW/h
+    type: area
+    show:
+      in_header: true
+      in_chart: false
+    color: "#0080FF"

@@ -1,0 +1,160 @@
+# room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.laundry_thp_temperature
+      humidity1: &humidity1 sensor.laundry_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.laundry_lights_puck', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  - type: custom:mushroom-template-card
+    entity: light.laundry_lights_puck
+    primary: Laundry
+    secondary: >-
+      {{states('sensor.laundry_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.laundry_thp_humidity') | round(0,'', 44)}}%
+    multiline_secondary: false
+    icon: mdi:washing-machine
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    tap_action:
+      action: toggle
+    hold_action:
+      action: none
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: template
+        entity: switch.laundry_heater_puck
+        icon: mdi:radiator
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content: !include
+                - ../sol_cards/heater_card.yaml
+                - entity: input_boolean.laundry_heater_powerboost
+                  powerauto: input_boolean.laundry_heater_powerauto
+                  powerboost: input_boolean.laundry_heater_powerboost
+                  powersave: input_boolean.laundry_heater_powersave
+                  powerhoursave: input_boolean.laundry_heater_powerhoursave
+                  powerswitch: switch.laundry_heater_puck
+                  power: sensor.laundry_heater_puck_power
+                  area_temp: *temp1
+                  area_temp_compare: sensor.house_average_temperature
+                  area_humidity: *humidity1
+                  area_humidity_compare: sensor.house_average_temperature
+                  longterm_target: input_number.laundry_heater_longterm_target
+                  thermostat_target: sensor.laundry_heater_thermostat_target
+                  thermostat_output: input_boolean.laundry_heater_thermostat_output
+
+      - type: template
+        entity: sensor.laundry_washer_status
+        icon: mdi:washing-machine
+        icon_color: |-
+          {% set t=states(entity) %}
+          {% if t == 'Running' %}
+            blue
+          {% elif t == 'Finished' %}
+            red
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: template
+        entity: sensor.laundry_dryer_status
+        icon: mdi:tumble-dryer
+        icon_color: |-
+          {% set t=states(entity) %}
+          {% if t == 'Running' %}
+            blue
+          {% elif t == 'Finished' %}
+            red
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: template
+        entity: sensor.laundry_freezer_temperature
+        icon: mdi:snowflake-thermometer
+        # Red if above -18, organge between -18 and  -20, disabled if below 20
+        icon_color: |-
+          {% set t=states(entity) | float(default=-20) %}
+          {% if t > -18 %}
+            red
+          {% elif t >= -20 %}
+            orange
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: action
+        card_mod: *card_mod_chip_style
+        icon: mdi:devices
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/laundry
+
+
+      - type: template
+        entity: binary_sensor.laundry_area_status
+        icon: mdi:check-circle
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include loft_status_card.yaml

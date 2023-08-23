@@ -1,0 +1,17 @@
+# First step of building dashboard,, add views
+# Could use include-command to include whole folder,,
+# but I prefer to have manally control of which drafts to include in which dashboard,
+# and especially the order of them.
+
+title: "AVM Mobile"
+views:
+  # first the "main view,, the mobile dashboard"
+  - !include views/home_mob_view.yaml
+
+  # first the "then some dashboards/views for specific areas "
+  - !include views/test.yaml
+  - !include views/view_energy_usage.yaml
+  - !include views/server_view.yaml
+
+  - !include views/kidm_tablet_view.yaml
+  - !include views/kids_tablet_view.yaml

@@ -1,0 +1,160 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.kitchen_thp_temperature
+      humidity1: &humidity1 sensor.kitchen_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.kitchen_light1_z2m', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  # First the main-card:
+  - primary: Kitchen
+    type: custom:mushroom-template-card
+    secondary: >-
+      {{states('sensor.kitchen_thp_temperature') | round(1,'', 19)}}°C /
+      {{states('sensor.kitchen_thp_humidity') | round(0,'', 44)}}%
+    icon: mdi:knife
+    entity: light.kitchen_light1_z2m
+    tap_action:
+      action: toggle
+
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: vertical-stack
+            cards:
+              - !include kitchen_light_card.yaml
+
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  # Then the row of chips below. Align chips with alignment and adjust spacing on each chip (margin-left)
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: action
+        icon_color: disabled
+        icon: mdi:thermometer
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - ../sol_cards/house_temp_comp_card.yaml
+                    - entity: *temp1
+                      area_temp_compare: sensor.house_average_temperature
+                  - !include
+                    - ../sol_cards/house_humidity_comp_card.yaml
+                    - entity: *humidity1
+                      area_humidity_compare: sensor.house_average_humidity
+        hold_action: none
+
+      - type: template
+        entity: sensor.dishwasher_status
+        icon: mdi:dishwasher
+        icon_color: |-
+          {% set t=states(entity) %}
+          {% if t == 'Running' %}
+            blue
+          {% elif t == 'Finished' %}
+            red
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: template
+        entity: sensor.kitchen_fridge_temperature
+        icon: mdi:fridge
+        icon_color: |-
+          {% set t=states(entity) | float(default=3) %}
+          {% if t >= 4 %}
+            red
+          {% elif t >= 3.2 %}
+            orange
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+      - type: template
+        entity: plant.rubber_plant
+        icon: mdi:flower-outline
+        icon_color: "{{ 'orange' if is_state(entity, 'problem') else 'disabled' }}"
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: custom:flower-card
+                entity: plant.rubber_plant
+                show_bars:
+                  - illumination
+                  - humidity
+                  - moisture
+                  - conductivity
+                  - temperature
+                  - dli
+
+      - type: action
+        card_mod: *card_mod_chip_style
+        icon: mdi:devices
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/kitchen
+
+      - type: template
+        entity: binary_sensor.kitchen_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'disabled' if is_state(entity, 'on') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info

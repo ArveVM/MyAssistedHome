@@ -1,0 +1,105 @@
+# room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.serverroom_thp_temperature
+      humidity1: &humidity1 sensor.serverroom_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+    }
+  # AVM; replace with this if I ever get to control the lights in the area :)
+  #  ha-card {
+  #    height: 102px;
+  #    {% if is_state('light.loft', 'on') %}
+  #      background: rgba(255, 152, 0, 0.1);
+  #    {% endif %}
+  #  }
+cards:
+  - type: custom:mushroom-template-card
+    primary: Server room
+    secondary: >-
+      {{states('sensor.serverroom_thp_temperature') | round(1) }}°C -
+      {{states('sensor.serverroom_thp_humidity') | int}}%
+    icon: mdi:server
+    #entity: sensor.
+    tap_action:
+      action: navigate
+      navigation_path: /avm-mobile/server_room
+    #icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: template
+        entity: sensor.serverroom_freezer_temp_temperature
+        icon: mdi:snowflake-thermometer
+        # Red if above -18, organge between -18 and  -20, disabled if below 20
+        icon_color: |-
+          {% set t=states(entity) | float(default=-20) %}
+          {% if t > -18 %}
+            red
+          {% elif t >= -20 %}
+            orange
+          {% else %}
+            disabled
+          {% endif %}
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+        tap_action:
+          action: more-info
+
+      - type: action
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/serverroom
+        icon: mdi:devices
+
+      - type: template
+        entity: binary_sensor.laundry_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'green' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - loft_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

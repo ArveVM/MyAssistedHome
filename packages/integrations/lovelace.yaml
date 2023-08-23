@@ -12,19 +12,20 @@ lovelace:
   # AVM; make note of the requirement for a '-' in the 'dashboard-definition' - or you will get the error;
   #        Invalid config for [lovelace]: Url path needs to contain a hyphen (-) for dictionary value when checking configuration
   dashboards:
+
     avm-mobile:
       mode: yaml
       title: AVM Mobile
       icon: mdi:hammer
       show_in_sidebar: true
-      filename: avm_yaml/dashboard/mob_dashboard.yaml
+      filename: dashboard/mob_dashboard.yaml
 
     nest-hub:
       mode: yaml
       title: Nest Hub
       icon: mdi:football
       show_in_sidebar: true
-      filename: avm_yaml/dashboard/nest_hub_dashboard.yaml
+      filename: dashboard/nest_hub_dashboard.yaml
 
     kids-tablet:
       mode: yaml
@@ -38,5 +39,5 @@ lovelace:
       title: KidM Tablet
       icon: mdi:soccer
       show_in_sidebar: false
-      filename: avm_yaml/dashboard/kidm_tablet_dashboard.yaml
+      filename: dashboard/kidm_tablet_dashboard.yaml
 

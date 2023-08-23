@@ -1,0 +1,138 @@
+# ArveVM: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/cameras.md
+
+# Card for camera-solution,, using Frigate card now
+# https://github.com/blakeblackshear/frigate/issues/2606
+#     look at comment from mattkasa commented on Jan 19  for an card-update within lovelace card-config!!
+
+type: vertical-stack
+cards:
+  # ArveVM; some mushroom-styles - have no idea what it means ;)
+  - type: custom:tabbed-card
+    styles:
+      "--mdc-theme-primary": orange
+      "--mdc-tab-text-label-color-default": white
+      "--mdc-typography-button-font-size": 10px
+    tabs:
+      - attributes:
+          label: HA-tools
+          icon: mdi:hammer
+        card:
+          type: vertical-stack
+          cards:
+            - type: custom:mushroom-chips-card
+              chips:
+                - type: menu
+                - type: weather
+                  entity: weather.mylocation
+                  show_conditions: false
+                  show_temperature: true
+
+                - type: template
+                  content: >-
+                    HA:{{states('sensor.processor_use')}}%
+                    unR:{{states('sensor.glances_cpu_used') | int }}%
+                  icon: mdi:cpu-64-bit
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      service: browser_mod.popup
+
+                - type: template
+                  icon: mdi:soccer
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      service: browser_mod.popup
+                      data:
+                        content:
+                          type: vertical-stack
+                          cards:
+                            - type: custom:teamtracker-card
+                              entity: sensor.liverpool
+
+            - type: entities
+              entities:
+                - type: section
+                  label: div
+                - type: custom:mushroom-template-card
+                  entity: switch.adguard_home_protection
+                  secondary: click for more info
+                  primary: >
+                    Ad-guard protection is {{ 'ON' if is_state(entity, 'on' ) else 'OFF' }}
+                  icon: mdi:shield-alert
+                  icon_color: "{{ 'green' if is_state(entity, 'on' ) else 'red' }}"
+                  tap_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      service: browser_mod.popup
+                      data:
+                        content:
+                          type: vertical-stack
+                          cards:
+                            - !include ../sol_cards/adguard_card.yaml
+
+                - type: button
+                  name: System conf-dashboard
+                  icon: mdi:cog
+                  tap_action:
+                    action: navigate
+                    navigation_path: /config/dashboard
+                  hold_action:
+                    action: fire-dom-event
+                    browser_mod:
+                      service: browser_mod.navigate
+                      data:
+                        deviceID: this
+                        path: /config/dashboard
+
+                - type: section
+                  label: HA-addons
+                - type: weblink
+                  name: BackupGoogle-addon - dashboard
+                  url: >
+                    http://homeassistant.local:8123/hassio/ingress/cebe7a76_hassio_google_drive_backup
+                  icon: mdi:backup-restore
+                - type: weblink
+                  name: File Editor-addon - dashboard
+                  url: http://homeassistant.local:8123/hassio/ingress/core_configurator
+                  icon: mdi:wrench
+                - type: section
+                  label: "External-stuff (prereq=LAN-access!!):"
+                - type: weblink
+                  name: UDMP - Firewall++
+                  url: https://192.168.2.1/login?redirect=%2F
+                  icon: mdi:ip-network
+                - type: divider
+                - type: weblink
+                  name: unRaid - mgmt dashboard
+                  url: http://192.168.2.141/Dashboard
+                  icon: mdi:server
+                - type: weblink
+                  name: z2m - unRaid-docker
+                  url: http://192.168.2.141:9442/#/
+                  icon: mdi:zigbee
+                - type: weblink
+                  name: espHome - unRaid-docker
+                  url: http://192.168.2.141:6052/
+                  icon: mdi:chip
+                - type: weblink
+                  name: Glances - unRaid-docker
+                  url: http://192.168.2.141:61208/
+                  icon: mdi:graph
+                - type: divider
+
+      - attributes:
+          label: Camera
+          icon: mdi:cctv
+        card:
+          type: vertical-stack
+          cards:
+            - !include camera_card.yaml
+
+      - attributes:
+          label: HA-stats
+          icon: mdi:chart-histogram
+        card:
+          type: vertical-stack
+          cards:
+            - !include hastats_card.yaml

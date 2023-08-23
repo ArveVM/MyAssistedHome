@@ -1,0 +1,57 @@
+type: vertical-stack
+cards:
+  - type: history-graph
+    hours_to_show: 4
+    entities:
+      - entity: input_number.pwrctrl_limit_capacity_limit
+        name: Current Limit
+      - entity: sensor.evahan_energy_hourly
+        name: Hourly consumption (acc)
+      - entity: sensor.pwrctrl_limit_fullhour_trend
+        name: FullHourTrend
+
+  - type: custom:fold-entity-row
+    head:
+      entity: sensor.pwrctrl_limit_powerhoursave_counter
+      name: "Count active PowerHourSave"
+    open: false
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - entity_id: "*powerhoursave*"
+          exclude:
+            - entity_id: "sensor.pwrctrl_limit_powerhoursave_counter"
+            - entity_id: "automation.pwrctrl_limit_revert_powerhoursave"
+
+  - type: custom:fold-entity-row
+    head:
+      type: section
+      label: PowerSave
+    open: false
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - entity_id: "*powersave*"
+          #exclude:
+          #  - entity_id: "*entry_thp*"
+
+  - type: custom:fold-entity-row
+    head:
+      type: section
+      label: PowerAuto
+    open: false
+    entities:
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - entity_id: "*powerauto*"
+          #exclude:
+          #  - entity_id: "*entry_thp*"

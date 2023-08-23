@@ -1,0 +1,185 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: Use
+      icon: mdi:flash
+    card:
+      type: vertical-stack
+      cards:
+        - !include pwrctrl_use_card.yaml
+
+  - attributes:
+      label: Limit
+      icon: mdi:radiator
+    card:
+      type: vertical-stack
+      cards:
+        - !include pwrctrl_limit_card.yaml
+
+  - attributes:
+      label: Settings
+      icon: mdi:wrench
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - entity: input_number.pwrctrl_limit_capacity_limit
+              type: custom:multiple-entity-row
+              name: "CapacityLimit:"
+              #toggle: true
+              state_header: Limit
+              entities:
+                - entity: sensor.pwrctrl_limit_usage_percent
+                  name: Usage now
+
+            - type: divider
+            - entity: input_number.pwrctrl_limit_level
+              type: custom:multiple-entity-row
+              name: "Save-Level now:"
+              #toggle: true
+              state_header: Level
+              entities:
+                - entity: sensor.pwrctrl_limit_powerhoursave_counter
+                  name: Active Saves
+
+            - type: divider
+            - entity: input_number.pwrctrl_limit_level
+
+            - type: divider
+            - entity: input_number.pwrctrl_limit_level
+              type: custom:multiple-entity-row
+              name: "Level now:"
+              toggle: true
+              state_header: Level
+              entities:
+                - entity: sensor.pwrctrl_limit_powerhoursave_counter
+                  name: Active Saves
+            - type: divider
+            - entity: input_number.pwrctrl_limit_level
+              type: custom:multiple-entity-row
+              name: "Set level:"
+              toggle: false
+              state_header: Current
+              entities:
+                - type: button
+                  name: Level0
+                  icon: mdi:power-plug-off
+                  tap_action:
+                    action: call-service
+                    confirmation:
+                      text: Are you sure you want to reset all PowerHourSave's?
+                    service: script.pwrctrl_limit_level0
+                - type: button
+                  name: Level1
+                  icon: mdi:power-plug-off
+                  tap_action:
+                    action: call-service
+                    confirmation:
+                      text: Are you sure you want to set PowerHourSave level1?
+                    service: script.pwrctrl_limit_level1
+                - type: button
+                  name: Level2
+                  icon: mdi:power-plug-off
+                  tap_action:
+                    action: call-service
+                    confirmation:
+                      text: Are you sure you want to set PowerHourSave level2?
+                    service: script.pwrctrl_limit_level2
+            - type: divider
+
+        # chips-part:
+        - type: custom:mushroom-chips-card
+          alignment: end
+          card_mod:
+            style: |
+              ha-card {
+                --chip-box-shadow: none;
+                --chip-background: none;
+                --chip-spacing: 0;
+              }
+          chips:
+            - type: template
+              icon: mdi:help
+              tap_action:
+                action: fire-dom-event
+                browser_mod:
+                  service: browser_mod.popup
+                  data:
+                    content:
+                      type: markdown
+                      content: |
+                        **Chips:**
+                        Bar-graph; 
+                          'click' -> for overview of historic usage
+                        Line-graph:
+                          'click' -> for Laundry Heater temp history 1h:
+                          'double-click' -> for Laundry Heater temp history 24h:
+                          'hold' -> for 'mich test history-grap'':
+                        Wand:
+                          'click' -> to toggle heater auto (on/off)  (blue = ON)
+                          'hold' -> view list of entities controlling/overriding the heater-auto:
+                        W:
+                          info on current consumption of heater
+                        ---
+
+                        **About Heater AUTO:**history-explorerh
+                        If auto is OFF, heater is controlled by local thermostat
+                        If auto is ON, heater is controlled by Generic Thermostat, 
+                        but can be overturned if PowerSave or PowerHourSave is turned ON
+                          - Generic thermostat is controlled by scenes/automations 
+                            changing both temperature and preset-modes
+                          - Input-temp in generic thermostat is room-sensor (Aquara THP)
+                          - PowerSave can be used to cap high-price hours, 
+                            or focus on only heat during lowest-price
+                          - PowerHoursave is to control total consumption during one hour
+                            to make sure one do not overstep hour-tariffs
+
+  - attributes:
+      label: History
+      icon: mdi:chart-line
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:history-explorer-card
+          cardName: 8403a520-f4c8-46b0-bafc-9df3d7789658
+          header: hide # The hide option will remove the header entirely
+          uiLayout:
+            toolbar: top
+            selector: hide #bottom
+          stateColors:
+            binary_sensor.off: red
+            binary_sensor.on: green
+          graphs:
+            - type: line
+              entities:
+                - entity: sensor.loft_thp_temperature
+                  name: Room temp
+                  color: red
+                  fill: rgba(151,187,205,0.15)
+                  lineMode: curves
+                - type: attribute
+                  entity: sensor.loft_heater_thermostat_target
+                  name: Termostat Target
+                  suffix: °C
+                  lineMode: stepped
+            - type: timeline
+              title: Non-numerical sensors
+              entities:
+                #- entity: binary_sensor.loft_heater_puck_input
+                #  name: Local Th
+                - entity: input_boolean.loft_heater_thermostat_output
+                  name: Gen Th
+                - entity: input_boolean.loft_heater_powerauto
+                  name: Auto
+                - entity: input_boolean.loft_heater_powersave
+                  name: P-save
+                - entity: input_boolean.loft_heater_powerhoursave
+                  name: PH-save
+                - entity: switch.loft_heater_plug
+                  name: Heat

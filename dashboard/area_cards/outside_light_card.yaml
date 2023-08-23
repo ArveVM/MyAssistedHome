@@ -1,0 +1,37 @@
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: light
+      icon: mdi:lightbulb
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:mushroom-light-card
+          entity: light.outside_light1
+          secondary_info: last-changed
+          tap_action:
+            action: toggle
+
+  - attributes:
+      label: Timer
+      icon: mdi:timer-sand
+    card:
+      type: vertical-stack
+      cards:
+        - type: horizontal-stack
+          cards:
+            - type: custom:mushroom-entity-card
+              entity: binary_sensor.outside_lights_schedule_on
+              icon: mdi:home-assistant
+              primary_info: state
+              secondary_info: name
+            - type: custom:mushroom-entity-card
+              entity: automation.outside_lights_auto_on_off
+              icon: mdi:home-assistant
+              primary_info: state
+              secondary_info: name

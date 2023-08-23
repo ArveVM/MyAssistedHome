@@ -1,0 +1,104 @@
+# ArveVM: - inspiration/guide by
+#      Thomas Hjartarson on Facebook-group HA-norge
+#      Erlend Sellie on Facebook-group HA-norge/github priceanalyzer
+
+type: custom:apexcharts-card
+header:
+  show_states: false
+  title: VariabelPris i dag / morgen og forbruk
+  show: true
+now:
+  show: true
+  label: Nå
+graph_span: 2d
+span:
+  start: day
+apex_config:
+  stroke:
+    width: 2
+  dataLabels:
+    enabled: true
+  fill:
+    type: gradient
+    gradient:
+      shadeIntensity: 1
+      inverseColors: false
+      opacityFrom: 0.45
+      opacityTo: 0.05
+      stops:
+        - 10
+        - 50
+        - 75
+        - 1000
+  legend:
+    show: false
+  yaxis:
+    - id: price
+      show: true
+      decimalsInFloat: 1
+      floating: false
+      forceNiceScale: true
+      extend_to: end
+    - id: usage
+      show: true
+      opposite: true
+      decimalsInFloat: 1
+      floating: false
+      forceNiceScale: true
+      extend_to: end
+    - id: powersaver
+      show: false
+      decimalsInFloat: 0
+      floating: false
+      extend_to: now
+
+series:
+  - entity: sensor.priceanalyzer
+    yaxis_id: price
+    extend_to: now
+    name: VariabelPris
+    unit: Øre/kWh
+    type: area
+    curve: stepline
+    color: tomato
+    show:
+      legend_value: false
+    data_generator: |
+      let today = entity.attributes.raw_today.map((entry) => {
+      return [new Date(entry.start), (entry.value)];
+      });
+      let tomorrow = entity.attributes.raw_tomorrow.map((entry) => {
+      return [new Date(entry.start), (entry.value)];
+      });
+      if(tomorrow[0])
+      {
+      return today.concat(tomorrow);
+      }
+      return today;
+
+  - name: Forbruk
+    entity: sensor.evahan_energy_hourly
+    yaxis_id: usage
+    type: column
+    group_by:
+      func: max
+    show:
+      legend_value: false
+
+  - name: HotwaterPowersave
+    entity: switch.hotwater_puck
+    transform: "return x === 'on' ? 1 : 0;"
+    yaxis_id: powersaver
+    type: area
+    color: disabled
+    opacity: 0.2
+    stroke_width: 0
+    curve: stepline
+    group_by:
+      func: min
+    show:
+      legend_value: false
+      in_header: false
+      name_in_header: false
+      datalabels: false
+    extend_to: now

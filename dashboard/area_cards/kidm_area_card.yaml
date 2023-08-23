@@ -1,0 +1,193 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.hallway_thp_temperature
+      humidity1: &humidity1 sensor.hallway_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.kidm_lightbulb', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  # First the main-card:
+  - type: custom:mushroom-template-card
+    entity: light.kidm_lightbulb
+    primary: KidM
+    secondary: >-
+      {{states('sensor.hallway_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
+    multiline_secondary: false
+    icon: mdi:soccer
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    tap_action:
+      action: toggle
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: vertical-stack
+            cards:
+              - !include kidm_light_card.yaml
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+
+  # Then the row of chips below. Align chips with alignment and adjust spacing on each chip (margin-left)
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: action
+        icon: mdi:thermometer
+        icon_color: disabled
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - ../sol_cards/house_temp_comp_card.yaml
+                    - entity: *temp1
+                      area_temp_compare: sensor.house_average_temperature
+                  - !include
+                    - ../sol_cards/house_humidity_comp_card.yaml
+                    - entity: *humidity1
+                      area_humidity_compare: sensor.house_average_humidity
+        hold_action: none
+
+      - type: template
+        entity: switch.kidm_heater_puck
+        icon: mdi:radiator
+        icon_color: >
+          {{ 'blue' if states('sensor.kidm_heater_puck_power') > '20' else 'disabled' }}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
+
+
+      - entity: media_player.smartclock_kidm
+        type: template
+        icon: mdi:cast
+        icon_color: |-
+          {% set state=states(entity) %}
+          {% if state=='playing' %}
+          blue
+          {% elif state=='paused' %}
+          orange
+          {% elif state=='idle' %}
+          yellow
+          {% else %}
+          disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: custom:tabbed-card
+                options: {}
+                styles:
+                  "--mdc-theme-primary": orange
+                  "--mdc-tab-text-label-color-default": white
+                  "--mdc-typography-button-font-size": 10px
+                tabs:
+                  - attributes:
+                      label: status
+                      icon: mdi:cast
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.smartclock_kidm
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+                          media_controls:
+                            - on_off
+                            - shuffle
+                            - previous
+                            - play_pause_stop
+                            - next
+                            - repeat
+                  - attributes:
+                      label: settings
+                      icon: mdi:wrench
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.smartclock_kidm
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+
+      # - entity: light.kidm_lightbulb
+      #   type: template
+      #   icon: mdi:lightbulb
+      #   icon_color: "{{ 'yellow' if is_state(entity, 'on') else 'disabled' }}"
+      #   card_mod: *card_mod_chip_style
+      #   tap_action:
+      #     action: fire-dom-event
+      #     browser_mod:
+      #       service: browser_mod.popup
+      #       data:
+      #         content:
+      #           type: vertical-stack
+      #           cards:
+      #             - !include kidm_light_card.yaml
+
+      - type: template
+        entity: binary_sensor.kidm_area_status
+        icon: mdi:check-circle
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - kidm_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

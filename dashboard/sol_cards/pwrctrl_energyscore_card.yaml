@@ -1,0 +1,87 @@
+type: vertical-stack
+cards:
+  - type: custom:history-explorer-card
+    cardName: 24b905b6-e8ed-4ff7-b9af-3b18eb0adee2
+    header: hide # The hide option will remove the header entirely
+
+    uiLayout:
+      toolbar: top
+      selector: hide #bottom
+    stateColors:
+      binary_sensor.off: red
+      binary_sensor.on: green
+    graphs:
+      - type: line
+        options:
+          ymax: 100
+        entities:
+          - entity: sensor.pwrctrl_energyscore_heating
+            name: Heating
+            color: green
+            #fill: rgba(151,187,205,0.15)
+            lineMode: curves
+          - type: attribute
+            entity: sensor.pwrctrl_energyscore_total
+            name: total
+            color: red
+            #suffix: °C
+            lineMode: stepped
+          - entity: sensor.pwrctrl_energyscore_lights
+            color: yellow
+            name: Lights
+            #fill: rgba(0,0,0,0)
+            lineMode: curves
+      #- type: timeline
+      #  title: Non-numerical sensors
+      #  entities:
+      #    - entity: binary_sensor.laundry_heater_puck_input
+      #      name: Local Th
+      #    - entity: input_boolean.laundry_heater_thermostat_output
+      #      name: Gen Th
+      #    - entity: input_boolean.laundry_heater_powerauto
+      #      name: Auto
+  - type: custom:apexcharts-card
+    apex_config:
+      legend: false
+      chart:
+        height: 240px
+    show:
+      loading: true
+    experimental:
+      color_threshold: true
+    header:
+      show: true
+      title: Total Energy
+      show_states: true
+      colorize_states: true
+    chart_type: radialBar
+    series:
+      - entity: sensor.pwrctrl_energyscore_total
+        name: EnergyScore
+        show:
+          in_chart: true
+          header_color_threshold: true
+        color_threshold:
+          - value: 0
+            color: red
+          - value: 40
+            color: orange
+          - value: 60
+            color: green
+      - entity: sensor.pwrctrl_energyscore_total
+        attribute: quality
+        transform: "return x * 100;"
+        name: Quality
+        max: 100
+        show:
+          in_chart: true
+          header_color_threshold: true
+        color_threshold:
+          - value: 0
+            color: red
+          - value: 50
+            color: orangered
+          - value: 70
+            color: orange
+          - value: 90
+            color: green

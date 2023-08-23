@@ -1,0 +1,123 @@
+# all input/creation made by Erlend Sellie https://github.com/erlendsellie/priceanalyzer/wiki/Apex-Charts
+
+type: custom:apexcharts-card
+update_interval: 10min
+header:
+  show_states: true
+  title: PriceAnalyzer VVBTemp
+  show: true
+now:
+  show: true
+graph_span: 48h
+span:
+  start: day
+experimental:
+  hidden_by_default: true
+apex_config:
+  chart:
+    height: 300
+  stroke:
+    width: 1
+  yaxis:
+    - show: true
+      id: pris
+      decimalsInFloat: 0
+      floating: false
+      forceNiceScale: true
+      extend_to: end
+      min: auto
+      max: auto
+    - decimalsInFloat: 0
+      id: temp
+      forceNiceScale: true
+      extend_to: now
+      show: true
+      opposite: true
+      min: 30
+      max: 85
+    - decimalsInFloat: 0
+      id: temp
+      forceNiceScale: true
+      extend_to: now
+      show: false
+      opposite: true
+      min: 30
+      max: 85
+    - seriesName: Power
+      decimalsInFloat: 0
+      opposite: true
+      unit_of_measurement: W
+      show: false
+      max: 15000
+      min: 0
+series:
+  - entity: sensor.priceanalyzer
+    yaxis_id: pris
+    extend_to: now
+    name: Price
+    unit: Øre/kWh
+    curve: stepline
+    color: tomato
+    show:
+      legend_value: false
+      in_header: false
+    data_generator: |
+      let today =  entity.attributes.raw_today.map((entry) => {
+        return [new Date(entry.start), (entry.value)];
+      });
+      if(entity.attributes.tomorrow_valid) {
+      let tomorrow = entity.attributes.raw_tomorrow.map((entry) => {
+              return [new Date(entry.start), (entry.value)];
+            });
+        return today.concat(tomorrow);
+      }
+      return today;
+  - entity: sensor.priceanalyzer_vvb
+    yaxis_id: temp
+    name: VVBtarget
+    type: line
+    curve: stepline
+    color: lime
+    extend_to: now
+    show:
+      in_header: false
+      legend_value: false
+    data_generator: |
+      let today =  entity.attributes.raw_today.map((entry) => {
+        return [new Date(entry.start), (entry.temp) ];
+      });
+      let tomorrowData = entity.attributes.raw_tomorrow.map((entry) => {
+                return [new Date(entry.start), (entry.temp) ];
+            });
+      return today.concat(tomorrowData);
+  - entity: sensor.hotwater_temp_temperature
+    yaxis_id: temp
+    name: Temperatur
+    color: cyan
+    #color: black
+    extend_to: now
+
+  - entity: sensor.priceanalyzer_price
+    unit: Øre/Nok
+    name: Pris
+    show:
+      in_chart: false
+      in_header: true
+  - entity: sensor.priceanalyzer_vvb
+    name: VVBTarget
+    show:
+      in_chart: false
+      in_header: true
+    group_by:
+      duration: 10min
+      func: avg
+  - entity: sensor.pwrctrl_use_hotwater_power
+    extend_to: now
+    type: area
+    name: VVB
+    color: "#967600"
+    opacity: 1
+    unit: W
+    group_by:
+      duration: 2min
+      func: avg

@@ -1,0 +1,116 @@
+# source for auto-populate the fold-entity-rows:  https://community.home-assistant.io/t/powercalc-virtual-power-sensors/318515/665
+
+type: entities
+entities:
+  - type: custom:fold-entity-row
+    head: sensor.pwrctrl_use_total
+    entities:
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_carcharger_power
+        entities:
+          - entity: sensor.easee1_power
+            name: Easee1
+            format: precition0
+
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_hotwater_power
+        entities:
+          - entity: sensor.hotwater_puck_input_power
+            name: Hotwater
+
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_heating_power
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              template: >
+                {{state_attr("sensor.pwrctrl_use_heating_power", "entities") }}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+
+          - !include laundry_heater_card.yaml
+
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_lights_power
+        name: Lights
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              template: >
+                {{state_attr("sensor.pwrctrl_use_lights_power", "entities") }}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_appliances_power
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              template: >
+                {{state_attr("sensor.pwrctrl_use_appliances_power", "entities") }}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+
+      - type: custom:fold-entity-row
+        head: sensor.pwrctrl_use_multimedia_power
+        entities:
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              template: >
+                {{state_attr("sensor.pwrctrl_use_multimedia_power", "entities") }}
+            sort:
+              method: state
+              reverse: true
+              numeric: true
+
+      - entity: sensor.pwrctrl_use_ungrouped
+        name: unGrouped
+      - entity: sensor.pwrctrl_use_ungroupednegative
+        name: unGrouped-negative
+
+  - type: custom:sankey-chart
+    show_names: true
+    throttle: 15000 #AVM: milliseconds wait-time between updates; 15' = 15sec
+    sections:
+      - entities:
+          - entity_id: sensor.pwrctrl_use_total
+            name: Use Total
+            children:
+              - sensor.pwrctrl_use_carcharger_power
+              - sensor.pwrctrl_use_hotwater_power
+              - sensor.pwrctrl_use_heating_power
+              - sensor.pwrctrl_use_lights_power
+              - sensor.pwrctrl_use_appliances_power
+              - sensor.pwrctrl_use_multimedia_power
+              - sensor.pwrctrl_use_ungrouped
+      - entities:
+          - entity_id: sensor.pwrctrl_use_carcharger_power
+            name: CarCharger
+          - entity_id: sensor.pwrctrl_use_hotwater_power
+            name: Hotwater
+          - entity_id: sensor.pwrctrl_use_heating_power
+            name: Heating
+          - entity_id: sensor.pwrctrl_use_lights_power
+            name: Lights
+          - entity_id: sensor.pwrctrl_use_appliances_power
+            name: Appliances
+          - entity_id: sensor.pwrctrl_use_multimedia_power
+            name: Multimedia
+          - entity_id: sensor.pwrctrl_use_ungrouped
+            name: unGrouped
+
+  - !include nordpool_4.yaml

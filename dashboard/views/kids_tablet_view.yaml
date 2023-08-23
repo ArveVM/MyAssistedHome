@@ -11,10 +11,9 @@ cards:
   - type: custom:mushroom-chips-card
     alignment: justify
     chips:
-      # - !include ../solutions/weather_chip.yaml
-      - !include ../../avm_yaml/dashboard/solutions/weather_chip.yaml
+      - !include ../sol_cards/weather_chip.yaml
                                
-      - !include ../../avm_yaml/dashboard/solutions/openuv_chip.yaml      
+      - !include ../sol_cards/openuv_chip.yaml      
 
       - type: template
         icon: mdi:refresh
@@ -24,5 +23,8 @@ cards:
             service: browser_mod.refresh
             data: {}
 
+  # # ----------  Cards -----------
+  - !include ../area_cards/kids_area_card.yaml
 
-  # - !include ../area_cards/kids_area_card.yaml
+                 
+  - !include ../sol_cards/calendar_7days_card.yaml

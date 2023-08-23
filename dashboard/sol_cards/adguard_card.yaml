@@ -1,0 +1,50 @@
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/adguard.md
+
+type: vertical-stack
+cards:
+  - type: markdown
+    content: |
+      AdGuard filter 
+
+      Active filter for ALL devices on home network.
+      Home Assistant can turn off ad-filter  
+      if needed - turn off Home Filtering, 
+      and note exact time and device where issues occured 
+      and report to the administrator
+      more info on AdGuard: https://adguard.com/en/welcome.html
+
+  - type: entities
+    entities:
+      - entity: switch.adguard_home_protection
+      - entity: switch.adguard_home_filtering
+      - type: divider
+      - entity: input_datetime.adguard_filter_off_timer
+      - type: button
+        name: Pause Adguard ad-filtering
+        icon: mdi:pause
+        tap_action:
+          action: call-service
+          # confirmation:
+          #   text: Are you sure you want to pause AdGuard?
+          service: script.adguard_filter_off
+      - entity: timer.adguard_filter_off
+        name: Time left before filter activated again
+      - type: divider
+
+  - type: custom:fold-entity-row
+    head:
+      type: section
+      label: "Adguard entities"
+    entities:    
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - entity_id: "*adguard_home_*"
+          exclude:
+            - entity_id: switch.adguard_home_protection
+            - entity_id: switch.adguard_home_filtering
+        sort:
+          method: entity_id
+          reverse: true

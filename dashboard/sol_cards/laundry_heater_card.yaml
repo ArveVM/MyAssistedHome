@@ -1,0 +1,312 @@
+type: custom:fold-entity-row
+head:
+  entity: sensor.laundry_heater_puck_power
+  name: Laundry Heater
+entities:
+  - entity: switch.laundry_heater_puck
+    type: custom:multiple-entity-row
+    name: "Status:"
+    toggle: true
+    state_header: Heating
+    entities:
+      - entity: binary_sensor.laundry_heater_puck_input
+        name: Local Th
+        toggle: true
+      - entity: input_boolean.laundry_heater_thermostat_output
+        name: Th out
+        toggle: true
+  - entity: sensor.laundry_heater_thermostat_target
+    type: custom:multiple-entity-row
+    name: "Temps:"
+    state_header: ShortTarget
+    entities:
+      - entity: sensor.laundry_thp_temperature
+        name: Room
+      - entity: input_number.laundry_heater_longterm_target
+        name: LongTarget
+      - entity: sensor.priceanalyzer
+        name: Priceanalyzer
+  - entity: input_boolean.laundry_heater_powerauto
+    type: custom:multiple-entity-row
+    name: "Saves:"
+    toggle: true
+    state_header: PowerAuto
+    entities:
+      - entity: input_boolean.laundry_heater_powersave
+        name: PowerSave
+        toggle: true
+      - entity: input_boolean.laundry_heater_powersave
+        name: PowerHourSave
+        toggle: true
+
+  # Heater (?) about:
+  - type: "custom:button-card"
+    template: chip_icon_only
+    variables:
+      ulm_chip_icon_only: "❔"
+
+    # Aboout-markdown
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: markdown
+            content: |
+              **Chips:**
+              Bar-graph; 
+                'click' -> for overview of historic usage
+              Line-graph:
+                'click' -> for Laundry Heater temp history 1h:
+                'double-click' -> for Laundry Heater temp history 24h:
+                'hold' -> for 'mich test history-grap'':
+              Wand:
+                'click' -> to toggle heater auto (on/off)  (blue = ON)
+                'hold' -> view list of entities controlling/overriding the heater-auto:
+              W:
+                info on current consumption of heater
+              ---
+
+              **About Heater AUTO:**
+              If auto is OFF, heater is controlled by local thermostat
+              If auto is ON, heater is controlled by Generic Thermostat, 
+              but can be overturned if PowerSave or PowerHourSave is turned ON
+                - Generic thermostat is controlled by scenes/automations 
+                  changing both temperature and preset-modes
+                - Input-temp in generic thermostat is room-sensor (Aquara THP)
+                - PowerSave can be used to cap high-price hours, 
+                  or focus on only heat during lowest-price
+                - PowerHoursave is to control total consumption during one hour
+                  to make sure one do not overstep hour-tariffs
+
+  # Heater (bar) usage graph:
+  - type: "custom:button-card"
+    template: chip_icon_only
+    variables:
+      ulm_chip_icon_only: "📊"
+
+    # 30days history graph card
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: vertical-stack
+            cards:
+              - type: statistics-graph
+                entities:
+                  - sensor.laundry_heater_energy_daily
+                title: 30 days daily usage
+                chart_type: bar
+                period: day
+                days_to_show: 30
+                stat_types:
+                  - max
+              - type: statistics-graph
+                entities:
+                  - sensor.laundry_heater_energy_daily
+                title: Monthly usage 12months
+                chart_type: bar
+                period: month
+                days_to_show: 365
+                stat_types:
+                  - max
+
+  # Heater (line) temp graph:
+  - type: "custom:button-card"
+    template: chip_icon_only
+    variables:
+      ulm_chip_icon_only: "📈"
+
+    # 1h history graph card
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: history-graph
+            hours_to_show: 1
+            entities:
+              #- title: "Laundry Heater temp history 1h:"
+              # first "timeline-entities":
+              - entity: binary_sensor.laundry_heater_puck_input
+                name: Local Th
+              - entity: input_boolean.laundry_heater_powerauto
+                name: Auto
+              - entity: input_boolean.laundry_heater_thermostat_output
+                name: Gen th
+              - entity: sensor.laundry_heater_thermostat_mode
+                name: Th. Mode
+              - entity: input_boolean.laundry_heater_powersave
+                name: P-save
+              - entity: input_boolean.laundry_heater_powerhoursave
+                name: PH-save
+              - entity: switch.laundry_heater_puck
+                name: Heat
+              # then graphs:
+              - entity: sensor.laundry_thp_temperature
+                name: Room temp
+              - entity: sensor.laundry_heater_thermostat_target
+                name: Gen.ter target
+
+    # 24h history graph card
+    double_tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: history-graph
+            entities:
+              # first "timeline-entities":
+              - entity: binary_sensor.laundry_heater_puck_input
+                name: Local Th
+              - entity: input_boolean.laundry_heater_powerauto
+                name: Auto
+              - entity: input_boolean.laundry_heater_thermostat_output
+                name: Gen th
+              - entity: sensor.laundry_heater_thermostat_mode
+                name: Th. Mode
+              - entity: input_boolean.laundry_heater_powersave
+                name: P-save
+              - entity: input_boolean.laundry_heater_powerhoursave
+                name: PH-save
+              - entity: switch.laundry_heater_puck
+                name: Heat
+              # then graphs:
+              - entity: sensor.laundry_thp_temperature
+                name: Room temp
+              - entity: sensor.laundry_heater_thermostat_target
+                name: Gen.ter target
+
+    # view custom history graph card
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: custom:history-explorer-card
+            cardName: history-card-5
+            header: hide # The hide option will remove the header entirely
+            uiLayout:
+              toolbar: top
+              selector: hide #bottom
+            stateColors:
+              binary_sensor.off: red
+              binary_sensor.on: green
+            graphs:
+              - type: line
+                entities:
+                  - entity: sensor.laundry_thp_temperature
+                    name: Room temp
+                    color: "#3e95cd"
+                    fill: rgba(151,187,205,0.15)
+                    lineMode: curves
+                  - type: attribute
+                    entity: sensor.laundry_heater_thermostat_target
+                    name: Termostat Target
+                    suffix: °C
+                    lineMode: stepped
+                  - entity: sensor.livingroom_netatmo_temperature
+                    color: "#ee3452"
+                    fill: rgba(0,0,0,0)
+                    lineMode: curves
+              - type: timeline
+                title: Non-numerical sensors
+                entities:
+                  - entity: binary_sensor.laundry_heater_puck_input
+                    name: Local Th
+                  - entity: input_boolean.laundry_heater_thermostat_output
+                    name: Gen Th
+                  - entity: input_boolean.laundry_heater_powerauto
+                    name: Auto
+                  - entity: input_boolean.laundry_heater_powersave
+                    name: P-save
+                  - entity: input_boolean.laundry_heater_powerhoursave
+                    name: PH-save
+                  - entity: switch.laundry_heater_puck
+                    name: Heat
+                  - type: attribute
+                    entity: climate.laundry_heater_thermostat
+                    attribute: preset_mode
+                    name: Term. Mode
+
+  # Heater control:
+  - type: "custom:button-card"
+    template: chip_icon_label
+    entity: input_boolean.laundry_heater_powerauto
+    icon: mdi:magic-staff
+    state:
+      - value: "off"
+        color: red
+      - value: "on"
+        color: green
+    tap_action:
+      action: toggle
+    double_tap_action:
+      action: more-info
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: entities
+            entities:
+              - entity: binary_sensor.laundry_heater_puck_input
+                name: Local Th
+              - entity: input_boolean.laundry_heater_powerauto
+                name: Auto
+              - type: attribute
+                entity: climate.laundry_heater_thermostat
+                attribute: preset_mode
+                name: Th Mode
+              - type: attribute
+                entity: climate.laundry_heater_thermostat
+                attribute: temperature
+                name: Th Target
+                suffix: °C
+              - type: attribute
+                entity: climate.laundry_heater_thermostat
+                attribute: current_temperature
+                name: Th Temp
+                suffix: °C
+              - entity: sensor.laundry_thp_temperature
+                name: Thp temp
+              - entity: input_boolean.laundry_heater_thermostat_output
+                name: Th out
+              - type: divider
+              - entity: input_boolean.laundry_heater_powersave
+                name: P-save
+              - entity: input_boolean.laundry_heater_powerhoursave
+                name: PH-save
+              - entity: switch.laundry_heater_puck
+                name: Heat
+              - entity: sensor.laundry_heater_puck_power
+                name: Heating power
+              #- type: divider
+              #- entity: sensor.laundry_heater_on
+
+  # Heater power-consumption:
+  - type: "custom:button-card"
+    template: chip_power_consumption
+    variables:
+      ulm_chip_electric_consumption: sensor.laundry_heater_puck_power
+      ulm_chip_electric_price: false
+    tap_action: more_info
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          content:
+            type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - entity_id: "*laundry_heater_energy*"

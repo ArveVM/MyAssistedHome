@@ -1,0 +1,84 @@
+# ArveVM; follow link for further documentation and appraisals:
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
+
+type: vertical-stack
+cards:
+  - type: entities
+    #title: "Hotwater SoC:"
+    entities:
+      - type: custom:fold-entity-row
+        head:
+          entity: sensor.hotwater_soc
+          label: "SoC"
+        open: false
+        entities:
+          - entity: sensor.hotwater_soc_average_temperature
+            type: custom:multiple-entity-row
+            name: Temp
+            state_header: Current
+            secondary_info: last-changed
+            entities:
+              - entity: input_number.hotwater_soc_target_temp
+                name: Target
+              - entity: input_number.hotwater_soc_min_temp
+                name: Min
+          - entity: sensor.hotwater_soc_chargetime
+          - type: custom:fold-entity-row
+            head:
+              entity: sensor.hotwater_soc_energy_chargable
+              label: "toCharge"
+            open: false
+            entities:
+              - entity: sensor.hotwater_soc_energy_chargable
+                type: custom:multiple-entity-row
+                name: Energy
+                state_header: Charge
+                secondary_info: last-changed
+                entities:
+                  - entity: sensor.hotwater_soc_energy_max
+                    name: Max
+                  - entity: sensor.hotwater_soc_energy_stored
+                    name: Charged
+
+          - type: custom:fold-entity-row
+            head:
+              type: section
+              label: Settings
+            open: false
+            entities:
+              - entity: input_number.hotwater_soc_target_temp
+                type: custom:multiple-entity-row
+                name: Temp's
+                state_header: Target
+                secondary_info: last-changed
+                entities:
+                  - entity: input_number.hotwater_soc_input_temp
+                    name: Input
+                  - entity: input_number.hotwater_soc_min_temp
+                    name: Min
+              - entity: input_number.hotwater_soc_tanksize
+                type: custom:multiple-entity-row
+                name: Tank-size
+                state_header: Size in L
+                secondary_info: last-changed
+                entities:
+                  - entity: input_number.hotwater_soc_elementsize
+                    name: kWh
+              - type: weblink
+                name: SoC-github readme
+                url: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
+
+  #- type: history-graph
+  #  entities:
+  #    - entity: input_number.hotwater_soc_target_temp
+  #      name: SoC-Max
+  #    - entity: input_number.hotwater_soc_min_temp
+  #      name: SoC-Min
+  #    - entity: sensor.hotwater_thermostat_target
+  #      name: Therm.target
+  #    - entity: sensor.hotwater_soc_average_temperature
+  #      name: "TempAverage"
+  #    - entity: sensor.hotwater_puck_bottom_temperature
+  #      name: "Temp-bottom"
+  #    - entity: sensor.hotwater_puck_bottom_temperature
+  #      name: "Temp-bottom"

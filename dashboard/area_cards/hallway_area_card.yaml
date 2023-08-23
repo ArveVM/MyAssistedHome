@@ -1,0 +1,197 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.hallway_thp_temperature
+      humidity1: &humidity1 sensor.hallway_thp_humidity
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 102px;
+      {% if is_state('light.hallway_light_up1', 'on') %}
+        background: rgba(255, 152, 0, 0.1);
+      {% endif %}
+    }
+cards:
+  - type: custom:mushroom-template-card
+    entity: light.hallway_light_up1
+    primary: Hallway
+    secondary: >-
+      {{states('sensor.hallway_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
+    icon: mdi:stairs
+    icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+    fill_container: true
+    layout: horizontal
+    multiline_secondary: false
+    card_mod:
+      style: |
+        :host([dark-mode]) {
+          background: rgba(var(--rgb-primary-background-color), 0.2);
+        } 
+        :host {
+          background: rgba(var(--rgb-primary-text-color), 0.025);
+        }
+    tap_action:
+      action: toggle
+    
+  - type: custom:mushroom-chips-card
+    alignment: end
+    card_mod:
+      style: |
+        ha-card {
+          --chip-box-shadow: none;
+          --chip-background: none;
+          --chip-spacing: 0;
+        }
+    chips:
+      - type: action
+        icon_color: yellow
+        icon: mdi:thermometer
+        card_mod: &card_mod_chip_style
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - ../sol_cards/house_temp_comp_card.yaml
+                    - entity: *temp1
+                      area_temp_compare: sensor.house_average_temperature
+                  - !include
+                    - ../sol_cards/house_humidity_comp_card.yaml
+                    - entity: *humidity1
+                      area_humidity_compare: sensor.house_average_humidity
+        hold_action: none
+
+      - entity: media_player.hallway_nest_hub
+        type: template
+        icon: mdi:cast
+        icon_color: |-
+          {% set state=states(entity) %}
+          {% if state=='playing' %}
+          blue
+          {% elif state=='paused' %}
+          orange
+          {% elif state=='idle' %}
+          yellow
+          {% else %}
+          disabled
+          {% endif %}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: custom:tabbed-card
+                options: {}
+                styles:
+                  "--mdc-theme-primary": orange
+                  "--mdc-tab-text-label-color-default": white
+                  "--mdc-typography-button-font-size": 10px
+                tabs:
+                  - attributes:
+                      label: status
+                      icon: mdi:cast
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: horizontal-stack
+                          cards:
+                            - type: tile
+                              entity: media_player.hallway_nest_hub
+                              tap_action:
+                                action: call-service
+                                service: script.hallway_nest_hub
+                                data: {}
+                                target: {}
+                            - type: entity
+                              toggle: true
+                              entity: input_boolean.hallway_nest_hub_recast
+                              tap_action:
+                                action: toggle
+                              #   service: script.cast_nesthub_hallway_stop
+                              #   data: {}
+                              #   target: {}
+                              # name: Stop Cast Hallway
+                              # show_entity_picture: false
+
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.hallway_nest_hub
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+                          media_controls:
+                            - on_off
+                            - shuffle
+                            - previous
+                            - play_pause_stop
+                            - next
+                            - repeat
+                  - attributes:
+                      label: settings
+                      icon: mdi:wrench
+                    card:
+                      type: vertical-stack
+                      cards:
+                        - type: entity
+                          entity: input_boolean.hallway_nest_hub_recast
+                        - type: custom:mushroom-media-player-card
+                          entity: media_player.hallway_nest_hub
+                          volume_controls:
+                            - volume_mute
+                            - volume_set
+
+      - type: action
+        icon_color: yellow
+        icon: mdi:lightbulb
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: call-service
+          service: light.toggle
+          data: {}
+          target:
+            entity_id: light.loftl
+
+      - type: action
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: navigate
+          navigation_path: /config/areas/area/hallway
+        icon: mdi:devices
+
+      - type: template
+        entity: binary_sensor.loft_room_status
+        icon: mdi:hospital
+        icon_color: "{{ 'green' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        hold_action:
+          action: more-info
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - loft_status_card.yaml
+                    - entity: *temp1
+                      humidity_entity: *humidity1

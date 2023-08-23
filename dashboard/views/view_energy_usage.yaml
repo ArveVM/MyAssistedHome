@@ -1,0 +1,29 @@
+# include UI Minimalist templates - see https://ui-lovelace-minimalist.github.io/UI/ for guidance
+button_card_templates: !include_dir_merge_named "../../custom_components/ui_lovelace_minimalist/__ui_minimalist__/ulm_templates/"
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.kitchen_thp_temperature
+      humidity1: &humidity1 sensor.kitchen_thp_humidity
+      temp2: &temp2 sensor.outside_netatmo_temperature
+      humidity2: &humidity2 sensor.outside_netatmo_humidity
+      title: &title1 "Energy_usage"
+
+title: *title1
+path: *title1
+
+cards:
+  # # # ----------  Stack of stacks  (default) -----------
+  - type: vertical-stack
+    cards:
+
+      # ---------   Pris/forbruk        -----------
+      #- !include ../cards/nordpool_4.yaml
+      - !include ../sol_cards/pwrctrl_use_card.yaml
+
+      - !include ../sol_cards/nordpool_4.yaml
+
+
+
