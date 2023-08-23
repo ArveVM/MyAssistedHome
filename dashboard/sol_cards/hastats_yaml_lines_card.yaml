@@ -29,9 +29,6 @@ cards:
             name: Packages
           - entity: sensor.hastats_yaml_line_dashboard_count
             name: Dashboard
-          # - entity: sensor.hastats_yaml_line_avm_yaml_count
-          #   name: AVM_yaml
-
 
 
   - type: glance
@@ -59,6 +56,7 @@ cards:
                         name: "max total/month"
                     stat_types:
                       - max
+
 
       # Packages:
       - entity: sensor.hastats_yaml_line_packages_count

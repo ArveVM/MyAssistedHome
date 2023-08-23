@@ -54,14 +54,16 @@ command_line:
   - sensor:
       name: HAstats YAML line Dashboard count
       unique_id: hastats_yaml_line_dashboard_count
-      command: " find /config/avm_yaml/dashboard -name '*.yaml' | xargs cat | wc -l"
+      # command: " find /config/avm_yaml/dashboard -name '*.yaml' | xargs cat | wc -l"
+      command: " find /config/dashboard -name '*.yaml' | xargs cat | wc -l"
       unit_of_measurement: "lines"
       scan_interval: *scan_int
 
   - sensor:
       name: "HAstats YAML line Packages count"
       unique_id: hastats_yaml_line_packages_count
-      command: " find /config/avm_yaml/packages -name '*.yaml' | xargs cat | wc -l"
+      # command: " find /config/avm_yaml/packages -name '*.yaml' | xargs cat | wc -l"
+      command: " find /config/packages -name '*.yaml' | xargs cat | wc -l"
       unit_of_measurement: "lines"
       scan_interval: *scan_int
 
