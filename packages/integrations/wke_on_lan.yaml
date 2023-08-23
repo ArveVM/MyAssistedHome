@@ -1,0 +1,16 @@
+
+
+
+wake_on_lan: # enables `wake_on_lan` integration   https://www.home-assistant.io/integrations/wake_on_lan/
+
+
+switch:
+  - platform: wake_on_lan
+    name: SamsungUE55 WoL
+    mac: 38:01:95:f5:20:03
+
+
+# service: wake_on_lan.send_magic_packet
+# data:
+#   mac: "38:01:95:f5:20:03"
+#   broadcast_address: "192.168.2.231"

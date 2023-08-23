@@ -25,5 +25,4 @@ cards:
             data: {}
 
 
-  - !include ../area_cards/kids_area_card.yaml
-      
+  # - !include ../area_cards/kids_area_card.yaml

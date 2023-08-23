@@ -1,0 +1,26 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+type: template
+entity: sensor.fuelapp_cheapest_price2
+# content: >
+#   {{states(entity) | int }}%
+icon: mdi:gas
+# icon_color: >
+#   {% set t=states(entity) | float(default=3) %}
+#   {% if t >= 40 %}
+#     white
+#   {% elif t >= 20 %}
+#     orange
+#   {% else %}
+#     red
+#   {% endif %}
+
+# tap_action:
+#   action: fire-dom-event
+#   browser_mod:
+#     service: browser_mod.popup
+#     data:
+#       content:
+#         type: vertical-stack
+#         cards:
+#           - !include ../../dashboard/sol_cards/fuelapp_card.yaml

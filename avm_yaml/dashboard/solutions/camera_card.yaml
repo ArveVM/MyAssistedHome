@@ -88,6 +88,10 @@ cards:
             # Negligable difference between resolution on substream and main,, so just stream mainstream
             - camera_entity: camera.kidm
               live_provider: go2rtc
+
+            # Negligable difference between resolution on substream and main,, so just stream mainstream
+            - camera_entity: camera.roberto
+              live_provider: go2rtc
               
       # AVM: add a tab with some stats/control over frigate:
       - attributes:

@@ -246,4 +246,4 @@ cards:
               content:
                 type: vertical-stack
                 cards:
-                  - !include livingroom_status_card.yaml
+                  - !include ../../../dashboard/area_cards/livingroom_status_card.yaml

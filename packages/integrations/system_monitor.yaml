@@ -40,6 +40,7 @@ sensor:
     - type: disk_free
       arg: "/"
     - type: memory_use_percent
+    - type: last_boot
 #    - type: network_in
 #      arg: eth0
 #    - type: throughput_network_in
@@ -49,6 +50,6 @@ sensor:
 #    - type: throughput_network_out
 #      arg: eth0
 #    - type: processor_temperature
-    - type: last_boot
+
 
 

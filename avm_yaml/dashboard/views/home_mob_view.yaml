@@ -88,6 +88,7 @@ cards:
                     cards:
                       - !include ../solutions/ha_toolbox.yaml
 
+          - !include ../../../dashboard/sol_cards/fuel_app_chip.yaml
 
   - type: vertical-stack
     cards:

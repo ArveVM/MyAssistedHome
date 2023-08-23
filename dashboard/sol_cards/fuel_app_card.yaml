@@ -1,0 +1,283 @@
+
+
+
+
+type: custom:tabbed-card
+options: {}
+styles:
+  "--mdc-theme-primary": orange
+  "--mdc-tab-text-label-color-default": white
+  "--mdc-typography-button-font-size": 10px
+tabs:
+  - attributes:
+      label: Price
+      icon: mdi:chart-multiple
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          filter:
+            exclude:
+              - entity_id: '*_rest'
+              - entity_id: '*cheapest*'
+            include:
+              - entity_id: '*fuelapp*'
+                options:
+                  type: custom:mushroom-template-card
+                  primary: >
+                    {{ states(entity) }} - {{ state_attr(entity, 'friendly_name').replace("FuelApp", '')
+                    }}
+                  secondary: '{{ state_attr(entity, ''lastUpdate'') }}'
+                  picture: '{{ state_attr(entity, ''entity_picture'') }}'
+                  multiline_secondary: true
+          sort:
+            method: state
+          card:
+            square: false
+            type: grid
+            columns: 2
+          card_param: cards
+        - type: custom:history-explorer-card
+          cardName: FuelApp-cheapest-price2
+          defaultTimeRange: 7d
+          header: hide
+          lineMode: stepped
+          statistics:
+            enabled: true
+            mode: min
+            period: hour
+          uiLayout:
+            toolbar: top
+            selector: hide
+          graphs:
+            - type: line
+              options:
+                interval: hour
+              entities:
+                - entity: sensor.fuelapp_cheapest_price
+                  name: Cheapest
+                  color: white
+                - entity: sensor.fuelapp_volda_circlek
+                  name: Volda-CircleK
+                  color: red
+                - entity: sensor.fuelapp_volda_shell
+                  name: Volda-Shell
+                  color: yellow
+                - entity: sensor.fuelapp_volda_uno_x
+                  name: Volda-UnoX
+                  color: orange
+
+        - type: custom:fold-entity-row
+          head:
+            entity: sensor.fuelapp_cheapest_price
+            label: "SoC"
+          open: false
+          entities:
+            - type: custom:auto-entities
+              sort:
+                method: state
+              card:
+                type: entities
+              filter:
+                include:
+                  - entity_id: '*fuelapp*'
+                exclude:
+                  - entity_id: '*_rest'
+                  - entity_id: '*cheapest*'
+      
+      
+      
+
+  - attributes:
+      label: Stations
+      icon: mdi:gas-station
+    card:
+      type: vertical-stack
+      cards:
+        - type: custom:auto-entities
+          sort:
+            method: state
+          card:
+            type: entities
+          filter:
+            include:
+              - entity_id: '*fuelapp*'
+            exclude:
+              - entity_id: '*_rest'
+              - entity_id: '*cheapest*'
+
+  - attributes:
+      label: Test
+      icon: mdi:chart-multiple
+    card:
+      type: vertical-stack
+      cards:
+        - type: entities
+          entities:
+            - entity: sensor.fuelapp_cheapest_price2
+            - type: section
+              label: "5 days history:"
+          footer:
+            type: graph
+            entity: sensor.fuelapp_cheapest_price2
+            hours_to_show: 70
+            detail: 6
+        - type: custom:fold-entity-row
+          head:
+            entity: sensor.fuelapp_cheapest_price2
+            label: "SoC"
+          open: false
+          entities:
+            - type: custom:auto-entities
+              sort:
+                method: state
+              card:
+                type: entities
+              filter:
+                include:
+                  - entity_id: '*fuelapp*'
+                exclude:
+                  - entity_id: '*_rest'
+                  - entity_id: '*cheapest*'
+        - type: custom:history-explorer-card
+          cardName: FuelApp-cheapest-price1
+          defaultTimeRange: 3d
+          header: hide
+          rounding: 2
+          showUnavailable: false
+          # showCurrentValues: true
+          decimation: accurate 
+          lineMode: stepped
+          # statistics:
+          #   enabled: true
+          #   mode: min
+          #   period: hour
+          uiLayout:
+            toolbar: bottom
+            selector: hide
+          graphs:
+            - type: line
+              options:
+                interval: hour
+              entities:
+                - entity: sensor.fuelapp_cheapest_price
+                  name: Cheapest
+                  color: white
+                - entity: sensor.fuelapp_cheapest_price2
+                  name: Cheapest2
+                  color: Blue
+                - entity: sensor.fuelapp_volda_circlek
+                  name: Volda-CircleK
+                  color: red
+                - entity: sensor.fuelapp_volda_shell
+                  name: Volda-Shell
+                  color: yellow
+                - entity: sensor.fuelapp_volda_uno_x
+                  name: Volda-UnoX
+                  color: orange
+                - entity: sensor.fuelapp_orsta_shellexpress
+                  name: Ørsta ShellExpress
+                  color: yellow
+                - entity: sensor.fuelapp_orsta_uno_x
+                  name: Ørsta-UnoX
+                  color: orange
+                - entity: sensor.fuelapp_vartdal_bunkeroil
+                  name: Vartdal-Bunkeroil
+                  color: Blue
+
+        - type: map
+          entities:
+            - entity: sensor.fuelapp_volda_circlek
+            - entity: sensor.fuelapp_volda_shell
+            - entity: sensor.fuelapp_volda_uno_x
+            - entity: sensor.fuelapp_volda_xtra_bestexpress
+            - entity: sensor.fuelapp_orsta_shellexpress
+            - entity: sensor.fuelapp_orsta_uno_x
+            - entity: sensor.fuelapp_vartdal_bunkeroil
+
+        - type: custom:history-explorer-card
+          cardName: FuelApp-cheapest-price1
+          defaultTimeRange: 3d
+          header: hide
+          rounding: 2
+          showUnavailable: false
+          # showCurrentValues: true
+          decimation: accurate 
+          lineMode: stepped
+          # statistics:
+          #   enabled: true
+          #   mode: min
+          #   period: hour
+          uiLayout:
+            toolbar: bottom
+            selector: hide
+          graphs:
+            - type: bar
+              options:
+                interval: hour
+              entities:
+                - entity: sensor.fuelapp_cheapest_price
+                  name: Cheapest
+                  color: white
+                - entity: sensor.fuelapp_cheapest_price2
+                  name: Cheapest2
+                  color: Blue
+                - entity: sensor.fuelapp_volda_circlek
+                  name: Volda-CircleK
+                  color: red
+                - entity: sensor.fuelapp_volda_shell
+                  name: Volda-Shell
+                  color: yellow
+                - entity: sensor.fuelapp_volda_uno_x
+                  name: Volda-UnoX
+                  color: orange
+                - entity: sensor.fuelapp_orsta_shellexpress
+                  name: Ørsta ShellExpress
+                  color: yellow
+                - entity: sensor.fuelapp_orsta_uno_x
+                  name: Ørsta-UnoX
+                  color: orange
+                - entity: sensor.fuelapp_vartdal_bunkeroil
+                  name: Vartdal-Bunkeroil
+                  color: Blue
+
+
+        - type: custom:auto-entities
+          filter:
+            exclude:
+              - entity_id: '*_rest'
+              - entity_id: '*cheapest*'
+            include:
+              - entity_id: '*fuelapp*'
+                options:
+                  type: custom:mushroom-template-card
+                  primary: >
+                    {{ states(entity) }} - {{ state_attr(entity, 'friendly_name').replace("FuelApp", '')
+                    }}
+                  secondary: '{{ state_attr(entity, ''lastUpdate'') }}'
+                  picture: '{{ state_attr(entity, ''entity_picture'') }}'
+                  multiline_secondary: true
+          sort:
+            method: state
+          card:
+            square: false
+            type: grid
+            columns: 2
+          card_param: cards
+
+        - type: entities
+          # title: Entities card sample
+          entities:
+            - type: custom:auto-entities
+              sort:
+                method: state
+                count: 3
+              card:
+                type: entities
+              filter:
+                include:
+                  - entity_id: '*fuelapp*'
+                exclude:
+                  - entity_id: '*_rest'
+                  - entity_id: '*cheapest*'
+

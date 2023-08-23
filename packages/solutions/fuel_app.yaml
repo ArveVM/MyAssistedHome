@@ -1,0 +1,231 @@
+
+
+# source:  https://github.com/RonnyRusten/Home-Assistant-Config-2/blob/master/packages/gas_stations.yaml
+
+
+########################################################################################
+#   @author       :   RRU
+#   @date         :   21.march.2022
+#   @solution     :   gas stations
+#   @description  :   Solution to get gas prices from Drivstoffappen.
+#   @basic concept:
+#      Rest integration gets prices from Drivstoffappen and puts them in sensors
+#      Templates are populating sensors with attributes for better presentation in maps.
+#      For a list of gas stations, use a tool like postman and run a query on the api with the apropriate headers.
+#      Link to postman collection:
+#      https://github.com/RonnyRusten/Home-Assistant-Config/blob/master/other/Drivstoffappen.postman_collection.json
+########################################################################################
+
+
+# First create rest-sensors that pick up station-data from the FuelApp's API:
+rest:
+  - scan_interval: 600
+    method: GET
+    headers:
+      Content-Type: application/json
+      X-API-KEY: !secret the_fuel_app_X-API-KEY
+      User-Agent: Drivstoffappen/1.3.8 (com.raskebiler.drivstoff.appen; build:130; iOS 15.2.1) Alamofire/5.4.4
+      Accept-Language: nb-NO;q=1.0, en-GB;q=0.9
+      Accept-Encoding: br;q=1.0, gzip;q=0.9, deflate;q=0.8
+      Connection: keep-alive
+    resource: https://api.drivstoffappen.no/api/stations?stationType=0&countryCode=NO
+
+    sensor:
+      - name: "FuelApp Volda Shell rest"
+        json_attributes_path: "$..[?(@.id==1290)]" 
+        value_template: "OK" 
+        force_update: true
+        json_attributes: &json_attributes
+          - "stationDetails"
+          - "location"
+          - "latitude"
+          - "longitude"
+          - "pictureUrl"
+
+      - name: "FuelApp Volda Uno-X rest"
+        json_attributes_path: "$..[?(@.id==25008)]" 
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      - name: "FuelApp Volda CircleK rest"
+        json_attributes_path: "$..[?(@.id==831)]"
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      - name: "FuelApp Volda Xtra-BestExpress rest"
+        json_attributes_path: "$..[?(@.id==5692)]"
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      - name: FuelApp Ørsta ShellExpress rest
+        json_attributes_path: "$..[?(@.id==1239)]"
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      - name: FuelApp Orsta Uno-X rest
+        json_attributes_path: "$..[?(@.id==44)]"
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      - name: "FuelApp Vartdal BunkerOil rest"
+        json_attributes_path: "$..[?(@.id==2125)]"
+        value_template: "OK" 
+        force_update: true
+        json_attributes: *json_attributes
+
+      # # source/guidance from mrRR
+      # - name: "Circle K Hatlane rest"
+      #   json_attributes_path: "$..[?(@.id==748)]" #.stationDetails..[?(@.type=='D')]"
+      #   value_template: "OK" # "{{ state_attr('sensor.circle_k_hatlane_2', 'stationDetails')[1].price }}"
+      #   force_update: true
+      #   json_attributes:
+      #     - "stationDetails"
+      #     - "location"
+      #     - "latitude"
+      #     - "longitude"
+      #     - "pictureUrl"
+
+
+
+# New sensors with more suitable state and attributes.
+template:
+  - sensor:
+      - name: "FuelApp Volda Shell"
+        unique_id: 4668fb62-c1d9-42e0-b7c5-97682407b2d5
+        picture: "{{ state_attr('sensor.fuelapp_volda_shell_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_volda_shell_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_volda_shell_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_volda_shell_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_volda_shell_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_volda_shell_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_volda_shell_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: "FuelApp Volda Uno-X"
+        unique_id: 676a715f-093b-48ce-922c-44070a8c6369
+        picture: "{{ state_attr('sensor.fuelapp_volda_uno_x_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_volda_uno_x_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_volda_uno_x_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_volda_uno_x_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_volda_uno_x_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_volda_uno_x_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_volda_uno_x_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: "FuelApp Volda CircleK"
+        unique_id: bb89b57e-8d6a-43ae-9436-903a2f5cee78
+        picture: "{{ state_attr('sensor.fuelapp_volda_circlek_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_volda_circlek_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_volda_circlek_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_volda_circlek_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_volda_circlek_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_volda_circlek_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_volda_circlek_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: FuelApp Volda Xtra-BestExpress
+        unique_id: 64d4ce72-7ed0-4a0a-ae38-30cabcd76b9e
+        picture: "{{ state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          friendly_name: Volda Xtra-BestExpress
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_volda_xtra_bestexpress_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: FuelApp Ørsta ShellExpress
+        unique_id: 64d4ce72-7ed0-4a0a-ae38-30cabcd767895bsdfsdf9fe
+        picture: "{{ state_attr('sensor.fuelapp_orsta_shellexpress_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_orsta_shellexpress_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_orsta_shellexpress_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_orsta_shellexpress_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_orsta_shellexpress_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_orsta_shellexpress_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_orsta_shellexpress_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: FuelApp Ørsta Uno-X
+        unique_id: 6cab77bd-3cf0-4765-be03-94427b14257b
+        picture: "{{ state_attr('sensor.fuelapp_orsta_uno_x_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_orsta_uno_x_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_orsta_uno_x_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_orsta_uno_x_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_orsta_uno_x_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_orsta_uno_x_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_orsta_uno_x_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+      - name: FuelApp Vartdal BunkerOil
+        unique_id: e7f0f3d7-3d11-4228-9b27-e12b4c696df5
+        picture: "{{ state_attr('sensor.fuelapp_vartdal_bunkeroil_rest', 'pictureUrl') }}"
+        state: "{{ (state_attr('sensor.fuelapp_vartdal_bunkeroil_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        attributes:
+          lastUpdate: "{{ ((state_attr('sensor.fuelapp_vartdal_bunkeroil_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+          longitude: "{{ state_attr('sensor.fuelapp_vartdal_bunkeroil_rest', 'longitude') }}"
+          latitude: "{{ state_attr('sensor.fuelapp_vartdal_bunkeroil_rest', 'latitude') }}"
+          location: "{{ state_attr('sensor.fuelapp_vartdal_bunkeroil_rest', 'location') }}"
+          gas: "{{ (state_attr('sensor.fuelapp_vartdal_bunkeroil_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+
+      - name: FuelApp cheapest price2
+        unique_id: ea61c616-3e9e-486e-97d0-0fad78a13013
+        # picture: "{{ state_attr('sensor.circle_k_hatlane_rest', 'pictureUrl') }}"
+        icon: "mdi:gas-station"
+        unit_of_measurement: "Kr/l"
+        state: >
+           {{ [
+           states('sensor.fuelapp_volda_shell') | float,
+           states('sensor.fuelapp_volda_uno_x') | float,
+           states('sensor.fuelapp_volda_circlek') | float, 
+           states('sensor.fuelapp_volda_xtra_bestexpress') | float, 
+           states('sensor.fuelapp_orsta_shellexpress') | float 
+           ] | min }}
+
+
+      # source/guidance from mrRR
+      # - name: "Hatlane"
+      #   unique_id: "circle_k_hatlane"
+      #   picture: "{{ state_attr('sensor.circle_k_hatlane_rest', 'pictureUrl') }}"
+      #   state: "{{ (state_attr('sensor.circle_k_hatlane_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='price') | list)[0] }}"
+      #   icon: "mdi:gas-station"
+      #   unit_of_measurement: "Kr/l"
+      #   attributes:
+      #     lastUpdate: "{{ ((state_attr('sensor.circle_k_hatlane_rest','stationDetails') | selectattr('type', '==', 'D') | map(attribute='lastUpdated') | list)[0] | int / 1000) | timestamp_custom('%d.%m.%Y %H:%M:%S') }}"
+      #     longitude: "{{ state_attr('sensor.circle_k_hatlane_rest', 'longitude') }}"
+      #     latitude: "{{ state_attr('sensor.circle_k_hatlane_rest', 'latitude') }}"
+      #     location: "{{ state_attr('sensor.circle_k_hatlane_rest', 'location') }}"
+      #     gas: "{{ (state_attr('sensor.circle_k_hatlane_rest','stationDetails') | selectattr('type', '==', '95') | map(attribute='price') | list)[0] }}"
+
+
+# Then add a "cheapes-sensor"
+sensor:
+  - platform: min_max
+    name: FuelApp cheapest price
+    type: min
+    unique_id: 052095df-2d19-48cf-ad14-1f5bb97040eb
+    entity_ids:
+      - sensor.fuelapp_volda_circlek
+      - sensor.fuelapp_volda_shell
+      - sensor.fuelapp_volda_uno_x
+
