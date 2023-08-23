@@ -16,7 +16,7 @@
 ## Wiki - Table of contents:
 |Chapters   |Description/purpose |
 | ----------| ----------------------------- |
-|[Wiki-home](https://github.com/ArveVM/MyAssistedHome/wiki/Home)| Startpage for documentation, <br /> the disclaimer, mentors and inspirators, princples, setup, the journey, <br /> base config, presentation and functionality add|
+|[Wiki-home](https://github.com/ArveVM/MyAssistedHome/wiki/Home)| Startpage for documentation <br /> The disclaimer, mentors and inspirators, princples, setup, the journey <br /> Base config, presentation and functionality add|
 |||
 |[3. Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions)   |About my method(s) for grouping "everything HA" in Solutions|
 |[3.1. General Solutions](https://github.com/ArveVM/MyAssistedHome/wiki/3-Solutions#general-solutions) | General stuff, such as camears, plants, todo, garbage, lights and power-control|
