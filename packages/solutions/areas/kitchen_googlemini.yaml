@@ -1,0 +1,11 @@
+
+
+
+
+# Build your own notification service for any TTS service
+notify:
+  - name: kitchen_google_mini_tts
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.kitchen_googlemini
+

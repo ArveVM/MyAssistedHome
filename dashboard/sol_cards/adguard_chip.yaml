@@ -1,5 +1,7 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
+# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/adguard.md
+
 type: template
 entity: switch.adguard_home_filtering
 icon: mdi:shield-alert

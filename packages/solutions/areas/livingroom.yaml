@@ -6,6 +6,7 @@ homeassistant:
       package_attribute_to_entity: &package_attribute
         solution: Livingroom
 
+
 light:
   - platform: group
     name: Livingroom Lights group
@@ -15,31 +16,48 @@ light:
       - light.livingroom_light_windowstrip
       - light.livingroom_soyle
 
-sensor:
-  - platform: powercalc
-    create_group: Livingroom lights all
-    create_energy_sensor: false
-    create_utility_meters: false
-    ignore_unavailable_state: true
-    entities:
-      - entity_id: light.livingroom_diningtable # ArveVM: 3*11W  LED
-        fixed:
-          power: 33
-      - entity_id: light.livingroom_soyle       # ArveVM: 2* LED
-        power_sensor_id: sensor.livingroom_switch_s2_power_2
-      - entity_id: light.livingroom_light_windowstrip # AVM: Namron 89686 led-strip on a z2m-controller
-        linear:
-          min_power: 0.4
-          max_power: 6
-      - entity_id: light.livingroom_light_lounge # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
-        manufacturer: ikea
-        model: LED2003G10
+  - platform: template
+    lights:
+      livingroom_cosylight:
+        friendly_name: "Livingroom Cosylights"
+        turn_on:
+          service: remote.send_command
+          data:
+            entity_id: remote.hubby
+            command: PowerOn
+            device: Vie Selected
+
+        turn_off:
+          service: remote.send_command
+          # action: call-service
+          data:
+            entity_id: remote.hubby
+            command: PowerOff
+            device: Vie Selected
+
+
+powercalc:
+  sensors:
+    - create_group: Livingroom lights all
+      create_energy_sensor: false
+      create_utility_meters: false
+      ignore_unavailable_state: true
+      entities:
+        - entity_id: light.livingroom_diningtable # ArveVM: 3*11W  LED
+          fixed:
+            power: 33
+        - entity_id: light.livingroom_soyle       # ArveVM: 2* LED
+          power_sensor_id: sensor.livingroom_switch_s2_power_2
+        - entity_id: light.livingroom_light_windowstrip # AVM: Namron 89686 led-strip on a z2m-controller
+          linear:
+            min_power: 0.4
+            max_power: 6
+        - entity_id: light.livingroom_light_lounge # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
+          manufacturer: ikea
+          model: LED2003G10
 
 
 template:
-
-
-
   - binary_sensor:
       - name: Livingroom Area Status
         unique_id: c9bb57af-00b1-413f-afc1-92f111ad2ab0
@@ -52,6 +70,7 @@ template:
         attributes:
           <<: *package_attribute
           temp_above_19: "{{ 'Problem!' if (states('sensor.livingroom_netatmo_temperature') | float(default=20) < 19) else 'OK'}}"
+
 
 script:
   livingroom_cosylight1_on:
@@ -70,6 +89,7 @@ script:
           entity_id: remote.hubby
           command: PowerOff
           device: Vie Selected
+
 
 cover:
   - platform: group

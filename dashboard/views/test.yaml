@@ -10,7 +10,14 @@ cards:
       - !include ../sol_cards/openuv_chip.yaml 
 
   # - !include ../solutions/camera1_card.yaml 
+  - !include ../_cards_old/kids_linen.yaml 
   - !include ../sol_cards/fuel_app_card.yaml 
+
+  
+  - type: custom:mushroom-chips-card
+    chips:
+      - !include ../sol_cards/adguard_chip.yaml 
+  - !include ../sol_cards/adguard_card.yaml
 
   # - !include ../solutions/openuv_card.yaml
 

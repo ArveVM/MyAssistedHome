@@ -35,6 +35,15 @@ script:
       - service: shell_command.hallway_nest_hub_cast1
 
 
+
+# Build your own notification service for any TTS service
+notify:
+  - name: hallway_hub_tts
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.hallway_nest_hub
+
+
   # livingroom_cast_test:
   #   alias: Livingroom cast dashboard
   #   sequence:
@@ -54,6 +63,7 @@ automation:
       - id: focuschange
         platform: template
         value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
+        for: "00:00:10"
       # - id: focuschange
       #   platform: state
       #   entity_id: media_player.hallway_nest_hub
@@ -91,7 +101,7 @@ automation:
                 # Waits 10 seconds
               - delay: "00:00:10"
               - service: script.hallway_nest_hub  # The script above
-                data: {}
+                # data: {}
           # after restart,, await the catt uninstall/install procedure,,  before start casting
           - conditions:
               - condition: trigger
@@ -100,7 +110,7 @@ automation:
               # Waits 1.5 minutes for catt-install to finish
               - delay: "00:01:30"
               - service: script.hallway_nest_hub  # The script above
-                data: {}
+                # data: {}
         # anyway,, start script and start casting
         default:
           - service: script.hallway_nest_hub  # The script above

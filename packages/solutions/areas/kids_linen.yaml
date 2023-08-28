@@ -33,19 +33,25 @@ template:
           {{states('input_number.kids_linen_change_interval') | int 
           - (now() - states( 'input_datetime.kids_linen_changed') 
           | as_datetime | as_local ).days }}
+  - binary_sensor: 
+      name: KidS linen change overdue
+      unique_id: kids_linen_change_overdue
+      state: >
+        {{states('sensor.kids_linen_days_until_change') |int  < 0 }}
+
 
 alert:
   kids_linen_alert:
     name: KidS linen change overdue
     done_message: KidS linen change overdue
-    entity_id: input_boolean.garage_door
+    entity_id: binary_sensor.kids_linen_change_overdue
     state: "on"
     repeat: 30
     can_acknowledge: true
-    skip_first: true
+    skip_first: false
     notifiers:
-      - ryans_phone
-      - kristens_phone
+      - mobile_app_dad_mobile
+
 
 automation:
   - id: kids_linen_todo_add
