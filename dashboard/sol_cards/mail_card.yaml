@@ -1,11 +1,13 @@
+# Solution: Mail - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Mail
+
 # 99% stolen from https://github.com/RonnyRusten/     dashboards/cards/mail_card.yaml
 
-type: grid
-columns: 1
-square: false
+type: vertical-stack
 cards:
   - type: markdown
-    title: Postleveringar
+    content: |
+      ## [Solution: Mail](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Mail)   
+  - type: markdown
     content: >
       ![Image](https://upload.wikimedia.org/wikipedia/commons/5/53/Posten-Norge-Logo.svg)
 
@@ -16,3 +18,4 @@ cards:
           {{ as_timestamp(day | replace("[","") | replace("]","") | replace("'","") | replace(" ","") + 'T00:00:00') | timestamp_custom('%d.%m.%Y') | title }}{{'\r\n'}} 
       {%- endfor %}
 
+      
