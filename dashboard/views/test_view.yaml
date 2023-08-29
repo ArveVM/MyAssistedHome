@@ -20,6 +20,7 @@ cards:
       - !include ../sol_cards/adguard_chip.yaml 
       - !include ../sol_cards/mail_chip.yaml 
       - !include ../sol_cards/guest_wifi_chip.yaml 
+      - !include ../sol_cards/minrenovasjon_chip.yaml 
   - type: markdown
     content: |
       cards:
