@@ -1,4 +1,4 @@
-# Solution: Mail - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Mail
+# Solution Mail: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Mail
 
 # 99% stolen from https://github.com/RonnyRusten/     dashboards/cards/mail_card.yaml
 
@@ -18,5 +18,4 @@ cards:
           {{ as_timestamp(day | replace("[","") | replace("]","") | replace("'","") | replace(" ","") + 'T00:00:00') | timestamp_custom('%d.%m.%Y') | title }}{{'\r\n'}} 
       {%- endfor %}
 
-      
       

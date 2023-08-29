@@ -1,8 +1,15 @@
-# idea from mrKim,, add picture of guest-wifi in local folder  (/www/images/)  and enable on dashboard,,,
+# Solution Guest wifi: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Guest-wifi-code-presentation
 
-type: picture
-image: /local/images/guest_wifi.jpg
-tap_action:
-  action: none
-hold_action:
-  action: none
+
+
+type: vertical-stack
+cards:
+  - type: markdown
+    content: |
+      ## [Solution: Guest wifi-code presentation](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Guest-wifi-code-presentation)   
+  - type: picture
+    image: /local/images/guest_wifi.jpg
+    tap_action:
+      action: none
+    hold_action:
+      action: none

@@ -1,7 +1,9 @@
+# Solution Guest wifi: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Guest-wifi-code-presentation
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
 icon: mdi:wifi 
+icon_color: disabled
 tap_action:
   action: fire-dom-event
   browser_mod:
