@@ -6,11 +6,11 @@ cards:
     cards:
     - type: markdown
       content: |
-        # [Adguard Solution](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Adguard)
+        ## [Solution: Adguard](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Adguard)
       
     - type: markdown      
       content: |
-        # [About Adguard](https://adguard.com/en/welcome.html)
+        ## [About Adguard](https://adguard.com/en/welcome.html)
 
   - type: markdown
     content: |
