@@ -1,4 +1,5 @@
 
+# https://www.home-assistant.io/integrations/openuv/
 
 automation:
   - alias: OpenUV - reload uv-entities
@@ -20,8 +21,8 @@ automation:
   - alias: OpenUV - update protection window
     id: bb89b57e-8d6a-43ae-9436-903a2f5cee78
     trigger:
-      - platform: time
-        at: "09:01:00"
+      # - platform: time
+      #   at: "09:01:00"
       - platform: time
         at: "12:00:00"
     action:

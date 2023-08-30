@@ -1,0 +1,57 @@
+# Solution Team tracker: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Team-Tracker 
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: template
+icon: mdi:soccer
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+            - type: markdown
+              content: |
+                ## [Solution: Team Tracker](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Team-Tracker) 
+            # - type: markdown
+            #   content: |
+            #     ## Int: Team Tracker 
+            #   tap_action:
+            #     action: fire-dom-event
+            #     browser_mod:
+            #       service: browser_mod.sequence
+            #       data:
+            #         sequence:
+            #           - service: browser_mod.navigate
+            #             data:
+            #               deviceID: THIS
+            #               path: /config/integrations/integration/teamtracker
+            #           - service: browser_mod.close_popup
+            #             data:
+            #               deviceID: THIS            # - type: markdown
+            # #   content: |
+            - type: custom:mushroom-title-card
+              subtitle: 'Integration: Team Tracker' 
+              subtitle_tap_action:
+                action: fire-dom-event
+                browser_mod:
+                  service: browser_mod.sequence
+                  data:
+                    sequence:
+                      - service: browser_mod.navigate
+                        data:
+                          deviceID: THIS
+                          path: /config/integrations/integration/teamtracker
+                      - service: browser_mod.close_popup
+                        data:
+                          deviceID: THIS
+          - type: custom:teamtracker-card
+            entity: sensor.liverpool
+
+
+            # http://192.168.2.141:8121/config/integrations/integration/teamtracker
+

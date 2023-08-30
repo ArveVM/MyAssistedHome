@@ -1,5 +1,5 @@
-title: "test"
-path: "test"
+title: "Solutions"
+path: "solutions"
 cards:
   # # ----------  Chips-row 1 -----------
   #- type: custom:swipe-card
@@ -7,9 +7,6 @@ cards:
   - type: custom:mushroom-chips-card
     chips:
       - type: menu
-
-
-
 
   - type: markdown
     content: |
@@ -21,11 +18,10 @@ cards:
       - !include ../sol_cards/mail_chip.yaml 
       - !include ../sol_cards/guest_wifi_chip.yaml 
       - !include ../sol_cards/minrenovasjon_chip.yaml 
+      - !include ../sol_cards/cert_expiry_chip.yaml 
   - type: markdown
     content: |
       cards:
-  
-
 
   - type: markdown
     content: |
@@ -34,6 +30,8 @@ cards:
   - type: custom:mushroom-chips-card
     chips:
       - !include ../sol_cards/openuv_chip.yaml 
+      - !include ../sol_cards/team_tracker_chipcard.yaml 
+      - !include ../area_cards/house_light_chip.yaml 
   - type: markdown
     content: |
       cards:
@@ -86,14 +84,11 @@ cards:
   #       - state: "on"
   #       # - entity_category: sensors
   #       # - entity_category: config
-  #       # - entity_category: diagnostics
-        
-
+  #       # - entity_category: diagnostics     
 
   # - !include ../solutions/pwrctrl_use_price_card.yaml
   # - !include ../solutions/pwrctrl_use_price_card2.yaml
   # # - !include ../solutions/pwrctrl_use_price_card3.yaml
-
 
   # - !include ../cards/nordpool_3days.yaml
   # - !include ../cards/nordpool_test.yaml

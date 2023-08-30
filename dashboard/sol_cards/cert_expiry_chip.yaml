@@ -1,9 +1,10 @@
+# Solution Certificate Expiry: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Certificate-Expiry
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
-
 
 
 type: action
 icon: mdi:certificate-outline
+icon_color: disabled
 tap_action:
   action: fire-dom-event
   browser_mod:

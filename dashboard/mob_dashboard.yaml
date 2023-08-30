@@ -9,7 +9,7 @@ views:
   - !include views/home_mob_view.yaml
 
   # first the "then some dashboards/views for specific areas "
-  - !include views/test_view.yaml
+  - !include views/solutions_view.yaml
   - !include views/view_energy_usage.yaml
   - !include views/server_view.yaml
 

@@ -1,19 +1,22 @@
-
-
+# Solution Certificate Expiry: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Certificate-Expiry
 
 type: vertical-stack
 cards:
-  - type: custom:mushroom-entity-card
-    entity: sensor.cert_expiry_main_duckdns_org
-    # name: Certificate expiry date
-  - type: custom:mushroom-entity-card
-    entity: sensor.cert_expiry_main_duckdns_org
-    name: Certificate expiry
-    layout: vertical
-    secondary_info: state
-  - type: custom:mushroom-entity-card
-    entity: sensor.cert_expiry_ha_prod_duckdns_org
-    name: Certificate expiry date
-  - type: custom:mushroom-entity-card
-    entity: sensor.cert_expiry_ha_test_duckdns_org
-    name: Certificate expiry date
+  - type: markdown
+    content: |
+      ## [Solution: Certificate Expiry](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Certificate-Expiry)
+  
+  
+  - type: custom:auto-entities
+    card:
+      type: entities
+    filter:
+      include:
+        - entity_id: "*cert_expiry*"
+      # exclude:
+        # - entity_id: switch.adguard_home_protection
+    sort:
+      method: state
+      reverse: false
+
+
