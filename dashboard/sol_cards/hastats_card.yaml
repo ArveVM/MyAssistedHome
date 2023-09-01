@@ -1,10 +1,20 @@
 # Solution HAstats: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
 
-
 type: vertical-stack
 cards:
-  - type: custom:mushroom-title-card
-    title: "Solution - HAstats;"
+
+  - type: vertical-stack
+    cards:
+      - type: horizontal-stack
+        cards:
+        - type: markdown
+          content: |
+            ### [Solution: HA-stats](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats)
+        # - type: markdown      
+        #   content: |
+        #     [Int: Adguard](/config/integrations/integration/adguard)
+  # - type: custom:mushroom-title-card
+  #   title: "Solution - HAstats;"
   - type: custom:tabbed-card
     options:
       defaultTabIndex: 1
@@ -13,27 +23,27 @@ cards:
       "--mdc-tab-text-label-color-default": white
       "--mdc-typography-button-font-size": 10px
     tabs:
-      - attributes:
-          label: RM
-          icon: mdi:file-sign
-        card:
-          type: vertical-stack
-          axisAddMarginMin: false
-          cards:
-            - type: vertical-stack
-              cards:
-                - type: markdown
-                  content: |
-                    HA-stats documentation on GitHub.
-                    all sub-solutions are documented in one readme-file
-                    please review all documentation as information 
-                    might be intertvined.
-            - type: entities
-              entities:
-                - type: weblink
-                  name: Github-repo about HA-stats
-                  url: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
-                  icon: mdi:home-assistant
+      # - attributes:
+      #     label: RM
+      #     icon: mdi:file-sign
+      #   card:
+      #     type: vertical-stack
+      #     axisAddMarginMin: false
+      #     cards:
+      #       - type: vertical-stack
+      #         cards:
+      #           - type: markdown
+      #             content: |
+      #               HA-stats documentation on GitHub.
+      #               all sub-solutions are documented in one readme-file
+      #               please review all documentation as information 
+      #               might be intertvined.
+      #       - type: entities
+      #         entities:
+      #           - type: weblink
+      #             name: Github-repo about HA-stats
+      #             url: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+      #             icon: mdi:home-assistant
 
       - attributes:
           label: int

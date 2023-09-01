@@ -37,39 +37,27 @@ cards:
                     browser_mod:
                       service: browser_mod.popup
 
-                - type: template
-                  icon: mdi:soccer
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      service: browser_mod.popup
-                      data:
-                        content:
-                          type: vertical-stack
-                          cards:
-                            - type: custom:teamtracker-card
-                              entity: sensor.liverpool
 
             - type: entities
               entities:
-                - type: section
-                  label: div
-                - type: custom:mushroom-template-card
-                  entity: switch.adguard_home_protection
-                  secondary: click for more info
-                  primary: >
-                    Ad-guard protection is {{ 'ON' if is_state(entity, 'on' ) else 'OFF' }}
-                  icon: mdi:shield-alert
-                  icon_color: "{{ 'green' if is_state(entity, 'on' ) else 'red' }}"
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      service: browser_mod.popup
-                      data:
-                        content:
-                          type: vertical-stack
-                          cards:
-                            - !include ../sol_cards/adguard_card.yaml
+                # - type: section
+                #   label: div
+                # - type: custom:mushroom-template-card
+                #   entity: switch.adguard_home_protection
+                #   secondary: click for more info
+                #   primary: >
+                #     Ad-guard protection is {{ 'ON' if is_state(entity, 'on' ) else 'OFF' }}
+                #   icon: mdi:shield-alert
+                #   icon_color: "{{ 'green' if is_state(entity, 'on' ) else 'red' }}"
+                #   tap_action:
+                #     action: fire-dom-event
+                #     browser_mod:
+                #       service: browser_mod.popup
+                #       data:
+                #         content:
+                #           type: vertical-stack
+                #           cards:
+                #             - !include ../sol_cards/adguard_card.yaml
 
                 - type: button
                   name: System conf-dashboard
@@ -114,18 +102,12 @@ cards:
                   icon: mdi:graph
                 - type: divider
 
-      - attributes:
-          label: Camera
-          icon: mdi:cctv
-        card:
-          type: vertical-stack
-          cards:
-            - !include camera_card.yaml
+      # - attributes:
+      #     label: Camera
+      #     icon: mdi:cctv
+      #   card:
+      #     type: vertical-stack
+      #     cards:
+      #       - !include camera_card.yaml
 
-      - attributes:
-          label: HA-stats
-          icon: mdi:chart-histogram
-        card:
-          type: vertical-stack
-          cards:
-            - !include hastats_card.yaml
+

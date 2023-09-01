@@ -20,8 +20,6 @@ cards:
 
           - !include ../sol_cards/minrenovasjon_chip.yaml
           
-          - !include ../sol_cards/cpu_chip.yaml
-
           - !include ../area_cards/house_light_chip.yaml
                                     
           - !include ../sol_cards/hotwater_soc_chip.yaml
@@ -30,21 +28,8 @@ cards:
 
           - !include ../sol_cards/guest_wifi_chip.yaml
 
-          - !include ../sol_cards/cert_expiry_chip.yaml
-
           - !include ../sol_cards/adguard_chip.yaml
           
-          - type: action
-            icon: mdi:hammer
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../sol_cards/ha_toolbox.yaml
 
 
       # #####  Then main   ############################################################################################

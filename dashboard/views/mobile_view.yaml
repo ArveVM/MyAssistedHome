@@ -18,17 +18,13 @@ cards:
         chips:
           - !include ../sol_cards/guest_wifi_chip.yaml
           
-          - !include ../sol_cards/cert_expiry_chip.yaml
-          
-          - !include ../sol_cards/todo_chip.yaml
-
           - !include ../sol_cards/adguard_chip.yaml
 
           - !include ../sol_cards/team_tracker_chipcard.yaml
 
           - !include ../sol_cards/openuv_chip.yaml
-
-
+          
+          - !include ../sol_cards/todo_chip.yaml
 
       # Card/page2 - StartPage:
       - type: custom:mushroom-chips-card
@@ -36,16 +32,14 @@ cards:
         chips:
           - !include ../sol_cards/weather_chip.yaml
 
-          - !include ../sol_cards/todo_chip.yaml
-          
           - !include ../sol_cards/carcharging_chip.yaml
           
+          - !include ../sol_cards/fuel_app_chip.yaml
+
           - !include ../sol_cards/mail_chip.yaml
           
           - !include ../sol_cards/minrenovasjon_chip.yaml
           
-          - !include ../sol_cards/cpu_chip.yaml
-
           - !include ../sol_cards/hotwater_soc_chip.yaml
 
 
@@ -55,20 +49,14 @@ cards:
         alignment: left
         chips:
 
-          - type: action
-            icon: mdi:hammer
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - !include ../sol_cards/ha_toolbox.yaml
+          - !include ../sol_cards/ha_toolbox_chip.yaml
 
-          - !include ../sol_cards/fuel_app_chip.yaml
-
+          - !include ../sol_cards/cpu_chip.yaml
+          
+          - !include ../sol_cards/cert_expiry_chip.yaml
+          
+          - !include ../sol_cards/hastats_chip.yaml 
+          
   - type: vertical-stack
     cards:
       # # ---------   POWER !!        -----------

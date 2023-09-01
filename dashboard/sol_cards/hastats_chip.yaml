@@ -1,0 +1,18 @@
+# Solution HAstats: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: action
+# icon: mdi:chart-histogram
+icon: mdi:home-analytics
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include hastats_card.yaml
+
+                      

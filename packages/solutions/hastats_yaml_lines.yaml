@@ -1,6 +1,4 @@
-# ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
-# count number of enabled YAML-lines in my config,,
+# Solution HAstats: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
 # idea nipped from;  https://www.youtube.com/watch?v=OFky6pYj1KE
 
 homeassistant:
@@ -23,12 +21,6 @@ homeassistant:
 
 
 command_line:
-  # - sensor:
-  #     name: HAstats YAML line TOTAL count 2
-  #     unique_id: hastats_yaml_line_total_count2
-  #     command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
-  #     unit_of_measurement: "lines"
-  #     scan_interval: *scan_int
 
   - sensor:
       name: HAstats YAML line TOTAL count
@@ -66,27 +58,3 @@ command_line:
       command: " find /config/packages -name '*.yaml' | xargs cat | wc -l"
       unit_of_measurement: "lines"
       scan_interval: *scan_int
-
-# sensor:
-  # count number of enabled YAML-lines in my config,,
-  # idea nipped from;  https://www.youtube.com/watch?v=OFky6pYj1KE
-  # - name: "HAstats YAML line TOTAL count"
-  #   unique_id: hastats_yaml_line_total_count
-  #   platform: command_line
-  #   command: " find /config/ -name '*.yaml' | xargs cat | wc -l"
-  #   unit_of_measurement: "lines"
-  # - name: "HAstats YAML line AVM_yaml count"
-  #   unique_id: hastats_yaml_line_avm_yaml_count
-  #   platform: command_line
-  #   command: " find /config/avm_yaml -name '*.yaml' | xargs cat | wc -l"
-    # unit_of_measurement: "lines"
-  # - name: "HAstats YAML line Dashboard count"
-  #   unique_id: hastats_yaml_line_dashboard_count
-  #   platform: command_line
-  #   command: " find /config/avm_yaml/dashboard -name '*.yaml' | xargs cat | wc -l"
-  #   unit_of_measurement: "lines"
-  # - name: "HAstats YAML-line Packages count"
-  #   unique_id: hastats_yaml_line_packages_count
-  #   platform: command_line
-  #   command: " find /config/avm_yaml/packages -name '*.yaml' | xargs cat | wc -l"
-  #   unit_of_measurement: "lines"

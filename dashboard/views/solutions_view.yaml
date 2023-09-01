@@ -19,7 +19,7 @@ cards:
       - !include ../sol_cards/minrenovasjon_chip.yaml 
       - !include ../sol_cards/cert_expiry_chip.yaml 
       - !include ../sol_cards/team_tracker_chipcard.yaml 
-      - !include ../sol_cards/team_tracker_chipcard.yaml 
+      - !include ../sol_cards/hastats_chip.yaml 
       - !include ../sol_cards/team_tracker_chipcard.yaml 
 
   # cards:

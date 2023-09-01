@@ -1,5 +1,4 @@
-# ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
+# Solution HAstats: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
 
 template:
   #  EbD = Enteties by Domain  :)
@@ -49,6 +48,7 @@ template:
           - states('sensor.hastats_ebd_counters') | float(default=0)
           - states('sensor.hastats_ebd_covers') | float(default=0) 
           - states('sensor.hastats_ebd_device_trackers') | float(default=0)
+          - states('sensor.hastats_ebd_events') | float(default=0)
           - states('sensor.hastats_ebd_fans') | float(default=0)
           - states('sensor.hastats_ebd_groups') | float(default=0)
           - states('sensor.hastats_ebd_input_booleans') | float(default=0)
@@ -130,6 +130,11 @@ template:
         unique_id: hastats_ebd_device_trackers
         state_class: measurement
         state: "{{states.device_tracker | count}}"
+
+      - name: HAstats EbD events
+        unique_id: hastats_ebd_events
+        state_class: measurement
+        state: "{{states.event | count}}"
 
       - name: HAstats EbD fans
         unique_id: hastats_ebd_fans
