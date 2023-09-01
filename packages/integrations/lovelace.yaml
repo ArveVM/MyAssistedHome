@@ -13,19 +13,29 @@ lovelace:
   #        Invalid config for [lovelace]: Url path needs to contain a hyphen (-) for dictionary value when checking configuration
   dashboards:
 
-    avm-mobile:
+    mobile-dashboard:
       mode: yaml
-      title: AVM Mobile
-      icon: mdi:hammer
+      title: Mobile Dashboard
+      # icon: mdi:hammer
+      icon: mdi:cellphone
       show_in_sidebar: true
       filename: dashboard/mob_dashboard.yaml
 
     nest-hub:
       mode: yaml
       title: Nest Hub
-      icon: mdi:football
+      # icon: mdi:football
+      icon: mdi:tablet
       show_in_sidebar: true
       filename: dashboard/nest_hub_dashboard.yaml
+
+    # https://pictogrammers.com/library/mdi/
+    solutions-overview:
+      mode: yaml
+      title: Solutions
+      icon: mdi:head-lightbulb-outline
+      show_in_sidebar: true
+      filename: dashboard/solutions_dashboard.yaml
 
     kids-tablet:
       mode: yaml

@@ -3,10 +3,10 @@
 # but I prefer to have manally control of which drafts to include in which dashboard,
 # and especially the order of them.
 
-title: "AVM Mobile"
+title: "Mobile Dashboard"
 views:
   # first the "main view,, the mobile dashboard"
-  - !include views/home_mob_view.yaml
+  - !include views/mobile_view.yaml
 
   # first the "then some dashboards/views for specific areas "
   - !include views/solutions_view.yaml

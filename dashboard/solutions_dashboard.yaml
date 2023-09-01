@@ -1,13 +1,12 @@
-
 # First step of building dashboard,, add views
 # Could use include-command to include whole folder,,
 # but I prefer to have manally control of which drafts to include in which dashboard,
 # and especially the order of them.
 
-# title: "Nest Hub"
+title: "Solutions Dashboard"
 views:
-  # first the "main view,,"
-  - !include views/nest_hub_view.yaml
+  # first "the work in progress solutions"
+  - !include views/solutions_draft_view.yaml
 
-
-
+  # then "main view,, the finished solutions"
+  - !include views/solutions_view.yaml

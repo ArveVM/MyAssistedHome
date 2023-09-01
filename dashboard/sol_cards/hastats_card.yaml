@@ -1,4 +1,5 @@
-# ArveVM;  https://github.com/ArveVM/HomeAssistantConfig4/edit/master/avm_yaml/packages/solutions/hastats.md
+# Solution HAstats: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
+
 
 type: vertical-stack
 cards:

@@ -24,18 +24,7 @@ cards:
 
           - !include ../sol_cards/adguard_chip.yaml
 
-          - type: template
-            icon: mdi:soccer
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.popup
-                data:
-                  content:
-                    type: vertical-stack
-                    cards:
-                      - type: custom:teamtracker-card
-                        entity: sensor.liverpool
+          - !include ../sol_cards/team_tracker_chipcard.yaml
 
           - !include ../sol_cards/openuv_chip.yaml
 

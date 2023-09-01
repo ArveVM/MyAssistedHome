@@ -1,15 +1,18 @@
 
+type: vertical-stack
+cards:
 
-type: custom:atomic-calendar-revive
-entities:
-  - entity: calendar.ha_shared
-    name: Ha-shared
-  - entity: calendar.minrenovasjon
-    name: MinRenovasjon
-firstDayOfWeek: 1
-maxDaysToShow: 7
-showWeekDay: true
-showMultiDay: true
-calShowDescription: true
-refreshInterval: 60
-showLocation: false
+  - type: custom:atomic-calendar-revive
+    entities:
+      - entity: calendar.ha_shared
+        name: Ha-shared
+      - entity: calendar.minrenovasjon
+        name: MinRenovasjon
+    firstDayOfWeek: 1
+    maxDaysToShow: 7
+    showWeekDay: true
+    showMultiDay: true
+    calShowDescription: true
+    refreshInterval: 60
+    showLocation: false
+

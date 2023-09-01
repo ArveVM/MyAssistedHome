@@ -28,7 +28,20 @@ cards:
         {{ expand('light.house_lights_group')
           | selectattr('state', 'eq', 'off')
           | map(attribute='entity_id')
-          | select('search', 'light.*') 
+          | list 
+          }}
+      exclude: []
+          # | select('search', 'light.*') 
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Lights 'unavailable'
+      show_header_toggle: false
+    filter:
+      template: >
+        {{ expand('light.house_lights_group')
+          | selectattr('state', 'eq', 'unavailable')
+          | map(attribute='entity_id')
           | list 
           }}
       exclude: []
