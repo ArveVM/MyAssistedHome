@@ -1,0 +1,19 @@
+# Solution Roberto: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto
+
+template:
+  #  Set status 
+  - sensor:
+      - name: Roberto status
+        unique_id: 461751a4-46fd-4745-b3f2-951631355f37
+        # state_class:
+        #   measurement
+        state: >
+          {% set rs = states('sensor.roberto_plug_power') | float(default=20) %}
+          {% if rs > 30 %}
+            Charging
+          {% elif rs > 2 %}
+            Cutting
+          {% else %}
+            Sleeping
+          {% endif %}
+

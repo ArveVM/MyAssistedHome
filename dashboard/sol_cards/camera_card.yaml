@@ -80,7 +80,6 @@ cards:
               live_provider: go2rtc
               # id: west1
           
-            # - camera_entity: camera.west1
             # Negligable difference between resolution on substream and main,, so just stream mainstream
             - camera_entity: camera.west1
               live_provider: go2rtc
@@ -89,8 +88,7 @@ cards:
             - camera_entity: camera.kidm
               live_provider: go2rtc
 
-            # Negligable difference between resolution on substream and main,, so just stream mainstream
-            - camera_entity: camera.roberto
+            - camera_entity: camera.roberto_cam
               live_provider: go2rtc
               
       # AVM: add a tab with some stats/control over frigate:

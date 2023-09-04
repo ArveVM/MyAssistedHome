@@ -15,7 +15,10 @@ cards:
       - !include ../sol_cards/camera1_chip.yaml 
       - !include ../sol_cards/ha_toolbox_chip.yaml 
 
+      - !include ../sol_cards/cpu_chip.yaml
 
+      - !include ../sol_cards/solution_nav_chip.yaml
+      - !include ../sol_cards/roberto_chip.yaml
 
 
   # cards:

@@ -16,6 +16,8 @@ cards:
       - type: custom:mushroom-chips-card
         alignment: justify
         chips:
+          - !include ../sol_cards/solution_nav_chip.yaml
+          
           - !include ../sol_cards/guest_wifi_chip.yaml
           
           - !include ../sol_cards/adguard_chip.yaml
@@ -25,7 +27,11 @@ cards:
           - !include ../sol_cards/openuv_chip.yaml
           
           - !include ../sol_cards/todo_chip.yaml
+        
+          - !include ../sol_cards/mail_chip.yaml
 
+          - !include ../sol_cards/roberto_chip.yaml
+    
       # Card/page2 - StartPage:
       - type: custom:mushroom-chips-card
         alignment: justify
@@ -36,7 +42,7 @@ cards:
           
           - !include ../sol_cards/fuel_app_chip.yaml
 
-          - !include ../sol_cards/mail_chip.yaml
+          - !include ../sol_cards/camera_chip.yaml 
           
           - !include ../sol_cards/minrenovasjon_chip.yaml
           

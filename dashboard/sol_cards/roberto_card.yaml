@@ -1,0 +1,18 @@
+# Solution Roberto: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto
+
+type: vertical-stack
+cards:
+  - type: markdown
+    content: |
+      ## [Solution: Roberto](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto)   
+
+  - type: entity
+    entity: sensor.roberto_plug_power
+
+  - type: entity
+    entity: sensor.roberto_status
+
+  - !include
+    - camera1_card.yaml
+    - entity: camera.roberto_cam
+      # area_humidity_compare: "{{ area_humidity_compare }}"
