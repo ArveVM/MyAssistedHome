@@ -1,9 +1,8 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
-
 type: template
 entity: light.house_lights_group
-# entity2: light.
+icon: mdi:lightbulb-group
 content: >
   {% set lights_on = expand(entity)
       | selectattr('state', 'eq', 'on')
@@ -15,8 +14,6 @@ content: >
       | select('search', 'light.*') 
       | list | count %}
   {{ lights_on}}/{{lights_all}}
-
-icon: mdi:lightbulb-group
 tap_action:
   action: fire-dom-event
   browser_mod:

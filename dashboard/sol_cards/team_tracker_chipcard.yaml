@@ -17,23 +17,7 @@ tap_action:
             - type: markdown
               content: |
                 ## [Solution: Team Tracker](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Team-Tracker) 
-            # - type: markdown
-            #   content: |
-            #     ## Int: Team Tracker 
-            #   tap_action:
-            #     action: fire-dom-event
-            #     browser_mod:
-            #       service: browser_mod.sequence
-            #       data:
-            #         sequence:
-            #           - service: browser_mod.navigate
-            #             data:
-            #               deviceID: THIS
-            #               path: /config/integrations/integration/teamtracker
-            #           - service: browser_mod.close_popup
-            #             data:
-            #               deviceID: THIS            # - type: markdown
-            # #   content: |
+
             - type: custom:mushroom-title-card
               subtitle: 'Integration: Team Tracker' 
               subtitle_tap_action:
@@ -51,7 +35,4 @@ tap_action:
                           deviceID: THIS
           - type: custom:teamtracker-card
             entity: sensor.liverpool
-
-
-            # http://192.168.2.141:8121/config/integrations/integration/teamtracker
 

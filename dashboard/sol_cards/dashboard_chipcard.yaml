@@ -1,0 +1,134 @@
+# Solution: Dashboards  https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Dashboards
+# NB, this is a Mushroom chip,, so it should be !included as a component in the mushroom-chip-card
+
+type: template
+icon: mdi:tablet-dashboard
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## [Solution: Dashboards](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Dashboards) 
+          - type: entities
+            # title: Entities card sample
+            entities:
+              - type: section
+                label: Solution Dashboard
+              - type: button
+                icon: mdi:head-lightbulb-outline
+                name: Solutions - Work In Progress
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /solutions-overview/solutions_wip
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS
+              - type: button
+                icon: mdi:head-lightbulb-outline
+                name: Solutions - completed
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /solutions-overview/solutions
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS
+
+              - type: section
+                label: Nest Hub Dashboard
+              - type: button
+                icon: mdi:tablet
+                name: Nest Hub - main
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /nest-hub/nest_hub
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS
+
+              - type: section
+                label: Mobile Dashboard
+              - type: button
+                icon: mdi:cellphone
+                name: Mobile Dashboard - main
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /mobile-dashboard/Home_mobile
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS
+
+              - type: section
+                label: Kid Dashboards
+              - type: button
+                icon: mdi:account-multiple
+                name: Kid S Dashboard
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /kids-tablet
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS
+
+              - type: button
+                icon: mdi:account-multiple
+                name: Kid M Dashboard
+                action_name: Navigate
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    service: browser_mod.sequence
+                    data:
+                      sequence:
+                        - service: browser_mod.navigate
+                          data:
+                            deviceID: THIS
+                            path: /kidm-tablet
+                        - service: browser_mod.close_popup
+                          data:
+                            deviceID: THIS

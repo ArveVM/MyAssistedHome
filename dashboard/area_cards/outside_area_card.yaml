@@ -63,6 +63,8 @@ cards:
                 cards:
                   - !include outside_light_card.yaml
 
+      - !include ../sol_cards/roberto_chip.yaml
+
       - type: action
         icon: mdi:devices
         card_mod: *card_mod_chip_style

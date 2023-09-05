@@ -16,7 +16,6 @@ lovelace:
     mobile-dashboard:
       mode: yaml
       title: Mobile Dashboard
-      # icon: mdi:hammer
       icon: mdi:cellphone
       show_in_sidebar: true
       filename: dashboard/mob_dashboard.yaml
@@ -24,7 +23,6 @@ lovelace:
     nest-hub:
       mode: yaml
       title: Nest Hub
-      # icon: mdi:football
       icon: mdi:tablet
       show_in_sidebar: true
       filename: dashboard/nest_hub_dashboard.yaml

@@ -2,18 +2,8 @@
 
 type: template
 icon: mdi:cctv
-# icon: "{{ 'mdi:sunglasses' if is_state(entity, 'on' ) else 'mdi:glasses' }}"
-# icon_color: "{{ 'red' if is_state(entity, 'on' ) else 'none' }}"
-# tap_action:
-#   action: fire-dom-event
-#   browser_mod:
-#     service: browser_mod.popup
-#     data:
-#       content:
-#         type: vertical-stack
-#         cards:
-#           - !include ../solutions/camera1_card.yaml
-
+icon_color: disabled
+content: '1'
 tap_action:
   action: fire-dom-event
   browser_mod:
@@ -22,30 +12,3 @@ tap_action:
       content: !include
         - ../sol_cards/camera1_card.yaml
         - entity: camera.west1
-
-        # - !include
-        #   - house_humidity_comp_card.yaml
-        #   - entity: camera.west1
-            # area_humidity_compare: "{{ area_humidity_compare }}"
-
-# tap_action:
-#   action: fire-dom-event
-#   browser_mod:
-#     service: browser_mod.popup
-#     data:
-#       content: !include
-#         - ../solutions/heater_card.yaml
-#         - entity: input_boolean.bathroom_heater_powerboost
-#           powerauto: input_boolean.bathroom_heater_powerauto
-#           powerboost: input_boolean.bathroom_heater_powerboost
-#           powersave: input_boolean.bathroom_heater_powersave
-#           powerhoursave: input_boolean.bathroom_heater_powerhoursave
-#           powerswitch: switch.bathroom_heater_puck
-#           power: sensor.bathroom_heater_puck_power
-#           area_temp_compare: sensor.house_average_temperature
-#           area_humidity_compare: sensor.house_average_temperature
-#           longterm_target: input_number.bathroom_heater_longterm_target
-#           thermostat_target: sensor.bathroom_heater_thermostat_target
-#           thermostat_output: input_boolean.bathroom_heater_thermostat_output
-#           # area_temp: *temp1
-#           # area_humidity: *humidity1

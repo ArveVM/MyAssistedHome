@@ -14,10 +14,15 @@ cards:
     cards:
       # Card/page1:
       - type: custom:mushroom-chips-card
+        card_mod:
+        style: |
+          ha-card {
+            --primary-text-color: grey;
+          }
         alignment: justify
         chips:
-          - !include ../sol_cards/solution_nav_chip.yaml
-          
+          - !include ../sol_cards/dashboard_chipcard.yaml
+
           - !include ../sol_cards/guest_wifi_chip.yaml
           
           - !include ../sol_cards/adguard_chip.yaml

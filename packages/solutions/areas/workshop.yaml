@@ -9,3 +9,5 @@ template:
           }}
         attributes:
           hotwater_above_40: "{{ 'Problem!' if (states('sensor.hotwater_temp_temperature') < '40') else 'OK'}}"
+
+

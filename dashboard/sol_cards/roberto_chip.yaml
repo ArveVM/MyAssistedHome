@@ -1,13 +1,13 @@
 # Solution Roberto: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto
-
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
+entity: sensor.roberto_status
 icon: mdi:robot-mower-outline
 icon_color: >
-  {% if is_state('sensor.roberto_status', 'Charging') %}
+  {% if is_state(entity, 'Charging') %}
     green
-  {% elif is_state('sensor.roberto_status', 'Cutting') %}
+  {% elif is_state(entity, 'Cutting') %}
     blue
   {% else %}
     disabled
@@ -25,6 +25,3 @@ double_tap_action:
   action: none
 hold_action:
   action: none
-
-
-

@@ -6,13 +6,25 @@ cards:
     content: |
       ## [Solution: Roberto](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto)   
 
-  - type: entity
-    entity: sensor.roberto_plug_power
-
-  - type: entity
-    entity: sensor.roberto_status
+  - type: horizontal-stack
+    cards:
+    - type: custom:mushroom-entity-card
+      entity: sensor.roberto_status
+      primary_info: state
+      secondary_info: last-changed
+      icon_type: icon
+    - type: custom:mushroom-entity-card
+      entity: sensor.roberto_plug_power
+      primary_info: state
+      icon_type: icon
+      secondary_info: none
+  - type: history-graph
+    # title: "Temperatures in the last 48 hours"
+    hours_to_show: 24
+    entities:
+      - entity: sensor.roberto_status
+        name: "Status 24t"
 
   - !include
     - camera1_card.yaml
     - entity: camera.roberto_cam
-      # area_humidity_compare: "{{ area_humidity_compare }}"

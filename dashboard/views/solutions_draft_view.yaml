@@ -9,16 +9,35 @@ cards:
       # Solutions - WIP
       chips -> popup:
   - type: custom:mushroom-chips-card
+    card_mod:
+    style: |
+      ha-card {
+        --primary-text-color: grey;
+      }
     chips:
-      - !include ../sol_cards/openuv_chip.yaml 
+      - type: menu
+      - type: back
+      - !include ../sol_cards/dashboard_chipcard.yaml
+
+  - type: custom:mushroom-chips-card
+    card_mod:
+    style: |
+      ha-card {
+        --primary-text-color: grey;
+      }
+    chips:
       - !include ../area_cards/house_light_chip.yaml 
       - !include ../sol_cards/camera1_chip.yaml 
       - !include ../sol_cards/ha_toolbox_chip.yaml 
-
+      - !include ../sol_cards/openuv_chip.yaml 
+      
       - !include ../sol_cards/cpu_chip.yaml
 
-      - !include ../sol_cards/solution_nav_chip.yaml
       - !include ../sol_cards/roberto_chip.yaml
+
+      - !include ../sol_cards/dashboard_chipcard.yaml
+
+
 
 
   # cards:

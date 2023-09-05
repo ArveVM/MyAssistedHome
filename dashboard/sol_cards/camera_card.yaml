@@ -12,6 +12,8 @@ cards:
       "--mdc-theme-primary": orange
       "--mdc-tab-text-label-color-default": white
       "--mdc-typography-button-font-size": 10px
+    options:
+      defaultTabIndex: 1
     tabs:
     
       - attributes:
@@ -60,6 +62,38 @@ cards:
                 priority: 50
                 enabled: true
                 icon: mdi:high-definition
+          elements:
+            - type: custom:frigate-card-conditional
+              conditions:
+                camera: 
+                  - camera.garage_front
+              elements:
+                - type: custom:frigate-card-menu-state-icon
+                  # icon: mdi:lightbulb
+                  entity: switch.garage_dad
+                  icon: mdi:garage
+                  # icon: "{{ 'mdi:garage' if is_state('switch.garage_dad', 'on') else 'mdi:garage-open' }}"
+                  # icon_color: "{{ 'blue' if is_state('switch.garage_dad', 'on') else 'red' }}"
+                  tap_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.garage_dad       
+                  hold_action:
+                    action: more-info
+                - type: custom:frigate-card-menu-state-icon
+                  entity: switch.garage_t
+                  icon: mdi:garage
+                  # icon: "{{ 'mdi:garage' if is_state('switch.garage_dad', 'on') else 'mdi:garage-open' }}"
+                  # icon_color: "{{ 'blue' if is_state('switch.garage_t', 'on') else 'red' }}"
+                  tap_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.garage_t       
+                  hold_action:
+                    action: more-info
+
           cameras:
             # combining main/substream in one view,, toggle with button
             # for Entry,, substream first,, can toggle HD
@@ -80,6 +114,8 @@ cards:
               live_provider: go2rtc
               # id: west1
           
+
+
             # Negligable difference between resolution on substream and main,, so just stream mainstream
             - camera_entity: camera.west1
               live_provider: go2rtc

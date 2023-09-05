@@ -9,9 +9,9 @@ views:
   - !include views/mobile_view.yaml
 
   # first the "then some dashboards/views for specific areas "
-  - !include views/solutions_view.yaml
   - !include views/view_energy_usage.yaml
   - !include views/server_view.yaml
 
-  - !include views/kidm_tablet_view.yaml
-  - !include views/kids_tablet_view.yaml
+  # - !include views/solutions_view.yaml
+  # - !include views/kidm_tablet_view.yaml
+  # - !include views/kids_tablet_view.yaml

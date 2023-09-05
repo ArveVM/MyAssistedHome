@@ -17,3 +17,14 @@ template:
             Sleeping
           {% endif %}
 
+
+alert:
+  roberto_need_assistance:
+    name: Roberto Need Assistance
+    entity_id: sensor.roberto_status
+    state: "Cutting"
+    repeat: 90
+    can_acknowledge: false
+    skip_first: true
+    notifiers:
+      - mobile_app_dad_mobile
