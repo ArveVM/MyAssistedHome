@@ -1,0 +1,23 @@
+# Solution Pollen: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Pollen 
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: template
+icon: mdi:flower-pollen-outline
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## [Solution: Pollen](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Pollen)
+          - type: custom:mushroom-entity-card
+            entity: sensor.pollen_bjork
+
+
+
+

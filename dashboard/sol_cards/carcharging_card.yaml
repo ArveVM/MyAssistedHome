@@ -22,6 +22,8 @@ tabs:
           entities:
             - entity: sensor.gullbilen_target_state_of_charge
               name: Target
+            - entity: number.gullbilen_target_state_of_charge
+              name: Target2
 
 
   - attributes:

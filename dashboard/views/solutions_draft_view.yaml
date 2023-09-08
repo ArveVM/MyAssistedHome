@@ -1,202 +1,195 @@
 title: "Solutions WIP"
 path: "solutions_wip"
 cards:
-
-  # # ----------  Solutions - WIP -----------
-  # chips:
-  - type: markdown
-    content: |
-      # Solutions - WIP
-      chips -> popup:
-  - type: custom:mushroom-chips-card
-    card_mod:
-    style: |
-      ha-card {
-        --primary-text-color: grey;
-      }
-    chips:
-      - type: menu
-      - type: back
-      - !include ../sol_cards/dashboard_chipcard.yaml
-
-  - type: custom:mushroom-chips-card
-    card_mod:
-    style: |
-      ha-card {
-        --primary-text-color: grey;
-      }
-    chips:
-      - !include ../area_cards/house_light_chip.yaml 
-      - !include ../sol_cards/camera1_chip.yaml 
-      - !include ../sol_cards/ha_toolbox_chip.yaml 
-      - !include ../sol_cards/openuv_chip.yaml 
-      
-      - !include ../sol_cards/cpu_chip.yaml
-
-      - !include ../sol_cards/roberto_chip.yaml
-
-      - !include ../sol_cards/dashboard_chipcard.yaml
-
-
-
-
-  # cards:
-  - type: markdown
-    content: |
-      cards:
-
-
+  # header chips:
   - type: vertical-stack
     cards:
-      - type: horizontal-stack
-        cards:
-        - type: markdown
-          content: |
-            ### [Solution: Adguard](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Adguard)
-        - type: markdown      
-          content: |
-            [Int: Adguard](/config/integrations/integration/adguard)
-        # - type: markdown      
-        #   content: |
-        #     ## [int Adguard](/config/integrations/integration/adguard)
-      - type: horizontal-stack
-        cards:
-        - type: markdown
-          content: |
-            **[Solution: Adguard](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Adguard)**
-        - type: markdown      
-          content: |
-            **[Int: Adguard](/config/integrations/integration/adguard)**
+      - type: custom:mushroom-chips-card
+        card_mod:
+        style: |
+          ha-card {
+            --primary-text-color: grey;
+          }
+        chips:
+          - type: back
+          - type: menu
+          - !include ../sol_cards/dashboard_chipcard.yaml
+
+      # heading:
+      - type: markdown
+        content: |
+          # Solutions - WIP
+          chips -> popup:
+
+      - type: custom:mushroom-chips-card
+        card_mod:
+        style: |
+          ha-card {
+            --primary-text-color: grey;
+          }
+        chips:
+          - !include ../area_cards/house_light_chip.yaml 
+          - !include ../sol_cards/camera1_chip.yaml 
+          - !include ../sol_cards/camera_chip.yaml 
+          - !include ../sol_cards/openuv_chip.yaml 
+          
+          - !include ../sol_cards/carcharging_chip.yaml
+          - !include ../sol_cards/fuel_app_chip.yaml
+
+      - type: markdown
+        content: |
+          chips -> popup - LOW-PRI:
+      - type: custom:mushroom-chips-card
+        card_mod:
+        style: |
+          ha-card {
+            --primary-text-color: grey;
+          }
+        chips:
+          - !include ../sol_cards/cpu_chip.yaml
+          - !include ../sol_cards/pollen_chipcard.yaml
+          - !include ../sol_cards/ha_toolbox_chip.yaml 
+          - !include ../sol_cards/heater_chip.yaml
+          
+          - !include ../sol_cards/z2m_offline_chipcard.yaml
+
+      # cards:
+      - type: markdown
+        content: |
+          cards:
+
+      - !include ../sol_cards/test_title.yaml
+
+      - !include ../sol_cards/carcharging_card.yaml
+      # - !include ../solutions/carcharging_easee_card.yaml
 
 
-  # test updates
-  - type: custom:mushroom-template-card
-    entity: update.dream_machine_pro
-    primary: |
-      {{ state_attr(entity,'friendly_name') }}
-    secondary: >-
-      {% if state_attr(entity,'installed_version') ==
-      state_attr(entity,'latest_version') %}
-      {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
-      {% else %} 
-      {{state_attr(entity,'installed_version') }} -> {{
-      state_attr(entity,'latest_version') }} {% endif %}
-    icon: |
-      {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
-    icon_color: >-
-      {% if state_attr(entity,'entity_picture') == none %}
-      {{ 'blue' if (state_attr(entity,'installed_version') ==
-      state_attr(entity,'latest_version')) else 'orange' }}
-      {% endif %}
-    picture: >
-      {{ state_attr(entity,'entity_picture') if
-      state_attr(entity,'entity_picture') != none }}
-    tap_action:
-      action: more-info
+      # test updates
+      - type: custom:mushroom-template-card
+        entity: update.dream_machine_pro
+        primary: |
+          {{ state_attr(entity,'friendly_name') }}
+        secondary: >-
+          {% if state_attr(entity,'installed_version') ==
+          state_attr(entity,'latest_version') %}
+          {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
+          {% else %} 
+          {{state_attr(entity,'installed_version') }} -> {{
+          state_attr(entity,'latest_version') }} {% endif %}
+        icon: |
+          {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
+        icon_color: >-
+          {% if state_attr(entity,'entity_picture') == none %}
+          {{ 'blue' if (state_attr(entity,'installed_version') ==
+          state_attr(entity,'latest_version')) else 'orange' }}
+          {% endif %}
+        picture: >
+          {{ state_attr(entity,'entity_picture') if
+          state_attr(entity,'entity_picture') != none }}
+        tap_action:
+          action: more-info
 
-  # test updates with cool autu-entities card,,,  https://github.com/jumping2000/ha-templates/tree/main/card/mushroom_update
-  - type: custom:auto-entities
-    card:
-      type: grid
-      columns: 2
-      square: false
-    card_param: cards
-    filter:
-      include:
-        - domain: update
-          state: 'off'
-          options:
-            type: custom:mushroom-template-card
-            primary: |
-              {{ state_attr(entity,'friendly_name') }}
-            secondary: >-
-              {% if state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version') %}
-              {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
-              {% else %} 
-              {{state_attr(entity,'installed_version') }} -> {{
-              state_attr(entity,'latest_version') }} {% endif %}
-            icon: |
-              {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
-            icon_color: >-
-              {% if state_attr(entity,'entity_picture') == none %}
-              {{ 'blue' if (state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version')) else 'orange' }}
-              {% endif %}
-            picture: >
-              {{ state_attr(entity,'entity_picture') if
-              state_attr(entity,'entity_picture') != none }}
-            tap_action:
-              action: more-info
-
-
-  - type: custom:mushroom-template-card
-    entity: binary_sensor.protection_window
-    primary: Icon-test-card
-    # icon: mdi:shield-alert
-    icon_color: "{{ 'red' if is_state(entity, 'on' ) else 'none' }}"
-    icon: mdi:head-lightbulb-outline
-
-  - !include ../_cards_old/kids_linen.yaml 
-
-  - !include ../sol_cards/fuel_app_card.yaml 
-  - !include ../sol_cards/camera1_card.yaml 
+      # test updates with cool autu-entities card,,,  https://github.com/jumping2000/ha-templates/tree/main/card/mushroom_update
+      - type: custom:auto-entities
+        card:
+          type: grid
+          columns: 2
+          square: false
+        card_param: cards
+        filter:
+          include:
+            - domain: update
+              state: 'off'
+              options:
+                type: custom:mushroom-template-card
+                primary: |
+                  {{ state_attr(entity,'friendly_name') }}
+                secondary: >-
+                  {% if state_attr(entity,'installed_version') ==
+                  state_attr(entity,'latest_version') %}
+                  {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
+                  {% else %} 
+                  {{state_attr(entity,'installed_version') }} -> {{
+                  state_attr(entity,'latest_version') }} {% endif %}
+                icon: |
+                  {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
+                icon_color: >-
+                  {% if state_attr(entity,'entity_picture') == none %}
+                  {{ 'blue' if (state_attr(entity,'installed_version') ==
+                  state_attr(entity,'latest_version')) else 'orange' }}
+                  {% endif %}
+                picture: >
+                  {{ state_attr(entity,'entity_picture') if
+                  state_attr(entity,'entity_picture') != none }}
+                tap_action:
+                  action: more-info
 
 
-  # - !include ../solutions/carcharging_card.yaml
-  # - !include ../solutions/carcharging_easee_card.yaml
+      - type: custom:mushroom-template-card
+        entity: binary_sensor.protection_window
+        primary: Icon-test-card
+        # icon: mdi:shield-alert
+        icon_color: "{{ 'red' if is_state(entity, 'on' ) else 'none' }}"
+        icon: mdi:head-lightbulb-outline
+
+      - !include ../_cards_old/kids_linen.yaml 
+
+      - !include ../sol_cards/fuel_app_card.yaml 
+      - !include ../sol_cards/camera1_card.yaml 
 
 
-  # - type: custom:auto-entities
-  #   card:
-  #     type: entities
-  #     title: Shellys unavailable
-  #   filter:
-  #     include:
-  #       # - integration: shelly 
-  #       - entity_id: switch.bathroom_heater_puck
-  #       - entity_id: switch.bathroom2_heater_puck
-  #       - entity_id: light.christmas_tree
-  #       - entity_id: switch.dishwasher_plug
-  #       - entity_id: switch.entry_heater_puck
-  #       - entity_id: switch.freezerdownstairs
-  #       - entity_id: switch.garage_dad
-  #       - entity_id: switch.garage_t
-  #       - entity_id: light.hallway_switch_up_2_2
-  #       - entity_id: switch.hotwater_puck
-  #       - entity_id: light.kidl_light_puck
-  #       - entity_id: light.kidm_lightbulb
-  #       - entity_id: switch.kitchen_heater
-  #       - entity_id: switch.kitchen_heatpump
-  #       - entity_id: switch.kitchen_switch1
-  #       - entity_id: switch.laundry_dryer_plug
-  #       - entity_id: switch.laundry_freezer
-  #       - entity_id: switch.laundry_heater_puck
-  #       - entity_id: light.laundry_lights_puck
-  #       - entity_id: switch.laundry_washer_puck
-  #       - entity_id: light.livingroom_lounge
-  #       - entity_id: light.livingroom_diningtable
-  #       - entity_id: light.loft      
-  #       - entity_id: switch.loft_heater_plug
-  #       - entity_id: switch.office_heater_plug
-  #       - entity_id: switch.server_rack_plug
-  #       - entity_id: switch.workshop_washer
-  #     exclude:
-  #       - state: "off"
-  #       - state: "on"
-  #       # - entity_category: sensors
-  #       # - entity_category: config
-  #       # - entity_category: diagnostics     
 
-  # - !include ../solutions/pwrctrl_use_price_card.yaml
-  # - !include ../solutions/pwrctrl_use_price_card2.yaml
-  # # - !include ../solutions/pwrctrl_use_price_card3.yaml
 
-  # - !include ../cards/nordpool_3days.yaml
-  # - !include ../cards/nordpool_test.yaml
-  # # - !include ../cards/priceanalyzer_02_copy.yaml
+      # - type: custom:auto-entities
+      #   card:
+      #     type: entities
+      #     title: Shellys unavailable
+      #   filter:
+      #     include:
+      #       # - integration: shelly 
+      #       - entity_id: switch.bathroom_heater_puck
+      #       - entity_id: switch.bathroom2_heater_puck
+      #       - entity_id: light.christmas_tree
+      #       - entity_id: switch.dishwasher_plug
+      #       - entity_id: switch.entry_heater_puck
+      #       - entity_id: switch.freezerdownstairs
+      #       - entity_id: switch.garage_dad
+      #       - entity_id: switch.garage_t
+      #       - entity_id: light.hallway_switch_up_2_2
+      #       - entity_id: switch.hotwater_puck
+      #       - entity_id: light.kidl_light_puck
+      #       - entity_id: light.kidm_lightbulb
+      #       - entity_id: switch.kitchen_heater
+      #       - entity_id: switch.kitchen_heatpump
+      #       - entity_id: switch.kitchen_switch1
+      #       - entity_id: switch.laundry_dryer_plug
+      #       - entity_id: switch.laundry_freezer
+      #       - entity_id: switch.laundry_heater_puck
+      #       - entity_id: light.laundry_lights_puck
+      #       - entity_id: switch.laundry_washer_puck
+      #       - entity_id: light.livingroom_lounge
+      #       - entity_id: light.livingroom_diningtable
+      #       - entity_id: light.loft      
+      #       - entity_id: switch.loft_heater_plug
+      #       - entity_id: switch.office_heater_plug
+      #       - entity_id: switch.server_rack_plug
+      #       - entity_id: switch.workshop_washer
+      #     exclude:
+      #       - state: "off"
+      #       - state: "on"
+      #       # - entity_category: sensors
+      #       # - entity_category: config
+      #       # - entity_category: diagnostics     
 
-#  - !include ../cards/priceanalyzer_03.yaml
-  #  - !include ../cards/pwrctrl_energyscore_card.yaml
-  #  - !include ../cards/alert_card.yaml
+      # - !include ../solutions/pwrctrl_use_price_card.yaml
+      # - !include ../solutions/pwrctrl_use_price_card2.yaml
+      # # - !include ../solutions/pwrctrl_use_price_card3.yaml
+
+      # - !include ../cards/nordpool_3days.yaml
+      # - !include ../cards/nordpool_test.yaml
+      # # - !include ../cards/priceanalyzer_02_copy.yaml
+
+    #  - !include ../cards/priceanalyzer_03.yaml
+      #  - !include ../cards/pwrctrl_energyscore_card.yaml
+      #  - !include ../cards/alert_card.yaml
 

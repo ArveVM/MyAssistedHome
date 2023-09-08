@@ -1,0 +1,14 @@
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: action
+icon: mdi:battery-check-outline
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - !include battery_status_card.yaml

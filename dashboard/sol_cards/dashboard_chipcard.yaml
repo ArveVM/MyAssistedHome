@@ -12,9 +12,10 @@ tap_action:
       content:
         type: vertical-stack
         cards:
-          - type: markdown
-            content: |
-              ## [Solution: Dashboards](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Dashboards) 
+          - !include test_title.yaml 
+          # - type: markdown
+          #   content: |
+          #     ## [Solution: Dashboards](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Dashboards) 
           - type: entities
             # title: Entities card sample
             entities:

@@ -1,0 +1,29 @@
+# Solution Battery-status: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Battery‐status
+
+type: vertical-stack
+cards:
+  # heading with link to Solution-documentation and the Integration
+  - type: markdown
+    content: |
+      ### [Solution: Battery-status](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Battery‐status)
+      
+  - type: entities
+    entities:
+      - entity: sensor.ac2003_battery_level
+      - sensor.mom_mobile_battery_level
+      - entity: sensor.s9_battery_level
+    title: Batteri-status
+    state_color: true
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: 'Entities named ''*battery'' with <70% :'
+      state_color: true
+    filter:
+      include:
+        - entity_id: '*battery'
+          state: < 70
+    sort:
+      method: state
+      numeric: true

@@ -1,0 +1,27 @@
+# Solution z2m offline devices: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-z2m-offline-devices
+# NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
+
+type: template
+entity: switch.adguard_home_filtering
+icon: mdi:zigbee
+icon_color: "{{ 'disabled' if is_state(entity, 0 ) else 'red' }}"
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: markdown
+                content: |
+                  ## [Solution: z2m offline devices](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-z2m-offline-devices)
+              - type: custom:mushroom-entity-card
+                entity: sensor.z2m_offline_count
+              - type: markdown
+                content: |
+                  {% set phrase = 's are ' if states('sensor.z2m_offline_count')|int > 1 else ' is ' %} 
+                  The following sensor{{ phrase }}missing: {{ state_attr('sensor.z2m_offline_count', 'devices') }}
+   

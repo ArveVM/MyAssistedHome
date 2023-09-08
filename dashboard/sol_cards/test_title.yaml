@@ -1,0 +1,103 @@
+# area/room card, inspiration from 'rhysb Rhys' https://community.home-assistant.io/t/mushroom-cards-build-a-beautiful-dashboard-easily/388590/1157
+
+
+
+type: custom:stack-in-card
+card_mod:
+  style: |
+    ha-card {
+      height: 45px;
+    }
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: markdown
+        content: |
+          ## [Sol: Mail](https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Mail)   
+
+      # - type: custom:mushroom-template-card
+      #   # entity: light.hallway_light_up1
+      #   primary: 'Sol: Adguard'
+      #   # secondary: >
+      #   #   {{states('sensor.hallway_thp_temperature') | round(1,'', 19) }}°C -
+      #   #   {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
+      #   # icon: mdi:stairs
+      #   # icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
+      #   fill_container: true
+      #   layout: horizontal
+      #   # multiline_secondary: false
+      #   card_mod:
+      #     style: |
+      #       ha-card {
+      #         --card-primary-font-size: 1.3rem;
+      #       }
+      #       :host([dark-mode]) {
+      #         background: rgba(var(--rgb-primary-background-color), 0.2);
+      #       } 
+      #       :host {
+      #         background: rgba(var(--rgb-primary-text-color), 0.025);
+      #       }
+      #   tap_action:
+      #     action: toggle
+        
+      - type: custom:mushroom-chips-card
+        alignment: end
+        card_mod:
+          style: |
+            ha-card {
+              --chip-box-shadow: none;
+              --chip-background: none;
+              --chip-spacing: 0;
+              margin-right: 10px;
+            }
+        chips:
+          # link to devices
+          - type: action
+            icon_color: blue
+            icon: mdi:devices
+            card_mod: &card_mod_chip_style
+              style: |
+                ha-card {
+                  --chip-box-shadow: none;
+                  --chip-background: none;
+                }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.sequence
+                data:
+                  sequence:
+                    - service: browser_mod.navigate
+                      data:
+                        deviceID: THIS
+                        path: /config/integrations/integration/teamtracker
+                    - service: browser_mod.close_popup
+                      data:
+                        deviceID: THIS
+            hold_action: none
+          
+          # link to integration
+          - type: action
+            icon_color: blue
+            icon: mdi:book-cog-outline
+            card_mod: &card_mod_chip_style
+              style: |
+                ha-card {
+                  --chip-box-shadow: none;
+                  --chip-background: none;
+                }
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.sequence
+                data:
+                  sequence:
+                    - service: browser_mod.navigate
+                      data:
+                        deviceID: THIS
+                        path: /config/integrations/integration/teamtracker
+                    - service: browser_mod.close_popup
+                      data:
+                        deviceID: THIS
+            hold_action: none
+          

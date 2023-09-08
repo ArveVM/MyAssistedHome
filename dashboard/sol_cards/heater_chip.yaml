@@ -1,0 +1,40 @@
+# this is config of a mushroom-chip,, so it must be included under the 'chips:'-section of a custom:mushroom-chips-card
+
+# Add node-ancors as variables internally in this yaml-file
+homeassistant:
+  customize:
+    package.node_anchors:
+      temp1: &temp1 sensor.kitchen_thp_temperature
+      humidity1: &humidity1 sensor.kitchen_thp_humidity
+
+# Build card-data 
+#   Include other card https://github.com/ArveVM/MyAssistedHome/wiki/2.2-HA-Presentation#advanced-yaml-dashboard-guide-card-include-
+#   Pass variables to card with entity-inject-principle:  https://github.com/ArveVM/MyAssistedHome/wiki/2.2-HA-Presentation#advanced-yaml-dashboard-guide-entity-inject
+type: template
+icon: mdi:radiator
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: vertical-stack
+        cards:
+          # - !include ../../dashboard/sol_cards/fuel_app_card.yaml
+          - !include
+            - ../sol_cards/heater_card.yaml
+            - entity: input_boolean.office_heater_powerboost
+              powerauto: input_boolean.office_heater_powerauto
+              powerboost: input_boolean.office_heater_powerboost
+              powersave: input_boolean.office_heater_powersave
+              powerhoursave: input_boolean.office_heater_powerhoursave
+              powerswitch: switch.office_heater_plug
+              power: sensor.office_heater_plug_power
+              area_temp: *temp1
+              area_temp_compare: sensor.house_average_temperature
+              area_humidity: *humidity1
+              area_humidity_compare: sensor.house_average_temperature
+              longterm_target: input_number.office_heater_longterm_target
+              thermostat_target: sensor.office_heater_thermostat_target
+              thermostat_output: input_boolean.office_heater_thermostat_output

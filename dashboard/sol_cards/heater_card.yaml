@@ -9,7 +9,7 @@
         #     service: browser_mod.popup
         #     data:
         #       content: !include
-        #         - ../solutions/heater_card.yaml
+        #         - ../sol_cards/heater_card.yaml
         #         - entity: input_boolean.office_heater_powerboost
         #           powerauto: input_boolean.office_heater_powerauto
         #           powerboost: input_boolean.office_heater_powerboost
@@ -24,7 +24,6 @@
         #           longterm_target: input_number.office_heater_longterm_target
         #           thermostat_target: sensor.office_heater_thermostat_target
         #           thermostat_output: input_boolean.office_heater_thermostat_output
-
 
 
 type: custom:tabbed-card
