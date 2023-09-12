@@ -15,6 +15,7 @@ light:
       - light.livingroom_light_lounge
       - light.livingroom_light_windowstrip
       - light.livingroom_soyle
+      - light.stick_animal_plug
 
   - platform: template
     lights:
@@ -26,7 +27,6 @@ light:
             entity_id: remote.hubby
             command: PowerOn
             device: Vie Selected
-
         turn_off:
           service: remote.send_command
           # action: call-service
@@ -55,7 +55,8 @@ powercalc:
         - entity_id: light.livingroom_light_lounge # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
           manufacturer: ikea
           model: LED2003G10
-
+        - entity_id: light.stick_animal_plug       # ArveVM: 
+          power_sensor_id: sensor.stick_animals_plug_power
 
 template:
   - binary_sensor:

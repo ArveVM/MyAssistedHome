@@ -14,6 +14,13 @@ input_boolean:
     name: Hallway Nest Hub recast
     icon: mdi:magic-staff
 
+template:
+  - binary_sensor:
+      - name: Hallway Nest Hub DashCast
+        unique_id: 8ed760a2-3a19-471c-93a2-515f66e236232398
+        state: >
+          {{ is_state_attr('media_player.hallway_nest_hub', 'app_name', 'DashCast') }}
+        # {{ state_attr('media_player.hallway_nest_hub', 'app_name') == 'DashCast' }}
 
 script:
   hallway_nest_hub:
@@ -55,9 +62,9 @@ notify:
   #     - service: shell_command.livingroom_chromecast1
 
 automation:
-  - id: 2a778068-6620-4ae7-8a29-ed7097509333-s
-    alias: "_Hallway nest hub recast"
+  - alias: "_Hallway nest hub recast"
     description: "Hallway nest hub - recast"
+    id: 2a778068-6620-4ae7-8a29-ed7097509333-s
     mode: single
     trigger:
       - id: focuschange
@@ -73,12 +80,18 @@ automation:
         platform: state
         entity_id: input_boolean.hallway_nest_hub_recast
         to: "on"
-      # - id: off_idle
+      # - id: off_idle     # case for google updates etc etc,, give it ten minutes and then recast :)
       #   platform: state
       #   entity_id: media_player.hallway_nest_hub
       #   to: 
       #     - "idle"
       #     - "off"
+      #   for: "00:10:00"
+      - id: offf              # case for google updates etc etc,, give it ten minutes and then recast :)
+        platform: state
+        entity_id: media_player.hallway_nest_hub
+        to: "off"
+        for: "00:05:00"
       - id: restart
         platform: homeassistant
         event: start
@@ -105,7 +118,9 @@ automation:
           # after restart,, await the catt uninstall/install procedure,,  before start casting
           - conditions:
               - condition: trigger
-                id: restart
+                id: 
+                  - offf
+                  - restart
             sequence:
               # Waits 1.5 minutes for catt-install to finish
               - delay: "00:01:30"

@@ -29,6 +29,7 @@ light:
   - platform: group
     name: Kitchen Lights group
     entities:
+      - light.kitchen_light2 
       - light.kitchen_switch1 
       - light.kitchen_light_windowstrip
       - light.kitchen_light_sink
@@ -39,6 +40,9 @@ sensor:
     create_group: kitchen lights all # ArveVM; will create both power- and energy-sensors
     #    create_energy_sensor: true
     entities:
+      - entity_id: light.kitchen_light2   # ArveVM: Maron 5pc pendel-lamp
+        fixed:
+          power: 33
       - entity_id: light.kitchen_switch1  # AVM: 3*8w led 
         linear:
           min_power: 0.0

@@ -19,65 +19,27 @@ light:
 #: AVM; define my 'time-zones' for outdoor ligths
 binary_sensor:
   - platform: tod
-    name: TOD for Outdoor lights
-    after: sunset
-    after_offset: "-00:15:00"
-#    after_offset: "-11:15:00"    # AVM; adjust to test to get sensor=on, then restart will trigger automation
-    before: sunrise
-    before_offset:  "00:15:00"
-  - platform: tod
     name: Outside Lights Schedule on
     after: sunset
     after_offset: "-00:15:00"
-#    after_offset: "-11:15:00"    # AVM; adjust to test to get sensor=on, then restart will trigger automation
     before: sunrise
     before_offset:  "00:15:00"
 
 # AVM; then automate the on/off, including reset at startup HA
 automation:
   - id: a31f481c-7c9b-45b1-b1e6-86c88fb15f72
-    alias: "_Outside Lights; auto on/off"
+    alias: "_Outside Lights; schedule"
     description: ''
     mode: single
     trigger:
     - platform: state
       entity_id: binary_sensor.outside_lights_schedule_on
-      from: 'on'
-      to: 'off'
-    - platform: state
-      entity_id: binary_sensor.outside_lights_schedule_on
-      from: 'off'
-      to: 'on'
     - platform: homeassistant
       event: start
-    condition: []
+    # condition: []
     action:
-    #- service: "switch.turn_{{ 'on' if is_state('binary_sensor.outside_lights_schedule_on', 'on') else 'off' }}"
-    - service: "switch.turn_{{states('binary_sensor.outside_lights_schedule_on')}}"    
+    - service: light.turn_{{ states('binary_sensor.outside_lights_schedule_on') }}    
       target: 
-        entity_id: switch.outside_light1
-
-
-
-  - id: '144647611006542883'
-    alias: "_Outdoor Lights; auto on/off"
-    description: ''
-    mode: single
-    trigger:
-    - platform: state
-      entity_id: binary_sensor.tod_for_outdoor_lights
-      from: 'on'
-      to: 'off'
-    - platform: state
-      entity_id: binary_sensor.tod_for_outdoor_lights
-      from: 'off'
-      to: 'on'
-    - platform: homeassistant
-      event: start
-    condition: []
-    action:
-    - service: "switch.turn_{{ 'on' if is_state('binary_sensor.tod_for_outdoor_lights', 'on') else 'off' }}"
-      target: 
-        entity_id: switch.outside_light1
+        entity_id: light.outside_light1
 
 

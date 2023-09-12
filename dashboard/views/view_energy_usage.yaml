@@ -21,7 +21,9 @@ cards:
 
       # ---------   Pris/forbruk        -----------
       #- !include ../cards/nordpool_4.yaml
-      - !include ../sol_cards/pwrctrl_use_card.yaml
+      - !include ../sol_cards/pwrctrl_use_price_card.yaml
+      
+      - !include ../sol_cards/pwrctrl_ug_card.yaml
 
       - !include ../sol_cards/nordpool_4.yaml
 

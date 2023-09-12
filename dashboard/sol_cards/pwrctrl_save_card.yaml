@@ -11,7 +11,7 @@ tabs:
     card:
       type: vertical-stack
       cards:
-        - !include pwrctrl_use_card.yaml
+        - !include pwrctrl_ug_card.yaml
 
   - attributes:
       label: Limit

@@ -64,6 +64,11 @@ tabs:
         - type: custom:mushroom-light-card
           entity: light.livingroom_soyle
           secondary_info: last-changed
+        - type: custom:mushroom-light-card
+          entity: light.stick_animals_plug
+          tap_action:
+            action: toggle
+          secondary_info: last-changed  
         - type: horizontal-stack
           cards:
             - type: horizontal-stack

@@ -28,3 +28,4 @@ alert:
     skip_first: true
     notifiers:
       - mobile_app_dad_mobile
+      - mobile_app_mom_mobile

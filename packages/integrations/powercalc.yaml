@@ -14,7 +14,7 @@
 powercalc:
   enable_autodiscovery: false # AVM: added myself, want manual control of structure and config
   force_update_frequency: 00:01:00 #Each minute
-  #  power_sensor_naming: "{} Powersensor"
+  # power_sensor_naming: "{} PowerCalc"
   create_energy_sensors: false # AVM: want manual control of structure and config
   energy_integration_method: left # Riemann sum method to be used
   energy_sensor_precision: 2

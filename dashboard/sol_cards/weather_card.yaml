@@ -13,10 +13,13 @@ tabs:
       cards:
         - type: vertical-stack
           cards:
+            - type: custom:clock-weather-card
+              entity: weather.mylocation
+              sun_entity: sun.sun
             - type: weather-forecast
               entity: weather.mylocation
               secondary_info_attribute: wind_speed
-              name: E220
+              name: MyLocation
               show_current: true
               show_forecast: true
             - type: weather-forecast

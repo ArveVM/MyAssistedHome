@@ -3,10 +3,10 @@
 type: entities
 entities:
   - type: custom:fold-entity-row
-    head: sensor.pwrctrl_use_total
+    head: sensor.pwrctrl_use_total_power
     entities:
       - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_carcharger_power
+        head: sensor.pwrctrl_ug_carcharger_power
         entities:
           - entity: sensor.easee1_power
             name: Easee1
@@ -64,14 +64,14 @@ entities:
               numeric: true
 
       - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_multimedia_power
+        head: sensor.pwrctrl_ug_multimedia_power
         entities:
           - type: custom:auto-entities
             card:
               type: entities
             filter:
               template: >
-                {{state_attr("sensor.pwrctrl_use_multimedia_power", "entities") }}
+                {{state_attr("sensor.pwrctrl_ug_multimedia_power", "entities") }}
             sort:
               method: state
               reverse: true
