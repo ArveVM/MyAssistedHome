@@ -135,3 +135,10 @@ cards:
               - !include ../area_cards/outside_area_card.yaml
               - !include ../area_cards/garage_area_card.yaml
 
+          # Card/page4:
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - !include ../area_cards/bedroom_area_card.yaml
+              - !include ../area_cards/workshop_area_card.yaml

@@ -54,31 +54,31 @@ cards:
           --chip-spacing: 0;
         }
     chips:
-      - type: template
-        entity: sensor.serverroom_freezer_temp_temperature
-        icon: mdi:snowflake-thermometer
-        # Red if above -18, organge between -18 and  -20, disabled if below 20
-        icon_color: |-
-          {% set t=states(entity) | float(default=-20) %}
-          {% if t > -18 %}
-            red
-          {% elif t >= -20 %}
-            orange
-          {% else %}
-            disabled
-          {% endif %}
-        card_mod: &card_mod_chip_style
-          style: |
-            ha-card {
-              --chip-box-shadow: none;
-              --chip-background: none;
-              --chip-spacing: 0;
-              margin-left: -10px;
-        tap_action:
-          action: more-info
+      # - type: template
+      #   entity: sensor.serverroom_freezer_temp_temperature
+      #   icon: mdi:snowflake-thermometer
+      #   # Red if above -18, organge between -18 and  -20, disabled if below 20
+      #   icon_color: |-
+      #     {% set t=states(entity) | float(default=-20) %}
+      #     {% if t > -18 %}
+      #       red
+      #     {% elif t >= -20 %}
+      #       orange
+      #     {% else %}
+      #       disabled
+      #     {% endif %}
+      #   card_mod: &card_mod_chip_style
+      #     style: |
+      #       ha-card {
+      #         --chip-box-shadow: none;
+      #         --chip-background: none;
+      #         --chip-spacing: 0;
+      #         margin-left: -10px;
+      #   tap_action:
+      #     action: more-info
 
       - type: action
-        card_mod: *card_mod_chip_style
+        # card_mod: *card_mod_chip_style
         tap_action:
           action: navigate
           navigation_path: /config/areas/area/workshop
@@ -88,7 +88,7 @@ cards:
         entity: binary_sensor.laundry_room_status
         icon: mdi:hospital
         icon_color: "{{ 'green' if is_state(entity, 'off') else 'red' }}"
-        card_mod: *card_mod_chip_style
+        # card_mod: *card_mod_chip_style
         hold_action:
           action: more-info
         tap_action:

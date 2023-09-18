@@ -35,33 +35,33 @@ light:
       - light.kitchen_light_sink
       - light.kitchen_light_tablebulb
 
-sensor:
-  - platform: powercalc
-    create_group: kitchen lights all # ArveVM; will create both power- and energy-sensors
-    #    create_energy_sensor: true
-    entities:
-      - entity_id: light.kitchen_light2   # ArveVM: Maron 5pc pendel-lamp
-        fixed:
-          power: 33
-      - entity_id: light.kitchen_switch1  # AVM: 3*8w led 
-        linear:
-          min_power: 0.0
-          max_power: 18.0
-      - entity_id: light.kitchen_light_windowstrip # AVM: Namron 89685 led-strip on a z2m-controller
-        linear:
-          min_power: 0.4
-          max_power: 10.5
-      - entity_id: light.kitchen_light_sink # AVM: Ikea TRÅDFRI 30w; powering Myrvarv strip (12W) and Vaxmyra spot (1.4 W)
-        linear:
-          min_power: 0.1
-          max_power: 13.4
-      - entity_id: light.kitchen_light_tablebulb # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
-        manufacturer: ikea
-        model: LED1836G9
-      - entity_id: light.kitchen_5plugl1_ball # AVM: conventional 25W E14 bulb
-        linear:
-          min_power: 0.0
-          max_power: 25.0
+powercalc:
+  sensors:
+    - create_group: kitchen lights all # ArveVM; will create both power- and energy-sensors
+      entities:
+        - entity_id: light.kitchen_light2   # ArveVM: Maron 5pc pendel-lamp
+          fixed:
+            power: 33
+        - entity_id: light.kitchen_switch1  # AVM: 3*8w led 
+          linear:
+            min_power: 0.0
+            max_power: 18.0
+        - entity_id: light.kitchen_light_windowstrip # AVM: Namron 89685 led-strip on a z2m-controller
+          linear:
+            min_power: 0.4
+            max_power: 10.5
+        - entity_id: light.kitchen_light_sink # AVM: Ikea TRÅDFRI 30w; powering Myrvarv strip (12W) and Vaxmyra spot (1.4 W)
+          linear:
+            min_power: 0.1
+            max_power: 13.4
+        - entity_id: light.kitchen_light_tablebulb # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
+          manufacturer: ikea
+          model: LED1836G9
+        - entity_id: light.kitchen_5plugl1_ball # AVM: conventional 25W E14 bulb
+          linear:
+            min_power: 0.0
+            max_power: 25.0
+
 
 template:
   - binary_sensor:

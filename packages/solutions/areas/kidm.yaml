@@ -31,13 +31,13 @@ input_boolean:
     name: KidM MorningLight auto
     icon: mdi:magic-staff
 
-sensor:
-  - platform: powercalc
-    create_group: kidm lights all
-    entities:
-      - entity_id: light.kidm_light_puck # AVM: conventional 40W E14 bulb
-        fixed:
-          power: 40
+
+powercalc:
+  sensors:
+    - create_group: kidm lights all
+      entities:
+        - entity_id: light.kidm_lightbulb
+          power_sensor_id: sensor.kidm_lightbulb_power
 
 script:
   kid_m_sleepytime:

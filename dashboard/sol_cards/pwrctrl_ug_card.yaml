@@ -12,21 +12,21 @@ entities:
             name: Easee1
             format: precition0
 
-      - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_hotwater_power
-        entities:
-          - entity: sensor.hotwater_puck_input_power
-            name: Hotwater
+      # - type: custom:fold-entity-row
+      #   head: sensor.pwrctrl_use_hotwater_power
+      #   entities:
+      #     - entity: sensor.hotwater_puck_input_power
+      #       name: Hotwater
 
       - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_heating_power
+        head: sensor.pwrctrl_ug_heating_power
         entities:
           - type: custom:auto-entities
             card:
               type: entities
             filter:
               template: >
-                {{state_attr("sensor.pwrctrl_use_heating_power", "entities") }}
+                {{state_attr("sensor.pwrctrl_ug_heating_power", "entities") }}
             sort:
               method: state
               reverse: true
@@ -35,7 +35,7 @@ entities:
           - !include laundry_heater_card.yaml
 
       - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_lights_power
+        head: sensor.pwrctrl_ug_lights_power
         name: Lights
         entities:
           - type: custom:auto-entities
@@ -43,21 +43,21 @@ entities:
               type: entities
             filter:
               template: >
-                {{state_attr("sensor.pwrctrl_use_lights_power", "entities") }}
+                {{state_attr("sensor.pwrctrl_ug_lights_power", "entities") }}
             sort:
               method: state
               reverse: true
               numeric: true
 
       - type: custom:fold-entity-row
-        head: sensor.pwrctrl_use_appliances_power
+        head: sensor.pwrctrl_ug_appliances_power
         entities:
           - type: custom:auto-entities
             card:
               type: entities
             filter:
               template: >
-                {{state_attr("sensor.pwrctrl_use_appliances_power", "entities") }}
+                {{state_attr("sensor.pwrctrl_ug_appliances_power", "entities") }}
             sort:
               method: state
               reverse: true
@@ -77,7 +77,7 @@ entities:
               reverse: true
               numeric: true
 
-      - entity: sensor.pwrctrl_use_ungrouped
+      - entity: sensor.pwrctrl_ug_ungrouped
         name: unGrouped
       - entity: sensor.pwrctrl_use_ungroupednegative
         name: unGrouped-negative
@@ -87,30 +87,30 @@ entities:
     throttle: 15000 #AVM: milliseconds wait-time between updates; 15' = 15sec
     sections:
       - entities:
-          - entity_id: sensor.pwrctrl_use_total
+          - entity_id: sensor.pwrctrl_use_total_power
             name: Use Total
             children:
-              - sensor.pwrctrl_use_carcharger_power
-              - sensor.pwrctrl_use_hotwater_power
-              - sensor.pwrctrl_use_heating_power
-              - sensor.pwrctrl_use_lights_power
-              - sensor.pwrctrl_use_appliances_power
-              - sensor.pwrctrl_use_multimedia_power
-              - sensor.pwrctrl_use_ungrouped
+              - sensor.pwrctrl_ug_carcharger_power
+              - sensor.pwrctrl_ug_hotwater_power
+              - sensor.pwrctrl_ug_heating_power
+              - sensor.pwrctrl_ug_lights_power
+              - sensor.pwrctrl_ug_appliances_power
+              - sensor.pwrctrl_ug_multimedia_power
+              - sensor.pwrctrl_ug_ungrouped
       - entities:
-          - entity_id: sensor.pwrctrl_use_carcharger_power
+          - entity_id: sensor.pwrctrl_ug_carcharger_power
             name: CarCharger
-          - entity_id: sensor.pwrctrl_use_hotwater_power
+          - entity_id: sensor.pwrctrl_ug_hotwater_power
             name: Hotwater
-          - entity_id: sensor.pwrctrl_use_heating_power
+          - entity_id: sensor.pwrctrl_ug_heating_power
             name: Heating
-          - entity_id: sensor.pwrctrl_use_lights_power
+          - entity_id: sensor.pwrctrl_ug_lights_power
             name: Lights
-          - entity_id: sensor.pwrctrl_use_appliances_power
+          - entity_id: sensor.pwrctrl_ug_appliances_power
             name: Appliances
-          - entity_id: sensor.pwrctrl_use_multimedia_power
+          - entity_id: sensor.pwrctrl_ug_multimedia_power
             name: Multimedia
-          - entity_id: sensor.pwrctrl_use_ungrouped
+          - entity_id: sensor.pwrctrl_ug_ungrouped
             name: unGrouped
 
   - !include nordpool_4.yaml

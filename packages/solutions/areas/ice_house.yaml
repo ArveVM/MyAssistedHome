@@ -15,17 +15,16 @@ light:
     entity_id: switch.icehouse_light_bulbs
 
 
-sensor:
-  - platform: powercalc
-    create_group: Ice House lights all
-    entities:
-      - entity_id: light.icehouse_light_bulbs # AVM: string of led-bulbs
-        fixed:
-          power: 6
+powercalc:
+  sensors:
+    - create_group: Ice House lights all
+      entities:
+        - entity_id: light.icehouse_light_bulbs # AVM: string of led-bulbs
+          fixed:
+            power: 6
 
-  - platform: powercalc
-    create_group: Outside lights all
-    entities:
-      - entity_id: light.outside_light1 # AVM: string of led-bulbs
-        fixed:
-          power: 25
+    - create_group: Outside lights all
+      entities:
+        - entity_id: light.outside_light1 # AVM: string of led-bulbs
+          fixed:
+            power: 25

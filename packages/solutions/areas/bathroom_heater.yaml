@@ -64,11 +64,6 @@ input_number:
     step: 0.5
 
 template:
-  #- sensor:
-  #    - unique_id: bathroom_heater_thermostat_mode
-  #      name: Bathroom Heater Thermostat mode
-  #      state: " {{state_attr('climate.bathroom_heater_thermostat', 'preset_mode') }} "
-
   - sensor:
       - unique_id: bathroom_heater_thermostat_target
         name: Bathroom Heater Thermostat target

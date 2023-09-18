@@ -33,29 +33,155 @@ homeassistant:
     #input_boolean.hotwater_temp_thermostat_output:
     #  <<: *solution_attribute
 
+
+
+powercalc:
+  sensors:
+    - create_group: PwrCtrl UG All
+      ignore_unavailable_state: true
+      create_energy_sensor: true
+      create_utility_meters: true
+      entities:
+        - create_group: PwrCtrl UG Carcharger
+          create_energy_sensor: true
+          create_utility_meters: true
+          ignore_unavailable_state: true
+          entities:
+            # - fixed:
+            #     power: "{{ states('sensor.easee1_power') | round * 1000 }}"
+            - entity_id: sensor.dummy
+              name: Bathroom lights
+              fixed:
+                power: "{{ states('sensor.easee1_power') | round * 1000 }}"    # Easee reports in KWh, must change to W
+
+        - create_group: PwrCtrl UG Hotwater
+          create_energy_sensor: true
+          create_utility_meters: true
+          ignore_unavailable_state: true
+          entities:
+            - entity_id: binary_sensor.hotwater_puck_input
+              fixed:
+                power: 2850
+
+        - create_group: PwrCtrl UG Heating
+          create_energy_sensor: true
+          create_utility_meters: true
+          ignore_unavailable_state: true
+          entities:
+            - entity_id: switch.laundry_heater_puck
+              power_sensor_id: sensor.laundry_heater_puck_power
+            - entity_id: switch.kitchen_heater
+              power_sensor_id: sensor.kitchen_heater_power
+            - entity_id: switch.kitchen_heatpump_plug
+              ignore_unavailable_state: true
+              power_sensor_id: sensor.kitchen_heatpump_plug_power
+            - entity_id: switch.evaplug #livingroom
+              power_sensor_id: sensor.evaplug_power
+            - entity_id: switch.bathroom_heater_puck
+              power_sensor_id: sensor.bathroom_heater_puck_power
+            - entity_id: switch.bathroom2_heater_puck
+              power_sensor_id: sensor.bathroom2_heater_puck_power
+            - entity_id: switch.office_heater_plug
+              power_sensor_id: sensor.office_heater_plug_power
+            - entity_id: sensor.kidl_floor_heater_power
+              power_sensor_id: sensor.kidl_floor_heater_power
+            - entity_id: switch.entry_heater_puck
+              power_sensor_id: sensor.entry_heater_puck_power
+            - entity_id: switch.icehouse_heater # heater on Ikea-plug
+              fixed:
+                power: 2000
+
+        - create_group: PwrCtrl UG Lights
+          create_energy_sensor: true
+          create_utility_meters: true
+          ignore_unavailable_state: true
+          entities:
+            - entity_id: sensor.laundry_lights_all_power
+              power_sensor_id: sensor.laundry_lights_all_power
+            - entity_id: sensor.kitchen_lights_all_power
+              power_sensor_id: sensor.kitchen_lights_all_power
+            - entity_id: sensor.livingroom_lights_all_power
+              power_sensor_id: sensor.livingroom_lights_all_power
+            - entity_id: sensor.hallway_lights_all_power
+              power_sensor_id: sensor.hallway_lights_all_power
+            - entity_id: sensor.loft_lights_all_power
+              power_sensor_id: sensor.loft_lights_all_power
+            #- entity_id: sensor.kidl
+            #  power_sensor_id: sensor.kidl
+            - entity_id: sensor.kidm_lights_all_power
+              power_sensor_id: sensor.kidm_lights_all_power
+            - entity_id: sensor.ice_house_lights_all_power
+              power_sensor_id: sensor.ice_house_lights_all_power
+            - entity_id: sensor.outside_lights_all_power
+              power_sensor_id: sensor.outside_lights_all_power
+
+        - create_group: PwrCtrl UG Appliances
+          create_energy_sensor: true
+          create_utility_meters: true
+          ignore_unavailable_state: true
+          entities:
+            - entity_id: switch.dishwasher_plug
+              power_sensor_id: sensor.dishwasher_plug_power
+            - entity_id: switch.laundry_washer_puck
+              power_sensor_id: sensor.laundry_washer_puck_power
+            - entity_id: swithc.laundry_dryer_plug
+              power_sensor_id: sensor.laundry_dryer_plug_power
+            - entity_id: switch.workshop_washer
+              power_sensor_id: sensor.workshop_washer_power
+            - entity_id: switch.laundry_freezer
+              power_sensor_id: sensor.laundry_freezer_power
+            - entity_id: switch.freezerdownstairs
+              power_sensor_id: sensor.freezerdownstairs_power
+
+        - create_group: PwrCtrl UG Multimedia
+          ignore_unavailable_state: true
+          create_energy_sensor: true
+          create_utility_meters: true
+          entities:
+            - entity_id: switch.server_rack_plug
+              ignore_unavailable_state: true
+              power_sensor_id: sensor.server_rack_plug_power
+            - create_group: PwrCtrl UG Googles
+              entities:
+                - entity_id: media_player.kitchen_googlemini
+                  ignore_unavailable_state: true
+                  manufacturer: Google
+                  model: Google Home Mini
+                - entity_id: media_player.smartclock_kidl
+                  ignore_unavailable_state: true
+                  manufacturer: lenovo
+                  model: Lenovo Smart Clock
+                - entity_id: media_player.smartclock_kidm
+                  ignore_unavailable_state: true
+                  manufacturer: lenovo
+                  model: Lenovo Smart Clock
+                - entity_id: media_player.smartclock_kids
+                  ignore_unavailable_state: true
+                  manufacturer: lenovo
+                  model: Lenovo Smart Clock
+                
+                - entity_id: media_player.samsungq80_65         # source: measured with ShellyPlugS,, less than https://www.displayspecifications.com/en/model-power-consumption/eb021d4a
+                  fixed:
+                    power: 135
+                  standby_power: 0.5
+                - entity_id: media_player.samsungtv_loft         # source: https://www.avforums.com/products/led-lcd-tvs.90/samsung-ue55h6200.9084/specs/?content_id=10914
+                  fixed:
+                    power: 71
+                  standby_power: 0.2
+
+
 template:
   - sensor:
-      # get hold of han-port reading, round to use for display (and use to create utility-meters)
-      # - name: PwrCtrl Use Measured Total
-      #   unique_id: pwrctrl_use2_total
-      #   unit_of_measurement: W
-      #   attributes:
-      #     <<: *solution_attribute
-      #   #state: "{{states('sensor.evahan_power')/1000 | float(default=0)}}"
-      #   state: >
-      #     {% set w = states('sensor.evahan_power') | float %}
-      #     {{ w | round(0) }}
-
-      - name: PwrCtrl Use unGrouped
+      - name: PwrCtrl UG unGrouped
         unique_id: 62e5770e-0233-4f6c-a7f9-3c32fb57d520
         unit_of_measurement: W
         icon: mdi:power-plug
         attributes:
           <<: *solution_attribute
         state: >
-          {% set main = states('sensor.pwrctrl_use_total') | int(default=0)%}
+          {% set main = states('sensor.pwrctrl_use_total_power') | int(default=0)%}
           {{max(0,main
-          - states('sensor.pwrctrl_use_grouped_power') | int(default=0)
+          - states('sensor.pwrctrl_ug_all_power') | int(default=0)
           )}}
 
       - name: PwrCtrl Use unGroupedNegative
@@ -92,23 +218,6 @@ utility_meter:
     cycle: hourly
 
 
-# powercalc:
-#   sensors:
-#     - create_group: Livingroom lights all
-#       create_energy_sensor: false
-#       create_utility_meters: false
-#       ignore_unavailable_state: true
-#       entities:
-#         - entity_id: light.livingroom_diningtable # ArveVM: 3*11W  LED
-#           fixed:
-#             power: 33
-#         - entity_id: light.livingroom_soyle       # ArveVM: 2* LED
-#           power_sensor_id: sensor.livingroom_switch_s2_power_2
-#         - entity_id: light.livingroom_light_windowstrip # AVM: Namron 89686 led-strip on a z2m-controller
-#           linear:
-#             min_power: 0.4
-#             max_power: 6
-
 sensor:
   - platform: integration
     unique_id: 7b7d263b-3b20-44bd-8f57-4112aa889ad0
@@ -126,57 +235,57 @@ sensor:
   #   fixed:
   #     power: "{{ states('sensor.pwrctrl_use_total') }}"
 
-  - platform: powercalc
-    create_group: PwrCtrl Use Grouped
-    unique_id: pwrctrl_use_grouped
-    #unavailable_power
-    ignore_unavailable_state: true
-    create_energy_sensor: true
-    create_utility_meters: true
-    entities:
-      # - create_group: PwrCtrl Use Carcharger
+  # - platform: powercalc
+  #   create_group: PwrCtrl Use Grouped
+  #   unique_id: pwrctrl_use_grouped
+  #   #unavailable_power
+  #   ignore_unavailable_state: true
+  #   create_energy_sensor: true
+  #   create_utility_meters: true
+  #   entities:
+  #     # - create_group: PwrCtrl Use Carcharger
       #   create_energy_sensor: true
       #   create_utility_meters: true
       #   ignore_unavailable_state: true
       #   entities:
       #     - fixed:
       #         power: "{{ states('sensor.easee1_power') | round * 1000 }}"
-      - create_group: PwrCtrl Use Hotwater
-        create_energy_sensor: true
-        create_utility_meters: true
-        ignore_unavailable_state: true
-        entities:
-          - entity_id: binary_sensor.hotwater_puck_input
-            fixed:
-              power: 2850
+      # - create_group: PwrCtrl Use Hotwater
+      #   create_energy_sensor: true
+      #   create_utility_meters: true
+      #   ignore_unavailable_state: true
+      #   entities:
+      #     - entity_id: binary_sensor.hotwater_puck_input
+      #       fixed:
+      #         power: 2850
 
-      - create_group: PwrCtrl Use Heating
-        create_energy_sensor: true
-        create_utility_meters: true
-        ignore_unavailable_state: true
-        entities:
-          - entity_id: switch.laundry_heater_puck
-            power_sensor_id: sensor.laundry_heater_puck_power
-          - entity_id: switch.kitchen_heater
-            power_sensor_id: sensor.kitchen_heater_power
-          - entity_id: switch.kitchen_heatpump
-            ignore_unavailable_state: true
-            power_sensor_id: sensor.kitchen_heatpump_power
-          - entity_id: switch.evaplug #livingroom
-            power_sensor_id: sensor.evaplug_power
-          - entity_id: switch.bathroom_heater_puck
-            power_sensor_id: sensor.bathroom_heater_puck_power
-          - entity_id: switch.bathroom2_heater_puck
-            power_sensor_id: sensor.bathroom2_heater_puck_power
-          - entity_id: switch.office_heater_plug
-            power_sensor_id: sensor.office_heater_plug_power
-          - entity_id: sensor.kidl_floor_heater_power
-            power_sensor_id: sensor.kidl_floor_heater_power
-          - entity_id: switch.entry_heater_puck
-            power_sensor_id: sensor.entry_heater_puck_power
-          - entity_id: switch.icehouse_heater # heater on Ikea-plug
-            fixed:
-              power: 2000
+      # - create_group: PwrCtrl Use Heating
+      #   create_energy_sensor: true
+      #   create_utility_meters: true
+      #   ignore_unavailable_state: true
+      #   entities:
+      #     - entity_id: switch.laundry_heater_puck
+      #       power_sensor_id: sensor.laundry_heater_puck_power
+      #     - entity_id: switch.kitchen_heater
+      #       power_sensor_id: sensor.kitchen_heater_power
+      #     - entity_id: switch.kitchen_heatpump
+      #       ignore_unavailable_state: true
+      #       power_sensor_id: sensor.kitchen_heatpump_power
+      #     - entity_id: switch.evaplug #livingroom
+      #       power_sensor_id: sensor.evaplug_power
+      #     - entity_id: switch.bathroom_heater_puck
+      #       power_sensor_id: sensor.bathroom_heater_puck_power
+      #     - entity_id: switch.bathroom2_heater_puck
+      #       power_sensor_id: sensor.bathroom2_heater_puck_power
+      #     - entity_id: switch.office_heater_plug
+      #       power_sensor_id: sensor.office_heater_plug_power
+      #     - entity_id: sensor.kidl_floor_heater_power
+      #       power_sensor_id: sensor.kidl_floor_heater_power
+      #     - entity_id: switch.entry_heater_puck
+      #       power_sensor_id: sensor.entry_heater_puck_power
+      #     - entity_id: switch.icehouse_heater # heater on Ikea-plug
+      #       fixed:
+      #         power: 2000
 
       # - create_group: PwrCtrl Use Lights
       #   create_energy_sensor: true
@@ -202,23 +311,23 @@ sensor:
       #     - entity_id: sensor.outside_lights_all_power
       #       power_sensor_id: sensor.outside_lights_all_power
 
-      - create_group: PwrCtrl Use Appliances
-        create_energy_sensor: true
-        create_utility_meters: true
-        ignore_unavailable_state: true
-        entities:
-          - entity_id: switch.dishwasher_plug
-            power_sensor_id: sensor.dishwasher_plug_power
-          - entity_id: switch.laundry_washer_puck
-            power_sensor_id: sensor.laundry_washer_puck_power
-          - entity_id: swithc.laundry_dryer_plug
-            power_sensor_id: sensor.laundry_dryer_plug_power
-          - entity_id: switch.workshop_washer
-            power_sensor_id: sensor.workshop_washer_power
-          - entity_id: switch.laundry_freezer
-            power_sensor_id: sensor.laundry_freezer_power
-          - entity_id: switch.freezerdownstairs
-            power_sensor_id: sensor.freezerdownstairs_power
+      # - create_group: PwrCtrl Use Appliances
+      #   create_energy_sensor: true
+      #   create_utility_meters: true
+      #   ignore_unavailable_state: true
+      #   entities:
+      #     - entity_id: switch.dishwasher_plug
+      #       power_sensor_id: sensor.dishwasher_plug_power
+      #     - entity_id: switch.laundry_washer_puck
+      #       power_sensor_id: sensor.laundry_washer_puck_power
+      #     - entity_id: swithc.laundry_dryer_plug
+      #       power_sensor_id: sensor.laundry_dryer_plug_power
+      #     - entity_id: switch.workshop_washer
+      #       power_sensor_id: sensor.workshop_washer_power
+      #     - entity_id: switch.laundry_freezer
+      #       power_sensor_id: sensor.laundry_freezer_power
+      #     - entity_id: switch.freezerdownstairs
+      #       power_sensor_id: sensor.freezerdownstairs_power
 
       # - create_group: PwrCtrl Use Multimedia
       #   create_energy_sensor: true
@@ -241,75 +350,3 @@ sensor:
       #           ignore_unavailable_state: true
       #           manufacturer: lenovo
       #           model: Lenovo Smart Clock
-
-powercalc:
-  sensors:
-    - create_group: PwrCtrl UG All
-      # unique_id: pwrctrl_use_grouped
-      #unavailable_power
-      ignore_unavailable_state: true
-      create_energy_sensor: true
-      create_utility_meters: true
-      entities:
-        - create_group: PwrCtrl UG Carcharger
-          create_energy_sensor: true
-          create_utility_meters: true
-          ignore_unavailable_state: true
-          entities:
-            # - fixed:
-            #     power: "{{ states('sensor.easee1_power') | round * 1000 }}"
-            - entity_id: sensor.dummy
-              name: Bathroom lights
-              fixed:
-                power: "{{ states('sensor.easee1_power') | round * 1000 }}"    # Easee reports in KWh, must change to W
-
-        - create_group: PwrCtrl UG Lights
-          create_energy_sensor: true
-          create_utility_meters: true
-          ignore_unavailable_state: true
-          entities:
-            - entity_id: sensor.laundry_lights_all_power
-              power_sensor_id: sensor.laundry_lights_all_power
-            - entity_id: sensor.kitchen_lights_all_power
-              power_sensor_id: sensor.kitchen_lights_all_power
-            - entity_id: sensor.livingroom_lights_all_power
-              power_sensor_id: sensor.livingroom_lights_all_power
-            - entity_id: sensor.hallway_lights_all_power
-              power_sensor_id: sensor.hallway_lights_all_power
-            - entity_id: sensor.loft_lights_all_power
-              power_sensor_id: sensor.loft_lights_all_power
-            #- entity_id: sensor.kidl
-            #  power_sensor_id: sensor.kidl
-            - entity_id: sensor.kidm_lights_all_power
-              power_sensor_id: sensor.kidm_lights_all_power
-            - entity_id: sensor.ice_house_lights_all_power
-              power_sensor_id: sensor.ice_house_lights_all_power
-            - entity_id: sensor.outside_lights_all_power
-              power_sensor_id: sensor.outside_lights_all_power
-
-        - create_group: PwrCtrl UG Multimedia
-          ignore_unavailable_state: true
-          create_energy_sensor: true
-          create_utility_meters: true
-          entities:
-            - entity_id: switch.server_rack_plug
-              ignore_unavailable_state: true
-              power_sensor_id: sensor.server_rack_plug_power
-            - create_group: PwrCtrl UG Googles
-              entities:
-                - entity_id: media_player.kitchen_googlemini
-                  ignore_unavailable_state: true
-                  manufacturer: Google
-                  model: Google Home Mini
-                - entity_id: media_player.smartclock_kidl
-                  ignore_unavailable_state: true
-                  manufacturer: lenovo
-                  model: Lenovo Smart Clock
-                - entity_id: media_player.smartclock_kidm
-                  ignore_unavailable_state: true
-                  manufacturer: lenovo
-                  model: Lenovo Smart Clock
-                - entity_id: media_player.smartclock_kids
-                  ignore_unavailable_state: true
-                  manufacturer: lenovo
-                  model: Lenovo Smart Clock

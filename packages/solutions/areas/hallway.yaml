@@ -7,18 +7,18 @@ light:
       - light.hallway_staircase
       
       
-sensor:
-  - platform: powercalc
-    create_group: hallway lights all # ArveVM; will create both power- and energy-sensors
-    create_energy_sensor: false
-    create_utility_meters: false
-    ignore_unavailable_state: true
-    entities:
-      - entity_id: light.hallway_light_up1 # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
-        manufacturer: ikea
-        model: LED1836G9
-      - entity_id: light.hallway_staircase_power # ArveVM: *6W  LED
-        power_sensor_id: light.hallway_staircase_power
+powercalc:
+  sensors:
+    - create_group: hallway lights all # ArveVM; will create both power- and energy-sensors
+      create_energy_sensor: false
+      create_utility_meters: false
+      ignore_unavailable_state: true
+      entities:
+        - entity_id: light.hallway_light_up1 # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
+          manufacturer: ikea
+          model: LED1836G9
+        - entity_id: light.hallway_staircase_power # ArveVM: *6W  LED
+          power_sensor_id: light.hallway_staircase_power
 
 
 # automation:

@@ -13,7 +13,7 @@ card_mod:
     ha-card {
       height: 102px;
     }
-  # AVM; replace with this if I ever get to control the lights in the office :)
+  # AVM; replace with this if I ever get to control the lights in the bedroom :)
   #  ha-card {
   #    height: 102px;
   #    {% if is_state('light.loft', 'on') %}

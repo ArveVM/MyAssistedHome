@@ -1,10 +1,10 @@
-sensor:
-  - platform: powercalc
-    create_group: loft lights all
-    entities:
-      - entity_id: light.loft # ArveVM: 6*4,9W gu10 LED
-        fixed:
-          power: 29
+powercalc:
+  sensors:
+    - create_group: loft lights all
+      entities:
+        - entity_id: light.loft # ArveVM: 6*4,9W gu10 LED
+          fixed:
+            power: 29
 
 template:
   - binary_sensor:

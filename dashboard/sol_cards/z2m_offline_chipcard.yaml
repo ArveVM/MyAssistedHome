@@ -2,7 +2,7 @@
 # NB, this is a Mushroom chip,, som it should be !included as a component in the mushroom-chip-card
 
 type: template
-entity: switch.adguard_home_filtering
+entity: sensor.z2m_offline_count
 icon: mdi:zigbee
 icon_color: "{{ 'disabled' if is_state(entity, 0 ) else 'red' }}"
 tap_action:

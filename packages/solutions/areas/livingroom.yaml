@@ -55,8 +55,8 @@ powercalc:
         - entity_id: light.livingroom_light_lounge # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
           manufacturer: ikea
           model: LED2003G10
-        - entity_id: light.stick_animal_plug       # ArveVM: 
-          power_sensor_id: sensor.stick_animals_plug_power
+        - entity_id: light.stick_animals_plug       # ArveVM: 
+          power_sensor_id: light.stick_animals_plug_power
 
 template:
   - binary_sensor:
