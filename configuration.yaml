@@ -19,6 +19,7 @@
 #
 #      A descriptive readme-file is planned for my GitHub, but I got to start
 #        somewhere, and this is the (fifth) start of my journey  :)
+#      https://github.com/ArveVM/MyAssistedHome/wiki/2.1-HA-base-configuration
 #
 #   PS; lots of tribute to mrRR, Jeffrey Stone and Franck Nijhof for showing me 
 #     good examples of config focused on either Functionality or Solutions, 
@@ -28,15 +29,16 @@
 #
 ###############################################################################
 
-# AVM; first add my own folder with lots of sub-folders 
+
+# ArveVM; first add my own folder with lots of sub-folders 
 #   then sub-folders will add next levels of cascaded configuration 
 
 homeassistant:
   packages: !include_dir_named packages
-  # packages: !include_dir_named avm_yaml/packages
 
 
   # enable auto-login for nest hub - must be configured before loading packages
+  # see at bottom of docs-page for clarifications: https://www.home-assistant.io/docs/authentication/providers/
   auth_providers:
   - type: trusted_networks
     trusted_networks:

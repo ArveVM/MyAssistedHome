@@ -5,7 +5,7 @@
 # and adding new "input-sensor" at the top,, to get the average tank-temp from temp-sensors
 
 # ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
+# https://github.com/ArveVM/    blablabla
 
 # First add some customizations:
 homeassistant:

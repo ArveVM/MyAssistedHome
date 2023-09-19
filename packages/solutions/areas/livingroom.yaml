@@ -25,15 +25,15 @@ light:
           service: remote.send_command
           data:
             entity_id: remote.hubby
-            command: PowerOn
             device: Vie Selected
+            command: PowerOn
         turn_off:
           service: remote.send_command
           # action: call-service
           data:
             entity_id: remote.hubby
-            command: PowerOff
             device: Vie Selected
+            command: PowerOff
 
 
 powercalc:

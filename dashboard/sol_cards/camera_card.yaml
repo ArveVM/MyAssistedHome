@@ -1,4 +1,4 @@
-# ArveVM: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/cameras.md
+# ArveVM: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Cameras
 
 # Card for camera-solution,, using Frigate card now
 # https://github.com/blakeblackshear/frigate/issues/2606
@@ -48,16 +48,6 @@ cards:
             position: bottom
             button_size: 35
             buttons:
-              # frigate:
-              #   priority: 50
-              #   enabled: true
-              #   alignment: matching
-              # #   icon: frigate
-              # cameras:
-              #   priority: 50
-              #   enabled: true
-              #   alignment: matching
-              #   icon: mdi:video-switch
               substreams:
                 priority: 50
                 enabled: true
@@ -69,11 +59,8 @@ cards:
                   - camera.garage_front
               elements:
                 - type: custom:frigate-card-menu-state-icon
-                  # icon: mdi:lightbulb
                   entity: switch.garage_dad
                   icon: mdi:garage
-                  # icon: "{{ 'mdi:garage' if is_state('switch.garage_dad', 'on') else 'mdi:garage-open' }}"
-                  # icon_color: "{{ 'blue' if is_state('switch.garage_dad', 'on') else 'red' }}"
                   tap_action:
                     action: call-service
                     service: switch.toggle
@@ -84,8 +71,6 @@ cards:
                 - type: custom:frigate-card-menu-state-icon
                   entity: switch.garage_t
                   icon: mdi:garage
-                  # icon: "{{ 'mdi:garage' if is_state('switch.garage_dad', 'on') else 'mdi:garage-open' }}"
-                  # icon_color: "{{ 'blue' if is_state('switch.garage_t', 'on') else 'red' }}"
                   tap_action:
                     action: call-service
                     service: switch.toggle
@@ -114,8 +99,6 @@ cards:
               live_provider: go2rtc
               # id: west1
           
-
-
             # Negligable difference between resolution on substream and main,, so just stream mainstream
             - camera_entity: camera.west1
               live_provider: go2rtc

@@ -1,10 +1,13 @@
+#  https://community.home-assistant.io/t/template-light-can-effect-list-be-hardcoded/463588/7
+
+
 
 
 homeassistant:
   customize:
     # # Add node-anchor as Attribute on used sensors from other integrations/solutions:
-    light.kitchen_tealights:
-      effect_list: candle, light
+    # light.kitchen_tealights:
+    #   effect_list: candle, light
 
 # # service: remote.learn_command
 # service: remote.send_command
@@ -27,53 +30,83 @@ homeassistant:
 #     # - b64:JgCAAAABHZARFBA4EBMRFBATERMRFBESETcRExA4EDgQNxE3ETcRNxE3ERIRNxEUEBMRFBATERQQExE3ERMRNxE3ETcRNxA3EQAE7QABHUoRAAvqAAEeShAAC+sAAR5JEQAL6wABHkkQAAvqAAEfSREAC+kAAR5JEQAL6QABHkkQAA0F
   
 
+input_select:
+  kitchen_tealights_effects:
+    name: Kitchen Tealights effects
+    options:
+      - Candle
+      - Light
+    initial: Candle
+    icon: mdi:panda
+
 light:
   - platform: template
     lights:
+      kitchen_kubbelys:
+        friendly_name: Kitchen Kubbelys
+        turn_on:
+          service: remote.send_command
+          target:
+            entity_id: remote.broadlink_kitchen
+          data:
+            command: 
+              - b64:JgBsAAABI5ISExETERMRFBISERQRExEUEDgRNw83EjYSNhI3EDcRNxE3DxQRFRETEhIQFBEUEBUQFRA2ETcSNhE3ETcRNxE3EAAE/gABIkkPAAwAAAEjSw4ADAAAASFKEAAL/wABIkkRAApvBAANBQ==
+        turn_off:
+          service: remote.send_command
+          target:
+            entity_id: remote.broadlink_kitchen
+          data:
+            command: 
+              - b64:JgBkAAABIZESExETERQRExITEBQRFBAUETYSNhI2EDgQNxE3ETYSNhE3EhIQOBETEhIRFBETERQREhI2EhMQOBA4EDYSNhE3EQAC9AQAAgYAASBKEgAL/wABIkkQAAwCAAEhShEADQU=
+
+  - platform: template
+    lights:
       kitchen_tealights:
-        friendly_name: "Kitchen tealights"
+        friendly_name: "Kitchen Tealights"
         # level_template: "{{ state_attr('sensor.theater_brightness', 'lux')|int }}"
         # value_template: "{{ state_attr('sensor.theater_brightness', 'lux')|int > 0 }}"
         # temperature_template: "{{states('input_number.temperature_input') | int}}"
         # color_template: "({{states('input_number.h_input') | int}}, {{states('input_number.s_input') | int}})"
         # effect_list_template: "{{ state_attr('light.led_strip', 'effect_list') }}"
         # effect_list_template: "{{ state_attr('light.kitchen_tealights', 'effect_list') }}"
-        #   - candle mode2
-        #   - light mode2
+        effect_list_template: "{{ state_attr('input_select.kitchen_tealights_effects', 'options') }}"
+        effect_template: > # "{{ states('input_select.david_tv_backlight_effects') }}"
+          {% if is_state('input_select.kitchen_tealights_effects', 'Candle') %}
+             - b64:JgB4AAABHZEREhE3ERQQExEUEBMRFBATETcRExE3ETcRNhE3ETcQOBAUERMQNxEUERIRFBATERQQOBA4EBMRNxE3EDgQOBA3EQAE6wABHkkRAAvqAAEdShEAC+kAAR5JEQAL6QABHkkRAAvpAAEeSREAC+kAAR1KEQANBQ==   # candle mode
+          {% else %}
+            - b64:JgCAAAABHZARFBA4EBMRFBATERMRFBESETcRExA4EDgQNxE3ETcRNxE3ERIRNxEUEBMRFBATERQQExE3ERMRNxE3ETcRNxA3EQAE7QABHUoRAAvqAAEeShAAC+sAAR5JEQAL6wABHkkQAAvqAAEfSREAC+kAAR5JEQAL6QABHkkQAA0F
+          {% endif %}
+
         turn_on:
           service: remote.send_command
           target:
             entity_id: remote.broadlink_kitchen
           data:
-            device: ledsavers_tealights2
+            # device: ledsavers_tealights2
             command: 
-              - turn on
-            # - light mode2
-        #B64:JgB4AAABHZEREhE3ERQQExEUEBMRFBATETcRExE3ETcRNhE3ETcQOBAUERMQNxEUERIRFBATERQQOBA4EBMRNxE3EDgQOBA3EQAE6wABHkkRAAvqAAEdShEAC+kAAR5JEQAL6QABHkkRAAvpAAEeSREAC+kAAR1KEQANBQ==
-            # - turn on
-            # - B64:JgBoAAABHpEQExE3ERMRExETERMQFBETEDgQFBE2ETcQOBA4EDcRNxE3ERMQFBETEBQREhEUERIRFBA4EDgQNxA3ETcRNxE3EQAE6wABHkkRAAvpAAEeSREAC   # turn off
-
-            # Candle-mode:
-            # - b64:JgB4AAABHZEREhE3ERQQExEUEBMRFBATETcRExE3ETcRNhE3ETcQOBAUERMQNxEUERIRFBATERQQOBA4EBMRNxE3EDgQOBA3EQAE6wABHkkRAAvqAAEdShEAC+kAAR5JEQAL6QABHkkRAAvpAAEeSREAC+kAAR1KEQANBQ==   # candle mode
-              
-            # Light Mode:   
-            # - b64:JgCAAAABHZARFBA4EBMRFBATERMRFBESETcRExA4EDgQNxE3ETcRNxE3ERIRNxEUEBMRFBATERQQExE3ERMRNxE3ETcRNxA3EQAE7QABHUoRAAvqAAEeShAAC+sAAR5JEQAL6wABHkkQAAvqAAEfSREAC+kAAR5JEQAL6QABHkkQAA0F
+              # - turn on
+              - b64:JgBwAAABHZAQFBE3ERMQFBESERQREhEUEDcQFBE3ETcRNxA3EDgQNxEUERIRFBATERQQExEUEBMRNxE3EDgQNxE3EDcRNxE3EQAE6wABHkkQAAvqAAEdSREAC+gAAR5KEQAL6AABHUkRAAvpAAEdShEADQU=            
 
         turn_off:
           service: remote.send_command
           target:
             entity_id: remote.broadlink_kitchen
           data:
-            device: ledsavers_tealights2
             command: 
-              - turn off
-        #set_effect:
-        #  service: remote.send_command
-        #  target:
-        #    entity_id: remote.broadlink_kitchen
-        #  data:
-        #    device: ledsavers_tealights2
-        #    command: "{{ effect }}"
+              - b64:JgBgAAABHpARFBA2EhMSEhETEBQRExAUETcREhE3ETcRNxI2ETcSNhE3ERISExESERMSExESERQQExE3ETcRNxE3ETcQOBA3EQAE6wABH0kSAAvoAAEgSBIAC+gAAR9IEQANBQ==
+
+        set_effect:
+          - service: remote.send_command
+            target:
+              entity_id: remote.broadlink_kitchen
+            data:
+              command: "{{ effect }}"
+
+            # Candle-mode:
+            # - b64:JgB4AAABHZEREhE3ERQQExEUEBMRFBATETcRExE3ETcRNhE3ETcQOBAUERMQNxEUERIRFBATERQQOBA4EBMRNxE3EDgQOBA3EQAE6wABHkkRAAvqAAEdShEAC+kAAR5JEQAL6QABHkkRAAvpAAEeSREAC+kAAR1KEQANBQ==   # candle mode
+            # Light Mode:   
+            # - b64:JgCAAAABHZARFBA4EBMRFBATERMRFBESETcRExA4EDgQNxE3ETcRNxE3ERIRNxEUEBMRFBATERQQExE3ERMRNxE3ETcRNxA3EQAE7QABHUoRAAvqAAEeShAAC+sAAR5JEQAL6wABHkkQAAvqAAEfSREAC+kAAR5JEQAL6QABHkkQAA0F
+
 
         # mode_light:
         #   service: remote.send_command
@@ -83,3 +116,7 @@ light:
         #     device: ledsavers_tealights2
         #     command: 
         #       - light mode2
+
+
+
+

@@ -1,5 +1,5 @@
 # ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_temp.md
+
 
 # First add some customizations:
 homeassistant:

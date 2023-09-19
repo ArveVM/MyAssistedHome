@@ -23,28 +23,6 @@ cards:
       "--mdc-tab-text-label-color-default": white
       "--mdc-typography-button-font-size": 10px
     tabs:
-      # - attributes:
-      #     label: RM
-      #     icon: mdi:file-sign
-      #   card:
-      #     type: vertical-stack
-      #     axisAddMarginMin: false
-      #     cards:
-      #       - type: vertical-stack
-      #         cards:
-      #           - type: markdown
-      #             content: |
-      #               HA-stats documentation on GitHub.
-      #               all sub-solutions are documented in one readme-file
-      #               please review all documentation as information 
-      #               might be intertvined.
-      #       - type: entities
-      #         entities:
-      #           - type: weblink
-      #             name: Github-repo about HA-stats
-      #             url: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
-      #             icon: mdi:home-assistant
-
       - attributes:
           label: int
           icon: mdi:hammer-screwdriver

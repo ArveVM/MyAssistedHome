@@ -38,29 +38,3 @@ card_mod:
         var(--card-background-color) 0% 100%);
     }
 
-
-
-
-# # ArveVM; follow link for further documentation and appraisals:
-# # https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_soc.md
-
-# type: "custom:button-card"
-# template: chip_icon_double_state
-# variables:
-#   ulm_chip_icon_double_state_icon: "🚰"
-#   ulm_chip_icon_double_state_entity_1: sensor.hotwater_soc
-#   ulm_chip_icon_double_state_entity_2: sensor.hotwater_soc_average_temperature
-
-# tap_action:
-#   action: fire-dom-event
-#   browser_mod:
-#     service: browser_mod.popup
-#     data:
-#       content:
-#         type: vertical-stack
-#         cards:
-#           - !include hotwater_soc_card.yaml
-
-# # hold_action:
-# #   action: navigate
-# #   navigation_path: Workshop

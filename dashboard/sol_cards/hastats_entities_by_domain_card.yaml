@@ -1,5 +1,4 @@
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hastats.md
-# card require Browser Mod v1.5.3
+# ArveVM: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-HAstats
 
 type: vertical-stack
 title: HA entities by domain - count

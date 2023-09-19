@@ -23,3 +23,24 @@ template:
         unique_id: "kitchen_heater_south_running"
         state: "{{ states('sensor.kitchen_heater_south_power') | float(0) > 7 }}"
 
+
+
+
+climate:
+  - platform: gree
+    name: Kitchen heatpump2
+    host: 192.168.2.252
+    port: 7000
+    mac: 50:2c:c6:a6:a5:7c       #. NOTE: Format can be XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX depending on your model>'
+    target_temp_step: 1
+    # encryption_key: <OPTIONAL: custom encryption key>
+    # uid: <some kind of device identifier. NOTE: for some devices this is optional>
+    # temp_sensor: <entity id of the EXTERNAL temperature sensor. For example: sensor.bedroom_temperature>
+    temp_sensor: sensor.kitchen_thp_temperature
+    # lights: <OPTIONAL: input_boolean to switch AC lights mode on/off. For example: input_boolean.first_ac_lights>
+    # xfan: <OPTIONAL: input_boolean to switch AC xfan mode on/off. For example: input_boolean.first_ac_xfan>
+    # health: <OPTIONAL: input_boolean used to switch the Health option on/off of your first AC. For example: input_boolean.first_ac_health>
+    # sleep: <OPTIONAL: input_boolean to switch AC sleep mode on/off. For example: input_boolean.first_ac_sleep>
+    # powersave: <OPTIONAL: input_boolean to switch AC powersave mode on/off. For example: input_boolean.first_ac_powersave>
+    # eightdegheat: <OPTIONAL: input_boolean used to switch 8 degree heating on/off on your first AC>
+    # air: <OPTIONAL: input_boolean used to switch air/scavenging on/off on your first AC>

@@ -1,9 +1,9 @@
+# https://github.com/ArveVM/MyAssistedHome/blob/master/packages/solutions/todo.md
+
 # ArveVM: create toDo - tasks in other packages,, this package summarize the number of
 #         active toDo-tasks,, and create option to a chip/button/card to show that there
 #         are in fact tasks that need dooing  ;)
 
-# ArveVM; follow link for further documentation and appraisals:
-# https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/todo.md
 
 template:
   - sensor:

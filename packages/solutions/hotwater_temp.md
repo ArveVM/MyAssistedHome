@@ -89,13 +89,13 @@ In the configuration of Priceanalyzer I've set some guiding for VVB-temp, so Pri
 <br />
 
 ### Solution-Yaml:
-[Hotwater temp](https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/hotwater_temp.yaml)
+[Hotwater temp](https://github.com/ArveVM/MyAssistedHome/blob/master/packages/solutions/hotwater_temp.yaml)
 
 <br />
 <br />
 
 ### Solution-Dashboard(s):
-[Hotwater card](https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/dashboard/cards/hotwater_card.yaml))
+[Hotwater card](https://github.com/ArveVM/MyAssistedHome/blob/master/dashboard/cards/hotwater_card.yaml))
 
 <img width="287" alt="image" src="https://user-images.githubusercontent.com/96014323/212564221-410bb893-91ee-452d-8904-f2b59298876c.png">
 click on the chip - and you will get pop-up-card with more details:
