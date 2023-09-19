@@ -48,3 +48,4 @@ homeassistant:
       192.168.20.148: 8d0871d3f34e45fcbae4c4bfe055bf2d    # cast_catt_user -> autologin on chromecast
     allow_bypass_login: true
   - type: homeassistant
+

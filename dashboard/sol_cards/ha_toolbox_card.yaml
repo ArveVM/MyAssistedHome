@@ -1,8 +1,4 @@
-# ArveVM: https://github.com/ArveVM/HomeAssistantConfig4/blob/master/avm_yaml/packages/solutions/cameras.md
-
-# Card for camera-solution,, using Frigate card now
-# https://github.com/blakeblackshear/frigate/issues/2606
-#     look at comment from mattkasa commented on Jan 19  for an card-update within lovelace card-config!!
+# ArveVM: 
 
 type: vertical-stack
 cards:
@@ -40,25 +36,6 @@ cards:
 
             - type: entities
               entities:
-                # - type: section
-                #   label: div
-                # - type: custom:mushroom-template-card
-                #   entity: switch.adguard_home_protection
-                #   secondary: click for more info
-                #   primary: >
-                #     Ad-guard protection is {{ 'ON' if is_state(entity, 'on' ) else 'OFF' }}
-                #   icon: mdi:shield-alert
-                #   icon_color: "{{ 'green' if is_state(entity, 'on' ) else 'red' }}"
-                #   tap_action:
-                #     action: fire-dom-event
-                #     browser_mod:
-                #       service: browser_mod.popup
-                #       data:
-                #         content:
-                #           type: vertical-stack
-                #           cards:
-                #             - !include ../sol_cards/adguard_card.yaml
-
                 - type: button
                   name: System conf-dashboard
                   icon: mdi:cog
@@ -101,13 +78,4 @@ cards:
                   url: http://192.168.2.141:61208/
                   icon: mdi:graph
                 - type: divider
-
-      # - attributes:
-      #     label: Camera
-      #     icon: mdi:cctv
-      #   card:
-      #     type: vertical-stack
-      #     cards:
-      #       - !include camera_card.yaml
-
 
