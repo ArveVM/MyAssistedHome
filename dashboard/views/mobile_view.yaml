@@ -86,26 +86,8 @@ cards:
           # Card/page1:
           - type: vertical-stack
             cards:
-              - type: custom:mushroom-template-card
-                primary: Hello, {{user}}
-                secondary: 7-days listing of calendar HA-shared,, click to refresh
-                icon: mdi:home
-                tap_action:
-                  action: call-service
-                  service: homeassistant.reload_config_entry
-                  data: {}
-                  target:
-                    entity_id: calendar.ha_shared
-              - type: custom:atomic-calendar-revive
-                entities:
-                  - entity: calendar.ha_shared
-                    name: HA-shared
-                  - entity: calendar.minrenovasjon
-                    name: MinRenovasjon
-                firstDayOfWeek: 1
-                maxDaysToShow: 7
-                showWeekDay: true
-                refreshInterval: 60
+              - !include ../sol_cards/calendar_7days_card.yaml
+
 
           # Card/page2:
           - type: grid

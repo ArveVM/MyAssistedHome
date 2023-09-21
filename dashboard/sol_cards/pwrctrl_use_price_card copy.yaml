@@ -27,7 +27,7 @@ cards:
             }
 
       - type: custom:mushroom-template-card
-        entity: sensor.pwrctrl_use_total
+        entity: sensor.pwrctrl_use_total_power
         secondary: Now
         primary: >
           {{ ( states(entity) |int / 1000) | round(1) }} kW

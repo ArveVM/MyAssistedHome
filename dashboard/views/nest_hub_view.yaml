@@ -51,17 +51,6 @@ cards:
                     cards:
                       - !include ../sol_cards/pwrctrl_use_price_card31.yaml
 
-                      - type: custom:mushroom-template-card
-                        primary: Hello, {{user}}
-                        secondary: 7-days listing of calendar HA-shared,, click to refresh
-                        icon: mdi:home
-                        tap_action:
-                          action: call-service
-                          service: homeassistant.reload_config_entry
-                          data: {}
-                          target:
-                            entity_id: calendar.ha_shared'
-
                       - type: custom:auto-entities
                         card:
                           type: entities
@@ -106,20 +95,7 @@ cards:
 
                   # # #####  Then main  - LEFT-RIGHT SIDE  ############################################################################################
                   - !include ../sol_cards/calendar_7days_card.yaml
-                  
-                  # - type: custom:atomic-calendar-revive
-                  #   entities:
-                  #     - entity: calendar.ha_shared
-                  #       name: Ha-shared
-                  #     - entity: calendar.minrenovasjon
-                  #       name: MinRenovasjon
-                  #   firstDayOfWeek: 1
-                  #   maxDaysToShow: 7
-                  #   showWeekDay: true
-                  #   showMultiDay: true
-                  #   calShowDescription: true
-                  #   refreshInterval: 60
-                  #   showLocation: false
+
 
           # #####  Then main  - RIGHT SIDE  ############################################################################################
           - type: vertical-stack

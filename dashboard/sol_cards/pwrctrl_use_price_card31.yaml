@@ -1,8 +1,7 @@
 
+# Hybrid-card,,, not a chip-card and not full size entities either,, card-mod to smaller icons
 
-# type: horizontal-stack
 type: grid
-# title: Backyard
 columns: 2
 square: false
 cards:
@@ -25,7 +24,7 @@ cards:
         }
         
   - type: custom:mushroom-template-card
-    entity: sensor.pwrctrl_use_total
+    entity: sensor.pwrctrl_use_total_filtered_power
     secondary: Now
     primary: >
       {{ ( states(entity) |int / 1000) | round(1) }} kW
@@ -58,7 +57,7 @@ cards:
 
 
   - type: custom:mushroom-template-card
-    entity: sensor.pwrctrl_use_total_energy_daily
+    entity: sensor.pwrctrl_use_total_power
     secondary: Today
     primary: >
       {{ states(entity) | round(1) }} kWh

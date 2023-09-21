@@ -58,6 +58,13 @@ cards:
         content: |
           cards:
 
+      - type: entities
+        entities:
+          - input_select.kitchen_tealights_effects
+          - light.kitchen_tealights
+
+      - !include ../area_cards/kitchen_light_card.yaml
+
       - !include ../sol_cards/test_title.yaml
 
       - !include ../sol_cards/carcharging_card.yaml

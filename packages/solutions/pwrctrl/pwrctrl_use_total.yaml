@@ -1,19 +1,5 @@
 
 
-
-# template:
-#   - sensor:
-#       # get hold of han-port reading, round to use for display (and use to create utility-meters)
-#       - name: PwrCtrl Use Total power
-#         unique_id: 6b908ec4-eb24-4ea3-9dfe-320fc0d9632e
-#         unit_of_measurement: W
-#         device_class: power
-#         # attributes:
-#         #   <<: *solution_attribute
-#         state: >
-#           {% set w = states('sensor.evahan_power') | float %}
-#           {{ w | round(0) }}
-
 sensor:
   # eksempel fra Erlend Sellie på HA-norge-FB - brukt i en av lovelace-cards for nordpool vs current usage-grafs,,,
   - platform: filter
@@ -30,12 +16,34 @@ sensor:
         time_constant: 10
 
 
-
 powercalc:
   sensors:
     - create_group: PwrCtrl Use Total
       ignore_unavailable_state: true
       create_energy_sensor: true
       create_utility_meters: true
+      force_energy_sensor_creation: true 
       entities:
         - power_sensor_id: sensor.evahan_power
+
+    - create_group: PwrCtrl Use Total 22
+      ignore_unavailable_state: true
+      create_energy_sensor: true
+      create_utility_meters: true
+      force_energy_sensor_creation: true 
+      entities:
+        # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
+        - entity_id: sensor.dummy
+          power_sensor_id: sensor.evahan_power
+
+    - create_group: PwrCtrl Use Total 55
+      ignore_unavailable_state: true
+      create_energy_sensor: true
+      create_utility_meters: true
+      force_energy_sensor_creation: true 
+      entities:
+        # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
+        - entity_id: sensor.dummy
+          name: EvaHan55
+          fixed:
+            power: "{{ states('sensor.evahan_power') }}"

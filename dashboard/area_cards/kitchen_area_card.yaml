@@ -91,6 +91,31 @@ cards:
                       area_humidity_compare: sensor.house_average_humidity
         hold_action: none
 
+      - type: action
+        icon_color: disabled
+        icon: mdi:radiator
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - type: entity
+                    entity: sensor.kitchen_heatpump_plug_power
+                  - type: tile
+                    entity: climate.kitchen_heatpump2
+                    vertical: false
+                    features:
+                      - type: target-temperature
+                      - type: climate-hvac-modes
+                        hvac_modes:
+                          - fan_only
+                          - heat
+                          - 'off'
+
       - type: template
         entity: sensor.dishwasher_status
         icon: mdi:dishwasher

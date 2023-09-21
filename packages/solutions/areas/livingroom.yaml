@@ -15,7 +15,7 @@ light:
       - light.livingroom_light_lounge
       - light.livingroom_light_windowstrip
       - light.livingroom_soyle
-      - light.stick_animal_plug
+      - light.stick_animals_plug
 
   - platform: template
     lights:

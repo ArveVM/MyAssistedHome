@@ -11,6 +11,16 @@ tabs:
     card:
       type: vertical-stack
       cards:
+        - type: horizontal-stack
+          cards:
+            - type: horizontal-stack
+              cards:
+                - type: custom:mushroom-light-card
+                  entity: light.kitchen_light_spot4
+                  secondary_info: last-changed
+                - type: custom:mushroom-light-card
+                  entity: light.kitchen_light_pendant
+                  secondary_info: last-changed
         - type: custom:mushroom-light-card
           entity: light.kitchen_light1_z2m
           secondary_info: last-changed

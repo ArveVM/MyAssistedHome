@@ -4,7 +4,6 @@
 
 # CATT:
 shell_command:
-  # hallway_nest_hub_cast1: "catt -d 'Hallway Nest Hub' cast_site 'http://192.168.2.141:8121/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
   hallway_nest_hub_cast1: !secret hallway_nest_hub_cast1    # show 'nest_hub_view.yaml'
   livingroom_chromecast1: "catt -d 'Livingroom chromecast' cast_site 'http://192.168.2.141:8121/nest-hub/nest_hub'"    # show 'nest_hub_view.yaml'
 
@@ -23,7 +22,7 @@ template:
 
 script:
   hallway_nest_hub:
-    alias: _Hallway Nest Hub
+    alias: Hallway Nest Hub
     sequence:
       # - conditions:
       #     - condition: template
@@ -41,28 +40,9 @@ script:
       - service: shell_command.hallway_nest_hub_cast1
 
 
-
-# Build your own notification service for any TTS service
-notify:
-  - name: hallway_hub_tts
-    platform: tts
-    tts_service: tts.google_say
-    media_player: media_player.hallway_nest_hub
-
-
-  # livingroom_cast_test:
-  #   alias: Livingroom cast dashboard
-  #   sequence:
-  #     - service: media_player.volume_set
-  #       data:
-  #         volume_level: 0
-  #       target:
-  #         entity_id: media_player.hallway_nest_hub
-  #     - service: shell_command.livingroom_chromecast1
-
 automation:
-  - alias: "_Hallway nest hub recast"
-    description: "Hallway nest hub - recast"
+  - alias: "Hallway nest hub catt"
+    description: "Hallway nest hub - cast with CATT"
     id: 2a778068-6620-4ae7-8a29-ed7097509333-s
     mode: single
     trigger:
@@ -70,23 +50,11 @@ automation:
         platform: template
         value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
         for: "00:00:10"
-      # - id: focuschange
-      #   platform: state
-      #   entity_id: media_player.hallway_nest_hub
-      #   not_to: "on"
-        # to: "to state"
       - id: recast
         platform: state
         entity_id: input_boolean.hallway_nest_hub_auto
         to: "on"
-      # - id: off_idle     # case for google updates etc etc,, give it ten minutes and then recast :)
-      #   platform: state
-      #   entity_id: media_player.hallway_nest_hub
-      #   to: 
-      #     - "idle"
-      #     - "off"
-      #   for: "00:10:00"
-      - id: offf              # case for google updates etc etc,, give it ten minutes and then recast :)
+      - id: offf              # case for google updates etc etc,, give it five minutes and then recast :)
         platform: state
         entity_id: media_player.hallway_nest_hub
         to: "off"
@@ -100,32 +68,18 @@ automation:
         state: "on"
     action:
       - choose:
-          # if it is off,, turn it on before start casting
-          - conditions:
-              - condition: template
-                value_template: "{{15}}"
-                # value_template: "{{ states('media_player.hallway_nest_hub') == 'off' }}"
-            sequence:
-              - service: media_player.turn_on
-                data: {}
-                target:
-                  entity_id: media_player.hallway_nest_hub
-                # Waits 10 seconds
-              - delay: "00:00:10"
-              - service: script.hallway_nest_hub  # The script above
-                # data: {}
-          # after restart,, await the catt uninstall/install procedure,,  before start casting
+          # after restart or device have been off,, await the catt uninstall/install procedure,,  before start casting
           - conditions:
               - condition: trigger
                 id: 
                   - offf
                   - restart
             sequence:
-              # Waits 1.5 minutes for catt-install to finish
+              # Waits 1.5 minutes for catt-install to finish, or hub to restart
               - delay: "00:01:30"
               - service: script.hallway_nest_hub  # The script above
-                # data: {}
-        # anyway,, start script and start casting
+
+        # if not, start script -> casting
         default:
           - service: script.hallway_nest_hub  # The script above
-            data: {}
+            # data: {}
