@@ -23,7 +23,7 @@ automation:
           - brightness_stop_l4
 
       # Row1
-      - id: l1_left_push    # line1(top)-left push        
+      - id: l1_left_push      # line1(top)-left push        
         platform: state
         entity_id: sensor.kitchen_switch3_action
         to: on_l1
@@ -33,14 +33,14 @@ automation:
         to: off_l1
 
       # Row4:  
-      - id: l4_left_hold    # line4-left long-hold
-        platform: state
-        entity_id: sensor.kitchen_switch3_action
-        to: brightness_move_up_l4
-      - id: l4_left_push    # line4-left push
+      - id: l4_left_push      # line4-left push
         platform: state
         entity_id: sensor.kitchen_switch3_action
         to: on_l4
+      - id: l4_left_hold      # line4-left hold
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: brightness_move_up_l4
 
     condition: []
 
