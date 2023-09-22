@@ -1,0 +1,100 @@
+
+# controlling Namron K8 with one button dedicated for one light
+# K8 is added ot z2m and adopted in HA with sensor.kitchen_switch3_action that informs on actions
+
+automation:
+  - alias: Kitchen Switch3
+    id: ac8c5fab-90ff-4b47-8fe7-c8344328636a
+    description: Control Namron K8 for kitchen linghts
+    mode: restart   # fra John Inge Bjørndahl     
+    trigger:
+      # create triggerID's for each button for push/hold, and have corresponding actions in chooose-section
+      # l= line,, so top line is l1 and bottom is l4
+      # 'off_' means right button, while 'on_' means left button (as the K8 is inteded for 4 devices with one button for on/dimUp and one button for off/dimDown)
+      # push is light push
+      # hold is the brightnes_start - will be stopped by the stop_dimming trigger,, so keep the trigger-condition in each action (Thanks to John Inge for the logic)
+      - id: stop_dimming    # trigger on all 8 buttons after a hold-action is ending. Johnn Inge instructs no action nessesary,, but this will break the loops in the hold-actions 
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: 
+          - brightness_stop_l1
+          - brightness_stop_l2
+          - brightness_stop_l3
+          - brightness_stop_l4
+
+      # Row1
+      - id: l1_left_push    # line1(top)-left push        
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: on_l1
+      - id: 1l_right_push     # line1-right push 
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: off_l1
+
+      # Row4:  
+      - id: l4_left_hold    # line4-left long-hold
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: brightness_move_up_l4
+      - id: l4_left_push    # line4-left push
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: on_l4
+
+    condition: []
+
+    action:
+      - choose:
+          # Row1: 
+          - conditions:
+              - condition: trigger
+                id: l1_left_push              
+            sequence:
+              - service: light.toggle
+                data: {}
+                target:
+                  entity_id: light.kitchen_light_pendant
+
+          - conditions:
+              - condition: trigger
+                id: 1l_right_push
+            sequence:
+              - service: light.toggle
+                data: {}
+                target:
+                  entity_id: light.kitchen_light_spot4
+              
+
+          # Row4:
+          - conditions:
+              - condition: trigger
+                id: l4_left_push
+            sequence:
+              - service: light.toggle
+                data: {}
+                target:
+                  entity_id: light.kitchen_light_windowstrip
+         
+          - conditions:
+              - condition: trigger
+                id: l4_left_hold 
+            sequence:
+              - repeat:
+                  while:
+                    - condition: trigger
+                      id: l4_left_hold       
+                  sequence:
+                    - service: light.turn_on
+                      data:
+                        entity_id: light.kitchen_light_windowstrip
+                        brightness: >
+                          {% set br = (state_attr('light.kitchen_light_windowstrip', 'brightness') | int) %}
+                          {% if br > 250 %}
+                            10
+                          {% else %}
+                            {{ br + 10 }}
+                          {% endif %}
+                    - delay:
+                        milliseconds: 500
+ 

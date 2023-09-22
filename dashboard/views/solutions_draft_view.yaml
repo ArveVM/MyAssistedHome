@@ -60,6 +60,14 @@ cards:
 
       - type: entities
         entities:
+          - sensor.kitchen_switch3_action
+          - entity: sensor.kitchen_switch3_action
+            attrirbute: action
+          - entity: light.kitchen_light_windowstrip
+            attrirbute: brightness
+          - type: attribute
+            entity: light.kitchen_light_windowstrip
+            attribute: brightness
           - input_select.kitchen_tealights_effects
           - light.kitchen_tealights
 

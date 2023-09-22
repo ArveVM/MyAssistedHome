@@ -1,0 +1,144 @@
+
+
+
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      solution_attribute_to_entity: &solution_attribute
+        solution: "Kitchen Light"
+      
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      remote: &remote remote.kitchen_broadlinkremote
+
+    # Add node-anchor as attribute on created sensors (exept template-sensors - which is defined as attribute):
+    light.kitchen_plug5_1_ball:
+      <<: *solution_attribute
+    light.kitchen_plug5_2_readinglight:
+      <<: *solution_attribute
+    sensor.kitchen_lights_all_power:
+      <<: *solution_attribute
+    sensor.kitchen_lights_all_energy:
+      <<: *solution_attribute
+
+
+# Create group for power-sensors for lights to aggregate in total house consumption
+powercalc:
+  sensors:
+    - create_group: kitchen lights all # ArveVM; will create both power- and energy-sensors
+      entities:
+        - entity_id: light.kitchen_light_pendant   # ArveVM: Maron 5pc pendulum 2095-55 by Paul Neuhau
+          fixed:
+            power: 33
+        - entity_id: light.kitchen_light_spot4  # AVM: 3*8w led 
+          fixed:
+            power: 18.0
+        - entity_id: light.kitchen_light_windowstrip # AVM: Namron 89685 led-strip on a z2m-controller
+          linear:
+            min_power: 0.4
+            max_power: 10.5
+        - entity_id: light.kitchen_light_sink # AVM: Ikea TRÅDFRI 30w; powering Myrvarv strip (12W) and Vaxmyra spot (1.4 W)
+          linear:
+            min_power: 0.1
+            max_power: 13.4
+        - entity_id: light.kitchen_light_tablebulb # AVM: Ikea bulb on list of supported models https://github.com/bramstroker/homeassistant-powercalc/blob/master/docs/supported_models.md
+          manufacturer: ikea
+          model: LED1836G9
+        - entity_id: light.kitchen_5plugl1_ball # AVM: conventional 25W E14 bulb
+          linear:
+            min_power: 0.0
+            max_power: 25.0
+
+
+input_select:
+  kitchen_light_tealights_effects:
+    name: Kitchen Light Tealights effects
+    options:
+      - Candle
+      - Light
+    initial: Candle
+    icon: mdi:tea
+
+
+light:
+    # ArveVM: periphiral lights on a 5socket power-strip (https://www.zigbee2mqtt.io/devices/SM-0306E-2W.html#useelink-sm-0306e-2w)
+    #      change device class to light to enable control and power-monitoring as light
+  - platform: switch
+    name: Kitchen plug5 ball
+    entity_id: switch.kitchen_plug5_1_ball
+  - platform: switch
+    name: Kitchen plugl5 readinglight # AVM: will not add this to powercalc,, there is a manual switch which is used,, so I will only use this to turn off all light when leaving home/night
+    entity_id: switch.kitchen_plug5_2_readinglight
+
+  - platform: group
+    name: Kitchen Lights group      # used to count lights on and popup with all house lights easily accessible
+    entities:
+      - light.kitchen_light_pendant
+      - light.kitchen_light_spot4
+      - light.kitchen_light_windowstrip
+      - light.kitchen_light_sink
+      - light.kitchen_light_tablebulb
+      - light.kitchen_light_tealights
+      - light.kitchen_light_kubbelys
+
+  - platform: template
+    lights:
+      kitchen_kubbelys:
+        friendly_name: Kitchen Light Kubbelys
+        turn_on:
+          service: remote.send_command
+          target:
+            entity_id: *remote
+          data:
+            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+              - b64:JgBsAAABI5ISExETERMRFBISERQRExEUEDgRNw83EjYSNhI3EDcRNxE3DxQRFRETEhIQFBEUEBUQFRA2ETcSNhE3ETcRNxE3EAAE/gABIkkPAAwAAAEjSw4ADAAAASFKEAAL/wABIkkRAApvBAANBQ==
+        turn_off:
+          service: remote.send_command
+          target:
+            entity_id: *remote
+          data:
+            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+              - b64:JgBkAAABIZESExETERQRExITEBQRFBAUETYSNhI2EDgQNxE3ETYSNhE3EhIQOBETEhIRFBETERQREhI2EhMQOBA4EDYSNhE3EQAC9AQAAgYAASBKEgAL/wABIkkQAAwCAAEhShEADQU=
+
+
+  # Original idea:      https://community.home-assistant.io/t/template-light-can-effect-list-be-hardcoded/463588/7
+  # My specific case:   https://community.home-assistant.io/t/template-light-effect-list-trigger-different-service-calls/616117
+  - platform: template
+    lights:
+      kitchen_tealights:
+        friendly_name: "Kitchen Light Tealights"
+        effect_list_template: "{{ state_attr('input_select.kitchen_light_tealights_effects', 'options') }}"
+        effect_template: "{{ states('input_select.kitchen_light_tealights_effects') }}"
+        turn_on:
+          service: remote.send_command
+          target:
+            entity_id: *remote
+          data:
+            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+              - b64:JgBwAAABHZAQFBE3ERMQFBESERQREhEUEDcQFBE3ETcRNxA3EDgQNxEUERIRFBATERQQExEUEBMRNxE3EDgQNxE3EDcRNxE3EQAE6wABHkkQAAvqAAEdSREAC+gAAR5KEQAL6AABHUkRAAvpAAEdShEADQU=            
+        turn_off:
+          service: remote.send_command
+          target:
+            entity_id: *remote
+          data:
+            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+              - b64:JgBgAAABHpARFBA2EhMSEhETEBQRExAUETcREhE3ETcRNxI2ETcSNhE3ERISExESERMSExESERQQExE3ETcRNxE3ETcQOBA3EQAE6wABH0kSAAvoAAEgSBIAC+gAAR9IEQANBQ==
+        set_effect:
+          - service: input_select.select_option
+            target:
+              entity_id: input_select.kitchen_light_tealights_effects
+            data:
+              option: >         
+                {{ effect }}      
+          - service: remote.send_command
+            target:
+              entity_id: *remote
+            data:
+              command: >        
+                {% if effect == 'Candle' %}
+                  b64:JgB4AAABHZEREhE3ERQQExEUEBMRFBATETcRExE3ETcRNhE3ETcQOBAUERMQNxEUERIRFBATERQQOBA4EBMRNxE3EDgQOBA3EQAE6wABHkkRAAvqAAEdShEAC+kAAR5JEQAL6QABHkkRAAvpAAEeSREAC+kAAR1KEQANBQ==
+                {% else %}
+                  b64:JgCAAAABHZARFBA4EBMRFBATERMRFBESETcRExA4EDgQNxE3ETcRNxE3ERIRNxEUEBMRFBATERQQExE3ERMRNxE3ETcRNxA3EQAE7QABHUoRAAvqAAEeShAAC+sAAR5JEQAL6wABHkkQAAvqAAEfSREAC+kAAR5JEQAL6QABHkkQAA0F
+                {% endif %}
