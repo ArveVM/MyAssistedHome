@@ -6,7 +6,7 @@ automation:
   - alias: Kitchen Switch3
     id: ac8c5fab-90ff-4b47-8fe7-c8344328636a
     description: Control Namron K8 for kitchen linghts
-    mode: restart   # fra John Inge Bjørndahl     
+    mode: restart       # fra John Inge Bjørndahl,, NESSESARY SO THAT RELEASE-TRIGGER IS BREAKING THE LOOP OF INCREASING BRIGHTNESS     
     trigger:
       # create triggerID's for each button for push/hold, and have corresponding actions in chooose-section
       # l= line,, so top line is l1 and bottom is l4
@@ -32,6 +32,12 @@ automation:
         entity_id: sensor.kitchen_switch3_action
         to: off_l1
 
+      # Row3:  
+      - id: l3_right_hold      # line3-right hold
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: brightness_move_down_l3
+
       # Row4:  
       - id: l4_left_push      # line4-left push
         platform: state
@@ -41,6 +47,10 @@ automation:
         platform: state
         entity_id: sensor.kitchen_switch3_action
         to: brightness_move_up_l4
+      - id: l4_right_hold      # line4-right hold
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: brightness_move_down_l4
 
     condition: []
 
@@ -64,7 +74,31 @@ automation:
                 data: {}
                 target:
                   entity_id: light.kitchen_light_spot4
-              
+
+          # # Row3:
+          # - conditions:
+          #     - condition: trigger
+          #       id: l3_right_hold 
+          #   sequence:
+          #     - repeat:
+          #         while:
+          #           - condition: trigger
+          #             id: l3_right_hold       
+          #         sequence:
+          #           - service: light.turn_on
+          #             data:
+          #               entity_id: light.kitchen_light_windowstrip
+          #               transition: 1
+          #               brightness: >
+          #                 {% set br = (state_attr('light.kitchen_light_windowstrip', 'brightness') | int) %}
+          #                 {% if br > 250 %}
+          #                   20
+          #                 {% else %}
+          #                   {{ br + 10 }}
+          #                 {% endif %}
+          #           - delay:
+          #               seconds: 1
+
 
           # Row4:
           - conditions:
@@ -97,4 +131,26 @@ automation:
                           {% endif %}
                     - delay:
                         milliseconds: 500
- 
+                        
+          - conditions:
+              - condition: trigger
+                id: l4_right_hold 
+            sequence:
+              - repeat:
+                  while:
+                    - condition: trigger
+                      id: l4_right_hold       
+                  sequence:
+                    - service: light.turn_on
+                      data:
+                        entity_id: light.kitchen_light_windowstrip
+                        brightness: >
+                          {% set br = (state_attr('light.kitchen_light_windowstrip', 'brightness') | int) %}
+                          {% if br > 250 %}
+                            5
+                          {% else %}
+                            {{ br + 10 }}
+                          {% endif %}
+                    - delay:
+                        milliseconds: 200
+

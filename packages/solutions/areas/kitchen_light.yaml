@@ -66,27 +66,30 @@ light:
     # ArveVM: periphiral lights on a 5socket power-strip (https://www.zigbee2mqtt.io/devices/SM-0306E-2W.html#useelink-sm-0306e-2w)
     #      change device class to light to enable control and power-monitoring as light
   - platform: switch
-    name: Kitchen plug5 ball
+    name: Kitchen Light ball
     entity_id: switch.kitchen_plug5_1_ball
   - platform: switch
-    name: Kitchen plugl5 readinglight # AVM: will not add this to powercalc,, there is a manual switch which is used,, so I will only use this to turn off all light when leaving home/night
+    name: Kitchen Light Readinglight # AVM: will not add this to powercalc,, there is a manual switch which is used,, so I will only use this to turn off all light when leaving home/night
     entity_id: switch.kitchen_plug5_2_readinglight
 
   - platform: group
     name: Kitchen Lights group      # used to count lights on and popup with all house lights easily accessible
     entities:
-      - light.kitchen_light_pendant
       - light.kitchen_light_spot4
-      - light.kitchen_light_windowstrip
+      - light.kitchen_light_pendant
       - light.kitchen_light_sink
       - light.kitchen_light_tablebulb
+      - light.kitchen_light_windowstrip
+      - light.kitchen_light_ball
+      - light.kitchen_light_readinglight
       - light.kitchen_light_tealights
       - light.kitchen_light_kubbelys
 
   - platform: template
     lights:
-      kitchen_kubbelys:
+      kitchen_light_kubbelys:
         friendly_name: Kitchen Light Kubbelys
+        icon_template: mdi:candle
         turn_on:
           service: remote.send_command
           target:
@@ -107,7 +110,8 @@ light:
   # My specific case:   https://community.home-assistant.io/t/template-light-effect-list-trigger-different-service-calls/616117
   - platform: template
     lights:
-      kitchen_tealights:
+      kitchen_light_tealights:
+        icon_template: mdi:candle
         friendly_name: "Kitchen Light Tealights"
         effect_list_template: "{{ state_attr('input_select.kitchen_light_tealights_effects', 'options') }}"
         effect_template: "{{ states('input_select.kitchen_light_tealights_effects') }}"

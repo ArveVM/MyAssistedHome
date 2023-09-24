@@ -39,12 +39,14 @@ homeassistant:
 
   # enable auto-login for nest hub - must be configured before loading packages
   # see at bottom of docs-page for clarifications: https://www.home-assistant.io/docs/authentication/providers/
+  # Int-CATT https://github.com/ArveVM/MyAssistedHome/wiki/Int-CATT
   auth_providers:
   - type: trusted_networks
     trusted_networks:
       - 192.168.20.234    # IP of nest Hub 
       - 192.168.20.148    # IP of livingroom chromecast
     trusted_users:
+      192.168.20.234: 8d0871d3f34e45fcbae4c4bfe055bf2d    # cast_catt_user -> autologin on chromecast
       192.168.20.148: 8d0871d3f34e45fcbae4c4bfe055bf2d    # cast_catt_user -> autologin on chromecast
     allow_bypass_login: true
   - type: homeassistant

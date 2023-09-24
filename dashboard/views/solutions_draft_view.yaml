@@ -52,6 +52,7 @@ cards:
           - !include ../sol_cards/heater_chip.yaml
           
           - !include ../sol_cards/z2m_offline_chipcard.yaml
+          - !include ../area_cards/hallway_nest_hub_chipcard.yaml
 
       # cards:
       - type: markdown
@@ -68,8 +69,8 @@ cards:
           - type: attribute
             entity: light.kitchen_light_windowstrip
             attribute: brightness
-          - input_select.kitchen_tealights_effects
-          - light.kitchen_tealights
+          - input_select.kitchen_light_tealights_effects
+          - light.kitchen_light_tealights
 
       - !include ../area_cards/kitchen_light_card.yaml
 

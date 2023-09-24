@@ -78,8 +78,9 @@ automation:
               # Waits 1.5 minutes for catt-install to finish, or hub to restart
               - delay: "00:01:30"
               - service: script.hallway_nest_hub  # The script above
+                data: {}
 
         # if not, start script -> casting
         default:
           - service: script.hallway_nest_hub  # The script above
-            # data: {}
+            data: {}

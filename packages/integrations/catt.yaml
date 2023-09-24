@@ -1,13 +1,13 @@
 
 
 
+# https://github.com/ArveVM/MyAssistedHome/wiki/Int-CATT
 
 
 shell_command:
-  # uninstall_catt: "pip uninstall catt -y<"
+  # first uninstall, then uninstall newest version
   uninstall_catt: "pip uninstall catt -y"
   install_catt: "pip install catt"
-
 
 
 automation:
@@ -15,9 +15,11 @@ automation:
     alias: "_Install CATT"
     description: "Install Python-functionality CastAllTheThings)"
     mode: single
+    
     trigger:
       - platform: homeassistant
         event: start
+    
     condition: []
     
     action:

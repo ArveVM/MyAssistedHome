@@ -13,58 +13,67 @@ tabs:
       cards:
         - type: horizontal-stack
           cards:
-            - type: horizontal-stack
-              cards:
-                - type: custom:mushroom-light-card
-                  entity: light.kitchen_light_spot4
-                  secondary_info: last-changed
-                - type: custom:mushroom-light-card
-                  entity: light.kitchen_light_pendant
-                  secondary_info: last-changed
-        - type: custom:mushroom-light-card
-          entity: light.kitchen_light1_z2m
-          secondary_info: last-changed
-          use_light_color: true
-          collapsible_controls: true
-          tap_action:
-            action: toggle
-          show_brightness_control: true
-          show_color_temp_control: true
-          show_color_control: true
-        - type: custom:mushroom-light-card
+            - name: 4spot
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_spot4
+              secondary_info: last-changed
+            - name: Pendant
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_pendant
+              secondary_info: last-changed
+        - name: Sink
+          type: custom:mushroom-light-card
           entity: light.kitchen_light_sink
-          primary_info: name
-          icon_type: icon
+          layout: horizontal
           use_light_color: true
           show_brightness_control: true
           show_color_control: true
           show_color_temp_control: true
-          collapsible_controls: true
-          tap_action:
-            action: toggle
-        - type: custom:mushroom-light-card
+          secondary_info: last-changed
+        - name: Table
+          type: custom:mushroom-light-card
           entity: light.kitchen_light_tablebulb
           show_brightness_control: true
           show_color_temp_control: true
-          tap_action:
-            action: toggle
+          layout: horizontal
           secondary_info: last-changed
-        - type: custom:mushroom-light-card
+        - name: Windowstrip
+          type: custom:mushroom-light-card
           entity: light.kitchen_light_windowstrip
+          layout: horizontal
           show_brightness_control: true
           show_color_temp_control: true
           secondary_info: last-changed
         - type: horizontal-stack
           cards:
-            - type: horizontal-stack
-              cards:
-                - type: custom:mushroom-light-card
-                  entity: light.kitchen_5plugl1_ball
-                  secondary_info: last-changed
-                - type: custom:mushroom-light-card
-                  entity: light.kitchen_plugl5_readinglight
-                  secondary_info: last-changed
-
+            - name: Ball
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_ball
+              secondary_info: last-changed
+            - name: Readinglight
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_readinglight
+              secondary_info: last-changed
+        - type: horizontal-stack
+          cards:
+            - name: Kubbelys
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_kubbelys
+              secondary_info: last-changed
+            - name: Telys
+              type: custom:mushroom-light-card
+              entity: light.kitchen_light_tealights
+              secondary_info: last-changed
+        - name: z2m-all-light
+          type: custom:mushroom-light-card
+          entity: light.kitchen_light1_z2m
+          secondary_info: last-changed
+          use_light_color: true
+          collapsible_controls: true
+          show_brightness_control: true
+          show_color_temp_control: true
+          show_color_control: true
+        
   - attributes:
       label: Scenes
       icon: mdi:movie
