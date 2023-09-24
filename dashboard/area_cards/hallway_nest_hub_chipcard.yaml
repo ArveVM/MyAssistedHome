@@ -47,15 +47,9 @@ tap_action:
                         target: {}
                     - type: entity
                       toggle: true
-                      entity: input_boolean.hallway_nest_hub_recast
+                      entity: input_boolean.hallway_nest_hub_auto
                       tap_action:
                         action: toggle
-                      #   service: script.cast_nesthub_hallway_stop
-                      #   data: {}
-                      #   target: {}
-                      # name: Stop Cast Hallway
-                      # show_entity_picture: false
-
                 - type: custom:mushroom-media-player-card
                   entity: media_player.hallway_nest_hub
                   volume_controls:
@@ -75,7 +69,7 @@ tap_action:
               type: vertical-stack
               cards:
                 - type: entity
-                  entity: input_boolean.hallway_nest_hub_recast
+                  entity: input_boolean.hallway_nest_hub_auto
                 - type: custom:mushroom-media-player-card
                   entity: media_player.hallway_nest_hub
                   volume_controls:
