@@ -54,11 +54,9 @@ cards:
           --chip-spacing: 0;
         }
     chips:
-
-      - type: template
-        entity: binary_sensor.bedroom_area_status
-        icon: mdi:check-circle
-        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+      - type: action
+        icon_color: disabled
+        icon: mdi:thermometer
         card_mod: &card_mod_chip_style
           style: |
             ha-card {
@@ -66,6 +64,30 @@ cards:
               --chip-background: none;
               --chip-spacing: 0;
               margin-left: -10px;
+            }
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - !include
+                    - ../sol_cards/house_temp_comp_card.yaml
+                    - entity: *temp1
+                      area_temp_compare: sensor.house_average_temperature
+                  - !include
+                    - ../sol_cards/house_humidity_comp_card.yaml
+                    - entity: *humidity1
+                      area_humidity_compare: sensor.house_average_humidity
+        hold_action: none
+
+      - type: template
+        entity: binary_sensor.bedroom_area_problem
+        icon: "{{ 'mdi:check-circle' if is_state(entity, 'off') else 'mdi:exclamation-thick' }}"     
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
         hold_action:
           action: more-info
         tap_action:

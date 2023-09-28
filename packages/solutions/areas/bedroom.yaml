@@ -15,3 +15,43 @@ template:
         attributes:
           linen_alert: "{{ 'Problem!' if (states('sensor.bedroom_thp_humidity') | float(default=50) <= 60) else 'OK'}}"
 
+      - name: Bedroom Area Problem    
+        unique_id: d6cde8f6-b8dc-46df-9439-e47c3916asd2a97
+        # icon: mdi:check-circle
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: >
+          {{ is_state('binary_sensor.bedroom_window_should_be_open', 'on' ) }} 
+        attributes:
+          window_should_be_open: "{{ 'Problem!' if is_state('binary_sensor.bedroom_window_should_be_open', 'on' ) else 'OK'}}"
+          window_should_be_open2: "{{ states('binary_sensor.bedroom_window_should_be_open') }}"
+
+      - name: Bedroom Window Should Be Open    
+        unique_id: 0b2e49bb-edc5-498f-b3c0-eb74b3583fc3
+        icon: mdi:check-circle
+        # ArveVM; If absolute humidity is higher inside than outside,, you should open window :)
+        state: >
+          {{ states('sensor.bedroom_absolute_humidity') | float(default=50) >= 
+             states('sensor.outside_absolute_humidity') | float(default=50) 
+          }} 
+        attributes:
+          abs_humidity: >
+            Inside: {{ states('sensor.bedroom_absolute_humidity') | float(default=50)}}g/m^3, 
+            Outside: {{ states('sensor.outside_absolute_humidity') | float(default=50) }}g/m^3
+          rel_humidity: >
+            Inside: {{ states('sensor.bedroom_thp_humidity') | float(default=50)}}%, 
+            Outside: {{ states('sensor.outside_netatmo_humidity') | float(default=50) }}%
+          temp: >
+            Inside: {{ states('sensor.bedroom_thp_temperature') | float(default=50)}}C, 
+            Outside: {{ states('sensor.outside_netatmo_temperature') | float(default=50) }}C
+      
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: "Bedroom Absolute Humidity"
+      unit_of_measurement: 'g/m^3'
+      device_class: humidity
+      state: >
+        {% set cur_temp = states('sensor.bedroom_thp_temperature') | float %}
+        {% set cur_humidity = states('sensor.bedroom_thp_humidity') | float %}
+        {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
+      # Area - manually added in GUI to area; bedroom

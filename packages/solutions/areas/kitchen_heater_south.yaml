@@ -1,21 +1,28 @@
-###############################################################################
-#   @author       :   ArveVM 
-#   @date         :   12.march.2022
-#   @solution     :   Kitchen Heater Soutn
-#   @description  :   Solution to make dumb appliances seem smart.  
-#   @basic concept: 
-#      Dumb heater is plugged into a ShellyS smartplug which 
-#      Shelly integration provides data from to HA
-#         sensors used:      
-#            sensor.kitchen_heater_south_power
-#            sensor.kitchen_heater_south_energy
-#      (it also has a switch wihch one can trun off in case of
-#      extreme powersaving-solutions - some time in the future)
-#
-#      Tips and shitload of guiding from mrRR, part of the v2 of my splitting documentation
-# 
-###############################################################################
 
+
+
+# First add some customizations:
+homeassistant:
+  customize:
+    package.node_anchors:
+      # Add node-anchor for identification of code-location for created sensors
+      package_attribute_to_entity: &package_attribute
+        package: 'Kitchen Heater'
+      # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
+      power: &power sensor.kitchen_heater_power
+      energy: &energy sensor.kitchen_heater_energy
+      
+    # Add node-anchor as attribute on created sensors:
+    input_boolean.kitchen_heater_thermostat_output:
+      <<: *package_attribute
+    input_boolean.kitchen_heater_auto:
+      <<: *package_attribute
+    climate.kitchen_heater_thermostat:  
+      <<: *package_attribute
+    automation.kitchen_heater_auto_off:
+      <<: *package_attribute
+    automation.kitchen_heater_auto_on:
+      <<: *package_attribute
 
 template:
   - sensor:
@@ -24,23 +31,72 @@ template:
         state: "{{ states('sensor.kitchen_heater_south_power') | float(0) > 7 }}"
 
 
-
+input_boolean:
+  kitchen_heater_thermostat_output:
+    name: Kitchen Heater Thermostat Output
+    icon: mdi:radiator
+  kitchen_heater_auto:
+    name: Kitchen Heater Auto
+    icon: mdi:magic-staff
 
 climate:
-  - platform: gree
-    name: Kitchen heatpump2
-    host: 192.168.2.252
-    port: 7000
-    mac: 50:2c:c6:a6:a5:7c       #. NOTE: Format can be XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX depending on your model>'
-    target_temp_step: 1
-    # encryption_key: <OPTIONAL: custom encryption key>
-    # uid: <some kind of device identifier. NOTE: for some devices this is optional>
-    # temp_sensor: <entity id of the EXTERNAL temperature sensor. For example: sensor.bedroom_temperature>
-    temp_sensor: sensor.kitchen_thp_temperature
-    # lights: <OPTIONAL: input_boolean to switch AC lights mode on/off. For example: input_boolean.first_ac_lights>
-    # xfan: <OPTIONAL: input_boolean to switch AC xfan mode on/off. For example: input_boolean.first_ac_xfan>
-    # health: <OPTIONAL: input_boolean used to switch the Health option on/off of your first AC. For example: input_boolean.first_ac_health>
-    # sleep: <OPTIONAL: input_boolean to switch AC sleep mode on/off. For example: input_boolean.first_ac_sleep>
-    # powersave: <OPTIONAL: input_boolean to switch AC powersave mode on/off. For example: input_boolean.first_ac_powersave>
-    # eightdegheat: <OPTIONAL: input_boolean used to switch 8 degree heating on/off on your first AC>
-    # air: <OPTIONAL: input_boolean used to switch air/scavenging on/off on your first AC>
+  - platform: generic_thermostat
+    name: Kitchen Heater Thermostat
+    unique_id: kitchen_heater_thermostat
+    heater: input_boolean.kitchen_heater_thermostat_output
+    target_sensor: sensor.kitchen_thp_temperature
+    initial_hvac_mode: heat
+    max_temp: 30
+    # target_temp: 15                # AVM; ignored, willl restart at last value
+    min_cycle_duration: "00:05"     # AVM; try limit switcing to 5min-periods (avoid on/of on local heatspot)
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    away_temp: 10             # for Home mode: vacation
+    comfort_temp: 21          # for Home status: Evening, evening-grownups, kidrooms cold
+    home_temp: 21             # for Home status: Daytime, 
+    sleep_temp: 17            # for Home status: Night
+    activity_temp: 21         # for Home status: Morning, exept office and bedrooms
+
+
+automation:
+  - id: 'kitchen_heater_auto_off'
+    alias: "_Kitchen Heater; auto OFF"
+    description: 'when auto is off; switch shold allways be on; using local thermostat on heater'
+    mode: single
+    trigger:
+    - id: 'auto_off'
+      platform: state
+      entity_id: input_boolean.kitchen_heater_auto
+      to: 'off'
+    - platform: homeassistant
+      event: start
+    condition:
+    - condition: state
+      entity_id: input_boolean.kitchen_heater_auto
+      state: 'off'
+    action:
+    - service: switch.turn_on
+      target:
+        entity_id: switch.kitchen_heater
+
+  - id: 'kitchen_heater_auto_on'
+    alias: "_Kitchen Heater; auto ON"
+    description: 'when auto is on; switch shold following output from generic thermostat'
+    mode: single
+    trigger:
+    - id: 'auto_on'
+      platform: state
+      entity_id: input_boolean.kitchen_heater_auto
+      to: 'on'
+    - id: 'thermostat_change'
+      platform: state
+      entity_id: input_boolean.kitchen_heater_thermostat_output
+    condition:
+    - condition: state
+      entity_id: input_boolean.kitchen_heater_auto
+      state: 'on'
+    action:
+    - service: "switch.turn_{{ 'on' if is_state('input_boolean.kitchen_heater_thermostat_output', 'on') else 'off' }}"
+    #- service: "switch.turn_off"    #"switch.turn_{{ 'on' if is_state('input_boolean.kitchen_heater_thermostat_output', 'on') else 'off' }}"
+      target: 
+        entity_id: switch.kitchen_heater

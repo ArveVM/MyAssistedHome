@@ -1,0 +1,51 @@
+
+
+
+input_number:
+  kitchen_heatpump_target:
+    name: Kitchen Heatpump target
+    min: 10
+    max: 24.0
+    step: 1
+# input number changed by Scheduler,,,   switch.schedule_kitchen_heatpump_target
+# might want to include a custom priceanalyzer between scheduler and climate:
+#   https://github.com/erlendsellie/priceanalyzer/wiki/Templating-PriceAnalyzer-to-make-it-your-own
+
+template:
+
+  - binary_sensor:
+      - name: Kitchen Heatpump running
+        unique_id: f58a63ee-bdbf-4bc7-a79f-38d575cf3853
+        device_class: running
+        state: >
+          {{ states('sensor.kitchen_heatpump_plug_power') | float(0) > 20 }}
+
+
+climate:
+  - platform: gree
+    name: Kitchen Heatpump
+    host: 192.168.2.252
+    port: 7000
+    mac: 50:2c:c6:a6:a5:7c       #. NOTE: Format can be XX:XX:XX:XX:XX:XX or XX-XX-XX-XX-XX-XX depending on your model>'
+    target_temp_step: 1
+    # encryption_key: <OPTIONAL: custom encryption key>
+    # uid: <some kind of device identifier. NOTE: for some devices this is optional>
+    temp_sensor: sensor.kitchen_thp_temperature  # temp_sensor: <entity id of the EXTERNAL temperature sensor. For example: sensor.bedroom_temperature>
+    # lights: <OPTIONAL: input_boolean to switch AC lights mode on/off. For example: input_boolean.first_ac_lights>
+    # xfan: <OPTIONAL: input_boolean to switch AC xfan mode on/off. For example: input_boolean.first_ac_xfan>
+    # health: <OPTIONAL: input_boolean used to switch the Health option on/off of your first AC. For example: input_boolean.first_ac_health>
+    # sleep: <OPTIONAL: input_boolean to switch AC sleep mode on/off. For example: input_boolean.first_ac_sleep>
+    # powersave: <OPTIONAL: input_boolean to switch AC powersave mode on/off. For example: input_boolean.first_ac_powersave>
+    # eightdegheat: <OPTIONAL: input_boolean used to switch 8 degree heating on/off on your first AC>
+    # air: <OPTIONAL: input_boolean used to switch air/scavenging on/off on your first AC>
+
+automation:
+  - id: kitchen_heatpump_control_climate
+    alias: _Kitchen Heatpump; Control Climate
+    description: ""
+    use_blueprint:
+      path: erlendsellie/priceanalyzer.yaml
+      input:
+        sensor: sensor.priceanalyzer
+        number: input_number.kitchen_heatpump_target
+        climate: climate.kitchen_heatpump

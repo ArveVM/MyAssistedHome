@@ -18,12 +18,40 @@ cards:
       primary_info: state
       icon_type: icon
       secondary_info: none
-  - type: history-graph
-    # title: "Temperatures in the last 48 hours"
-    hours_to_show: 24
-    entities:
-      - entity: sensor.roberto_status
-        name: "Status 24t"
+    - type: entity
+      entity: sensor.roberto_problem
+      # primary_info: state
+      # icon_type: icon
+      # secondary_info: none
+      
+  # - type: history-graph
+  #   # title: "Temperatures in the last 48 hours"
+  #   hours_to_show: 24
+  #   entities:
+  #     - entity: sensor.roberto_status
+  #       name: "Status 24t"
+
+  - type: custom:history-explorer-card
+    cardName: history-hotwater
+    lineMode: stepped
+    header: hide
+    uiLayout:
+      toolbar: top
+      selector: hide
+    stateColors:
+      sensor.problem: red
+      sensor.cutting: green
+      sensor.charging: blue
+      sensor.sleeping: yellow
+      # sensor.on: green
+    graphs:
+      - type: timeline
+        # title: Non-numerical sensors
+        entities:
+          - entity: sensor.roberto_status
+            name: Status
+          # - entity: input_boolean.hotwater_temp_thermostat_output
+          #   name: Gen Th
 
   - !include
     - camera1_card.yaml

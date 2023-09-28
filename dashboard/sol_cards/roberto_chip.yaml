@@ -5,13 +5,27 @@ type: template
 entity: sensor.roberto_status
 icon: mdi:robot-mower-outline
 icon_color: >
-  {% if is_state(entity, 'Charging') %}
+
+  {% set state=states(entity) %}
+  {% if state=='Problem' %}
+    red
+  {% elif state=='Charging' %}
     green
-  {% elif is_state(entity, 'Cutting') %}
+  {% elif state=='Cutting' %}
     blue
   {% else %}
     disabled
   {% endif %}
+
+# {% if is_state('entity, 'Problem') %}
+#   red
+# {% elif is_state(entity, 'Charging') %}
+#   green
+# {% elif is_state(entity, 'Cutting') %}
+#   blue
+# {% else %}
+#   disabled
+# {% endif %}
 tap_action:
   action: fire-dom-event
   browser_mod:

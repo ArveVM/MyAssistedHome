@@ -131,7 +131,10 @@ automation:
                           {% endif %}
                     - delay:
                         milliseconds: 500
-                        
+
+
+                       #  https://www.zigbee2mqtt.io/devices/TS0503B.html
+
           - conditions:
               - condition: trigger
                 id: l4_right_hold 

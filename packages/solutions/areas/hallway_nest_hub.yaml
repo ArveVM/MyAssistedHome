@@ -1,6 +1,5 @@
-# https://community.home-assistant.io/t/google-nest-hub-as-dashboard-with-dashcast-add-on/460217
-# Mark that the auth_provider MUST be registered in configuration.yaml, and not included via packages :)
-#   And the IP of hte nest-hub must be added under 'trusted_networks'
+# ArveVM-solution: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Hallway-Nest-Hub
+
 
 # CATT:
 shell_command:
@@ -13,6 +12,7 @@ input_boolean:
     name: Hallway Nest Hub auto
     icon: mdi:magic-staff
 
+
 template:
   - binary_sensor:
       - name: Hallway Nest Hub DashCast on
@@ -20,18 +20,12 @@ template:
         state: >
           {{ is_state_attr('media_player.hallway_nest_hub', 'app_name', 'DashCast') }}
 
+
+# use script so one always turn down volume before casting
 script:
   hallway_nest_hub:
     alias: Hallway Nest Hub
     sequence:
-      # - conditions:
-      #     - condition: template
-      #       value_template: " {{ state_attr('media_player.hallway_nest_hub', 'app_name') != 'DashCast' }} "
-      #     - condition: template
-      #       value_template: " {{ state('input_boolean.hallway_nest_hub_recast') == 'on' }} "
-          # - condition: state
-          #   entity_id: input_boolean.hallway_nest_hub_recast
-          #   state: "on"
       - service: media_player.volume_set
         data:
           volume_level: 0

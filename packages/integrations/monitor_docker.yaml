@@ -1,28 +1,37 @@
 # Example configuration.yaml entry
 monitor_docker:
-  - name: Docker
+  - name: MonitorDocker
     url: tcp://192.168.2.141:2375
-    containers:
-      - mosquitto
-      - zigbee2mqtt
-      - frigate
-      - ha1
-      - ha6
-      # - nodered
-      # - unifi
-    rename:
-      # - ha1: HA
-      #      influxdb: InfluxDB
-      mosquitto: Mosquitto
-    #     nodered: "Node-RED"
-    #     unifi: UniFi
+    scan_interval: 30
+    # containers:
+    #   - mosquitto
+    #   - zigbee2mqtt
+    #   - frigate
+    #   - ha1
+    #   - esphome
+    #   - sabnzbd
+    #   - overseerr
+    #   - prowlarr
+    #   - radarr
+    #   - sonarr
+    #   - plex
+    #   - jellyfin
+    #   - code-server
+    # rename:
+    #   ha1: HA
+    #   mosquitto: Mosquitto
     monitored_conditions:
+      - allinone     # This is a special condition and when used, it will only create 1 sensor per container with all the monitored conditions as attribute value
       - version
       - containers_running
-      - containers_total
-      - state
-      - status
+      - containers_paused
+      - containers_stopped
+      - containers_cpu_percentage
+      - containers_memory_percentage
+      - cpu_percentage
+      - health
+      - uptime
       - memory
       - memory_percentage
-      - 1cpu_percentage
-      - containers_1cpu_percentage
+      - network_speed_up
+      - network_speed_down

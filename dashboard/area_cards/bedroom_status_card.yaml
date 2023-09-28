@@ -12,19 +12,21 @@ tabs:
       type: vertical-stack
       cards:
         - type: custom:mushroom-entity-card
-          entity: binary_sensor.loft_area_status
+          entity: binary_sensor.bedroom_area_problem
+        - type: tile
+          entity: binary_sensor.bedroom_area_problem
         - type: markdown
           content: |
-            Area Status checkpoints:
+            Area-problem checkpoints:
               {% set ns = namespace(count = 0) %}
-              {% for attr in states.binary_sensor.loft_area_status.attributes %}
+              {% for attr in states.binary_sensor.bedroom_area_problem.attributes %}
               {%- if not attr=="friendly_name" 
                   and not attr=="unit_of_measurement"
                   and not attr=="device_class"
                   and not attr=="solution"     
                   and not attr=="icon" -%}
               {%- set ns.count = ns.count+1 %}
-              #{{ ns.count }} - {{attr}}      = {{states.binary_sensor.loft_area_status.attributes [attr] }}
+              #{{ ns.count }} - {{attr}}      = {{states.binary_sensor.bedroom_area_problem.attributes [attr] }}
               {%- endif %}
               {%- endfor %}
             Total count: {{ns.count}}
@@ -54,10 +56,6 @@ tabs:
                     data:
                       deviceID: THIS
 
-        # - type: entities
-        #   entities:
-        #     - type: divider
-
         - type: entities
           entities:
             - type: custom:fold-entity-row
@@ -69,16 +67,6 @@ tabs:
                   show_empty: false
                   card:
                     type: entities
-                    # title: Active Critical Alerts
-                    # card_mod:
-                    #   style: |
-                    #     ha-card {
-                    #       background-color: rgba(251,13,13,1);
-                    #       border-radius: 5px;
-                    #       --primary-color: white;
-                    #       --paper-item-icon-color: white;
-                    #       --secondary-text-color: white;
-                    #     }
                   filter:
                     include:
                       - entity_id: "*bedroom*"

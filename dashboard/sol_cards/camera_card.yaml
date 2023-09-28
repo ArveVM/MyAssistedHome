@@ -57,6 +57,7 @@ cards:
               conditions:
                 camera: 
                   - camera.garage_front
+                  - camera.garage_cam
               elements:
                 - type: custom:frigate-card-menu-state-icon
                   entity: switch.garage_dad
@@ -95,6 +96,12 @@ cards:
 
             # For garage-front,, would like high-resolution in live stream:
             - camera_entity: camera.garage_front
+              title: Garage HD
+              live_provider: go2rtc
+              # id: west1
+
+            # For garaget,, would like high-resolution in live stream:
+            - camera_entity: camera.garage_cam
               title: Garage HD
               live_provider: go2rtc
               # id: west1

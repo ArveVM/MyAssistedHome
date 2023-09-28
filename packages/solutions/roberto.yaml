@@ -1,15 +1,35 @@
 # Solution Roberto: - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Roberto
 
 template:
-  #  Set status 
+  #  Problem if not charging or pause for more than 90 min 
+  - trigger:
+      - platform: template
+        value_template: >
+          {{ 60 > (states('sensor.roberto_plug_power') | float(default=20) ) > 2 }}
+        for: "01:30:00"
+
+    binary_sensor:
+      - name: Roberto problem
+        unique_id: 5c7f8372-6bc1-4d0e-a2db-996f6e9f13b5
+        device_class: problem
+        # ArveVM; remember - a problem-check should be false, or else you have a problem :)
+        state: true
+          # {{ states('input_boolean.dishwasher_emptying_todo') == 'off'
+          # and states('input_boolean.kitchen_heater_auto') != 'on'
+          # }}
+        # attributes:
+          # <<: *solution_attribute
+          # heater_powerauto: "{{ 'Problem!' if ( states('input_boolean.dishwasher_emptying_todo') == 'off' ) else 'OK'}}"
+          # dishwasher_emptying: "{{ 'Problem!' if ( states('input_boolean.kitchen_heater_auto') != 'on' ) else 'OK'}}"
+
   - sensor:
       - name: Roberto status
         unique_id: 461751a4-46fd-4745-b3f2-951631355f37
-        # state_class:
-        #   measurement
         state: >
           {% set rs = states('sensor.roberto_plug_power') | float(default=20) %}
-          {% if rs > 30 %}
+          {% if states('binary_sensor.roberto_problem') == true %}
+            Problem
+          {% elif rs > 30 %}
             Charging
           {% elif rs > 2 %}
             Cutting
@@ -22,10 +42,10 @@ alert:
   roberto_need_assistance:
     name: Roberto Need Assistance
     entity_id: sensor.roberto_status
-    state: "Cutting"
+    state: "Problem"
     repeat: 90
-    can_acknowledge: false
-    skip_first: true
+    # can_acknowledge: false
+    skip_first: false
     notifiers:
       - mobile_app_dad_mobile
       - mobile_app_mom_mobile

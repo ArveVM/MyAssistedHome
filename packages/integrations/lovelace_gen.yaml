@@ -1,5 +1,8 @@
+# https://github.com/ArveVM/MyAssistedHome/wiki/2.2-HA-Presentation#advanced-yaml-dashboard-guide-entity-inject
+
+# https://github.com/thomasloven/hass-lovelace_gen
+
 # Integration to use "entity-inject"
 
-#
 
 lovelace_gen:

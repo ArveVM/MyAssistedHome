@@ -1,12 +1,15 @@
 # ArveVM - MyAssistedHome:
 #   https://github.com/ArveVM/MyAssistedHome/wiki/2-Presentation#both-gui-and-yaml-dashboard
 
+# ArveVM-solution: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Dashboard-overview
+
 
 # ArveVM; Default in HA is GUI dashboard, so this 
 # enable the continous usage of the UI dashboards with "secret storage", 
 # and enable the usage of yaml-dashboard :)
 lovelace:
   mode: storage
+
 
   # then add yaml dashboards
   # AVM; make note of the requirement for a '-' in the 'dashboard-definition' - or you will get the error;

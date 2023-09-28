@@ -27,7 +27,6 @@ cards:
     entity: light.kitchen_light1_z2m
     tap_action:
       action: toggle
-
     hold_action:
       action: fire-dom-event
       browser_mod:
@@ -37,7 +36,6 @@ cards:
             type: vertical-stack
             cards:
               - !include kitchen_light_card.yaml
-
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
     fill_container: true
     layout: horizontal
@@ -91,9 +89,10 @@ cards:
                       area_humidity_compare: sensor.house_average_humidity
         hold_action: none
 
-      - type: action
-        icon_color: disabled
+      - type: template
+        entity: binary_sensor.kitchen_heatpump_running
         icon: mdi:radiator
+        icon_color: "{{ 'blue' if is_state(entity, 'on') else 'disabled' }}"
         card_mod: *card_mod_chip_style
         tap_action:
           action: fire-dom-event
@@ -103,10 +102,40 @@ cards:
               content:
                 type: vertical-stack
                 cards:
-                  - type: entity
-                    entity: sensor.kitchen_heatpump_plug_power
+                  - type: horizontal-stack
+                    cards:
+                      - type: tile
+                        entity: sensor.kitchen_thp_temperature
+                      - type: tile
+                        entity: binary_sensor.kitchen_heatpump_running
+                      - type: tile
+                        entity: sensor.kitchen_heatpump_plug_power
+                  - type: custom:mushroom-number-card
+                    entity: input_number.kitchen_heatpump_target
+                    display_mode: buttons
+                  - type: custom:scheduler-card
+                    include:
+                      - input_number.kitchen_heatpump_target
+                    exclude: []
+                    customize:
+                      climate.kitchen_heatpump:
+                        exclude_actions:
+                          - auto
+                          - cool
+                    sort_by:
+                      - relative-time
+                      - state
+                    title: false
+                    discover_existing: true
+                    display_options:
+                      primary_info: '{entity}: {action}'
+                      secondary_info:
+                        - relative-time
+                        - additional-tasks
+                      icon: action
+
                   - type: tile
-                    entity: climate.kitchen_heatpump2
+                    entity: climate.kitchen_heatpump
                     vertical: false
                     features:
                       - type: target-temperature
@@ -115,6 +144,15 @@ cards:
                           - fan_only
                           - heat
                           - 'off'
+
+      - type: template
+        entity: binary_sensor.kitchen_door_contact
+        #icon: mdi:door-closed
+        icon: "{{ 'mdi:door-closed' if is_state(entity, 'off') else 'mdi:door-open' }}"
+        icon_color: "{{ 'disabled' if is_state(entity, 'off') else 'red' }}"
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: more-info
 
       - type: template
         entity: sensor.dishwasher_status
