@@ -1,0 +1,22 @@
+
+
+
+template:
+  - sensor:
+      - name: unRaidAPI_ArrayUsedSpace
+        unique_id: u4a7c0adb-641a-42f5-90c5-8617033c45d7
+        state: >
+          {{ state_attr('switch.unraidapi_server_unraid1_array','arrayUsedSpace') | replace("TB","") }}
+
+
+      - name: unRaidAPI_ArrayTotalSpace
+        unique_id: 6b7f4cb8-4f6d-474f-ad46-4eb970a0ab1b
+        state: >
+          {{ state_attr('switch.unraidapi_server_unraid1_array','arrayTotalSpace') | replace("TB","") }}
+
+
+      - name: unRaidAPI_ArrayFreeSpace
+        unique_id: aa70191a-c158-444b-89e3-9e7fd61933a7
+        state: >
+          {{ state_attr('switch.unraidapi_server_unraid1_array','arrayFreeSpace') | replace("TB","") }}
+    

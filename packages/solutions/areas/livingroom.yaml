@@ -71,6 +71,16 @@ template:
         attributes:
           <<: *package_attribute
           temp_above_19: "{{ 'Problem!' if (states('sensor.livingroom_netatmo_temperature') | float(default=20) < 19) else 'OK'}}"
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: "Livingroom Absolute Humidity"
+      unit_of_measurement: 'g/m^3'
+      device_class: humidity
+      state: >
+        {% set cur_temp = states('sensor.livingroom_netatmo_temperature') | float %}
+        {% set cur_humidity = states('sensor.livingroom_netatmo_humidity') | float %}
+        {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
+      # Area - manually added in GUI to area; bedroom
 
 
 script:

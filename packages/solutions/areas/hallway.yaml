@@ -20,6 +20,20 @@ powercalc:
         - entity_id: light.hallway_staircase_power # ArveVM: *6W  LED
           power_sensor_id: light.hallway_staircase_power
 
+template:
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: "Hallway Absolute Humidity"
+      unit_of_measurement: 'g/m^3'
+      device_class: humidity
+      state: >
+        {% set cur_temp = states('sensor.hallway_thp_temperature') | float %}
+        {% set cur_humidity = states('sensor.hallway_thp_humidity') | float %}
+        {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
+      # Area - manually added in GUI to area; bedroom
+
+
+
 
 # automation:
 #   - id: "1644065600447"

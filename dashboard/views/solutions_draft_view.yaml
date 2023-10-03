@@ -180,13 +180,18 @@ cards:
           - !include ../sol_cards/fuel_app_card.yaml 
           - !include ../sol_cards/camera1_card.yaml 
 
-
+#######################################  column 2   3333333333333333333333333333333
       - type: vertical-stack
         cards:
           # heading1:
           - type: markdown
             content: |
               # Card-test:
+              
+          - !include ../backend_cards/unraid_arraysize_card.yaml
+          - !include ../backend_cards/unraid_arraydisks_card.yaml
+    
+          - !include ../_cards_old/containers-stopped.yaml
 
           - !include ../_cards_old/containers-running.yaml
 
