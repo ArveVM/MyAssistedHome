@@ -13,8 +13,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Outside
     secondary: >
-      {{states('sensor.outside_netatmo_temperature') | round(1,'', 11)}}°C -
+      {{states('sensor.outside_netatmo_temperature') | round(1,'', 11)}}°C
       {{states('sensor.outside_netatmo_humidity') | round(0,'', 55)}}%
+      {{states('sensor.outside_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:cloud
     #icon_color: disabled
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"

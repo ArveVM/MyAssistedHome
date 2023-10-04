@@ -26,7 +26,7 @@ cards:
     secondary: >
       {{states('sensor.garage_thp_temperature') | round(1,'', 11) }}°C
       {{states('sensor.garage_thp_humidity') | round(0,'', 55)}}%
-      {{states('sensor.garage_absolute_humidity') | round(0,'', 55)}}%
+      {{states('sensor.garage_absolute_humidity') | round(1,'', 55)}}g
     icon: mdi:garage
     #entity: light.loft
     tap_action:
