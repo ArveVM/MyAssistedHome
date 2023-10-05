@@ -191,9 +191,9 @@ cards:
           - !include ../backend_cards/unraid_arraysize_card.yaml
           - !include ../backend_cards/unraid_arraydisks_card.yaml
     
-          - !include ../_cards_old/containers-stopped.yaml
+          - !include ../backend_cards/unraid_containers-stopped.yaml
 
-          - !include ../_cards_old/containers-running.yaml
+          - !include ../backend_cards/unraid_containers-running.yaml
 
           # - type: custom:auto-entities
           #   card:

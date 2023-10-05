@@ -10,7 +10,7 @@ template:
 
     binary_sensor:
       - name: Roberto problem
-        unique_id: 5c7f8372-6bc1-4d0e-a2db-996f6e9f13b5
+        unique_id: 5c7f8372-6bc1-4d0e-a2db
         device_class: problem
         # ArveVM; remember - a problem-check should be false, or else you have a problem :)
         state: true

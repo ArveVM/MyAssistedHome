@@ -218,16 +218,18 @@ cards:
               - entity: sensor.glances_cpu_used
                 name: unRaid CPU
               - entity: sensor.processor_use
-                name: HA CPU
-              - entity: sensor.docker_frigate_1cpu
-                name: Frigate CPU
+                name: HA 1CPU
+              - entity: sensor.monitordocker_frigate
+                attribute: cpu_percentage
+                name: Frigate 1CPU
           - type: custom:mini-graph-card
             entities:
               - entity: sensor.glances_ram_used_percent
                 name: unRaid RAM
               - entity: sensor.memory_use_percent
                 name: HA RAM
-              - entity: sensor.docker_frigate_memory_percent
+              - entity: sensor.monitordocker_ha1
+                attribute: memory_percentage
                 name: HA RAM
 
       # # ---------    EntityCheck - body   -----------

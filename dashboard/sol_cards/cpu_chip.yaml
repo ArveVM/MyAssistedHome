@@ -3,7 +3,7 @@
 
 type: template
 content: >
-  {{states('sensor.monitordocker_ha1_cpu') | int }}/
+  {{ state_attr('sensor.monitordocker_ha1', 'cpu_percentage') | int }}/
   {{states('sensor.glances_cpu_used') | int }}
 icon: mdi:cpu-64-bit
 tap_action:

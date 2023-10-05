@@ -1,5 +1,6 @@
-
+# ArveVM: https://github.com/ArveVM/MyAssistedHome/wiki/2.1-HA-base-configuration#advanced-reusable-jinja-templates
 # Inspiration/first draft from kemon - hjuge thanks 
+
 # https://www.home-assistant.io/blog/2023/04/05/release-20234/#macros-for-your-templates
 
 # Macro definition, name and input,, some calculation and the output:
@@ -9,6 +10,3 @@
   {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
 {% endmacro %}
 
-# Brukes i andre plasser i yaml, templates etc
-# {% from '<bruk-det-valgte-navnet>.jinja' import AbsoluteHumidity %}
-# {{ AbsoluteHumidity('sensor.netatmo_ute_veranda_temperature', 'sensor.netatmo_ute_veranda_humidity') }}

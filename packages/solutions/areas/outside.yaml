@@ -45,12 +45,11 @@ automation:
 template:
   - sensor:
     # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
-    - name: "Outside Absolute Humidity"
-      unit_of_measurement: 'g/m^3'
-      device_class: humidity
+    - name: Outside Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
       state: >
-        {% set cur_temp = states('sensor.outside_netatmo_temperature') | float %}
-        {% set cur_humidity = states('sensor.outside_netatmo_humidity') | float %}
-        {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
-  
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.outside_netatmo_temperature', 'sensor.outside_netatmo_humidity') }}
+
   

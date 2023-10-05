@@ -32,12 +32,11 @@ template:
           temp_above_19: "{{ 'Problem!' if (states('sensor.bathroom_thp_temperature') | float(default=20) < 19) else 'OK'}}"
 
   - sensor:
-    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
-    - name: "Bathroom Absolute Humidity"
-      unit_of_measurement: 'g/m^3'
-      device_class: humidity
+    - name: Bathroom Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
       state: >
-        {% set cur_temp = states('sensor.bathroom_thp_temperature') | float %}
-        {% set cur_humidity = states('sensor.bathroom_thp_humidity') | float %}
-        {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
-      # Area - manually added in GUI to area; bedroom
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.bathroom_thp_temperature', 'sensor.bathroom_thp_humidity') }}
+      # Area - manually added in GUI to area
+
