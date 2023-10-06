@@ -40,6 +40,10 @@ cards:
       # Card/page2 - StartPage:
       - type: custom:mushroom-chips-card
         alignment: justify
+        style: |
+          ha-card {
+            --primary-text-color: grey;
+          }
         chips:
           - !include ../sol_cards/weather_chip.yaml
 

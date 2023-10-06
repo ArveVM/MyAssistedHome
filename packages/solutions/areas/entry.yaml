@@ -25,6 +25,16 @@ template:
           and states('binary_sensor.entry_door_contact') == 'off' 
           }}
         
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: Entry Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
+      state: >
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.entry_thp_temperature', 'sensor.entry_thp_humidity') }}
+      # Area - manually added in GUI to area
+
 
 timer:
   entry_door_open:

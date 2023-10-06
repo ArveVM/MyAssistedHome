@@ -21,8 +21,9 @@ cards:
     entity: light.hallway_light_up1
     primary: Hallway
     secondary: >
-      {{states('sensor.hallway_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.hallway_thp_temperature') | round(1,'', 19) }}°
       {{states('sensor.hallway_thp_humidity') | round(0,'', 44)}}%
+      {{states('sensor.hallway_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:stairs
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"
     fill_container: true

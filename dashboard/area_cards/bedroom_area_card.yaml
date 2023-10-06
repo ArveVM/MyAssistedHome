@@ -25,9 +25,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Bedroom
     secondary: >
-      {{states('sensor.bedroom_thp_temperature') | round(1,'', 19)}}°C
-      {{states('sensor.bedroom_thp_humidity') | round(0,'', 44)}}%  
-      {{states('sensor.bedroom_absolute_humidity') | round(0,'', 1)}}g
+      {{states('sensor.bedroom_thp_temperature') | round(1,'', 11)}}°
+      {{states('sensor.bedroom_thp_humidity') | round(0,'', 55)}}%  
+      {{states('sensor.bedroom_absolute_humidity') | round(0,'', 5)}}g
     icon: mdi:bed
     # entity: light.kidm_lightbulb
     tap_action:

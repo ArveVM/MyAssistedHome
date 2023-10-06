@@ -20,8 +20,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Entry
     secondary: >
-      {{states('sensor.entry_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.entry_thp_temperature') | round(1,'', 19) }}°
       {{states('sensor.entry_thp_humidity') | round(0,'', 44) }}%
+      {{states('sensor.entry_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:hanger
     #icon_color: disabled
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"

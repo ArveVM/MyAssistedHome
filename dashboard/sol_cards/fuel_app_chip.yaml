@@ -2,6 +2,7 @@
 
 type: template
 entity: sensor.fuelapp_cheapest_price2
+content: "{{ states(entity) | round(1) }}"
 icon: mdi:fuel
 icon_color: disabled
 tap_action:

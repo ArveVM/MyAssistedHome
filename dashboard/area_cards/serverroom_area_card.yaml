@@ -24,8 +24,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Server room
     secondary: >
-      {{states('sensor.serverroom_thp_temperature') | round(1) }}°C -
+      {{states('sensor.serverroom_thp_temperature') | round(1) }}°
       {{states('sensor.serverroom_thp_humidity') | int}}%
+      {{states('sensor.serverroom_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:server
     #entity: sensor.
     tap_action:

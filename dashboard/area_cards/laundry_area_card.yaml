@@ -21,8 +21,9 @@ cards:
     entity: light.laundry_lights_puck
     primary: Laundry
     secondary: >
-      {{states('sensor.laundry_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.laundry_thp_temperature') | round(1,'', 19)}}°
       {{states('sensor.laundry_thp_humidity') | round(0,'', 44)}}%
+      {{states('sensor.laundry_absolute_humidity') | round(1,'', 5)}}g
     multiline_secondary: false
     icon: mdi:washing-machine
     icon_color: "{{ 'orange' if is_state(entity, 'on') else 'disabled' }}"

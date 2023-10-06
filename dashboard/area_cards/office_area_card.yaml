@@ -24,8 +24,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Office
     secondary: >
-      {{states('sensor.office_thp_temperature') | round(1,'', 19)}}°C -
+      {{states('sensor.office_thp_temperature') | round(1,'', 19)}}°
       {{states('sensor.office_thp_humidity') | round(0,'', 44)}}%
+      {{states('sensor.office_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:desk
     #entity: light.loft
     tap_action:

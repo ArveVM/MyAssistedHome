@@ -21,8 +21,9 @@ cards:
   - primary: Kitchen
     type: custom:mushroom-template-card
     secondary: >
-      {{states('sensor.kitchen_thp_temperature') | round(1,'', 19)}}°C /
+      {{states('sensor.kitchen_thp_temperature') | round(1,'', 19)}}°
       {{states('sensor.kitchen_thp_humidity') | round(0,'', 44)}}%
+      {{states('sensor.kitchen_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:knife
     entity: light.kitchen_light1_z2m
     tap_action:

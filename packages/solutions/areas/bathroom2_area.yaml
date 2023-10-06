@@ -46,3 +46,13 @@ template:
           humidity_above_20: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) < 20) else 'OK'}}"
           humidity_below_60: "{{ 'Problem!' if (states('sensor.bathroom2_thp_humidity') | float(default=40) > 60) else 'OK'}}"
         # device_class: problem
+
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: Bathroom2 Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
+      state: >
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.bathroom2_thp_temperature', 'sensor.bathroom2_thp_humidity') }}
+      # Area - manually added in GUI to area; livingroom

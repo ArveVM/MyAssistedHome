@@ -24,8 +24,9 @@ cards:
   - type: custom:mushroom-template-card
     primary: Bathroom2
     secondary: >
-      {{states('sensor.bathroom2_thp_temperature') | round(1,'', 19) }}°C -
+      {{states('sensor.bathroom2_thp_temperature') | round(1,'', 19) }}°
       {{states('sensor.bathroom2_thp_humidity') | round(0,'', 44) }}%
+      {{states('sensor.bathroom2_absolute_humidity') | round(1,'', 5)}}g
     icon: mdi:shower
     #entity: light.loft
     tap_action:

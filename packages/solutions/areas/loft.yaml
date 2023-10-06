@@ -37,3 +37,13 @@ template:
           heater_powerauto: "{{ 'Problem!' if (states('input_boolean.loft_heater_powerauto') != 'on') else 'OK'}}"
           humidity_above_20: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) < 20) else 'OK'}}"
           humidity_below_60: "{{ 'Problem!' if (states('sensor.loft_thp_humidity') | float(default=40) > 60) else 'OK'}}"
+
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: Loft Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
+      state: >
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.loft_thp_temperature', 'sensor.loft_thp_humidity') }}
+      # Area - manually added in GUI to area

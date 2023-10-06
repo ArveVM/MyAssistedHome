@@ -1,0 +1,13 @@
+
+
+
+template:
+  - sensor:
+    # https://www.reddit.com/r/homeassistant/comments/pqhk78/better_use_absolute_humidity_instead_of_relative/  
+    - name: Office Absolute Humidity
+      device_class: weight
+      unit_of_measurement: g
+      state: >
+        {% from 'tools2.jinja' import AbsoluteHumidity %}
+        {{ AbsoluteHumidity('sensor.office_thp_temperature', 'sensor.office_thp_humidity') }}
+      # Area - manually added in GUI to area
