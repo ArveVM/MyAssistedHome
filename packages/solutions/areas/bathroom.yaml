@@ -40,3 +40,10 @@ template:
         {{ AbsoluteHumidity('sensor.bathroom_thp_temperature', 'sensor.bathroom_thp_humidity') }}
       # Area - manually added in GUI to area
 
+    - name: Bathroom Dewpoint
+      device_class: temperature
+      unit_of_measurement: g
+      state: >
+        {% from 'tools2.jinja' import Dewpoint %}
+        {{ Dewpoint('sensor.bathroom_thp_temperature', 'sensor.bathroom_thp_humidity') }}
+      # Area - manually added in GUI to area

@@ -1,12 +1,32 @@
+
+################################################################
 # ArveVM: https://github.com/ArveVM/MyAssistedHome/wiki/2.1-HA-base-configuration#advanced-reusable-jinja-templates
 # Inspiration/first draft from kemon - hjuge thanks 
-
+#
 # https://www.home-assistant.io/blog/2023/04/05/release-20234/#macros-for-your-templates
+################################################################
 
-# Macro definition, name and input,, some calculation and the output:
+
+### Absolute humidity: Macro definition, name and input,, some calculation and the output
+# Absolute humidity (expressed as grams of water vapor per cubic meter volume of air) 
+# is a measure of the actual amount of water vapor (moisture) in the air, 
+# regardless of the air's temperature
+#
 {% macro AbsoluteHumidity(temperature, humidity) %}
   {% set cur_temp = states(temperature) | float %}
   {% set cur_humidity = states(humidity) | float %}
   {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
 {% endmacro %}
 
+
+
+### Dewpoint: Macro definition, name and input,, some calculation and the output
+# Dewpoint is the temperature at which the relative humidity is equal to 100%
+# based upon template sensor by Erling Paulsen after https://kalkula.net/duggpunktkalkulator?fbclid=IwAR0BLWO1fenSRQeiitdyBUSEkVFGcNfpJwWoMnsY85aTFZTx93V96LRx-68
+#
+{% macro Dewpoint(temperature, humidity) %}
+  {% set cur_temp = states(temperature) | float %}
+  {% set cur_humidity = states(humidity) | float %}
+  {%set x = (log(cur_humidity/100) + (17.625 * cur_temp)) / (243.04 + cur_temp)%}
+  {{ ((243.04 * x) / (17.625 - x)) | round(2)}}
+{% endmacro %}
