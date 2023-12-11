@@ -78,7 +78,7 @@ tabs:
               entities:
                 - entity: "{{ longterm_target }}"
                   name: LongTarget
-                - entity: sensor.priceanalyzer
+                - entity: sensor.priceanalyzer_main
                   name: Priceanalyzer
             - entity: "{{ powersave }}"
               type: custom:multiple-entity-row

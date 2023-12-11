@@ -2,9 +2,45 @@
 # actual power-proces besides the spot-price from Nordpool
 
 
+# t = transport
+# s = spot
+# 
+
+input_number:
+  # Set value for your power-brokers markup-fee upon Nordpool-spot.
+  # It should be added to a card to be edited from GUI
+  nordpool_additional_cost_broker_fee:
+    name: Nordpool Additional Cost broker_fee
+    initial: 0.0232
+    min: -20
+    max: 35
+
+  linjam_nordpool_additional_cost_broker_fee:
+    name: LinjaM Nordpool Additional Cost broker_fee
+    initial: 0.0232
+    min: -20
+    max: 35
+
+
+
 template:
     sensor:
       # Create sensor to caluclate the additional cost to the Nordpool-spot-price
+      # - name: PwrCtrl Linja state fee
+      #   unit_of_measurement: "NOK"
+      #   state: >
+      #     {% set hour = now().hour %}
+      #     {% set month = now().month %}
+      #     {% set year = now().year %}
+
+      #     {% set t.hour_start_night = 22 %}
+      #     {% set hour_start_day   = 6 %}
+
+      #     {% set spot_markup           = 0.029%}
+      #     {% set enova_fee_incl_vat     = 0.0125 %}
+      #     {% set state_el_fee_incl_vat  = 0.198 %}      
+      
+      
       - name: PwrCtrl Linja addcost
         unique_id: d9726a0f-a34a-4eeb-9d05-4308ecc2e0c9
         icon: mdi:strategy

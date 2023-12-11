@@ -42,8 +42,38 @@ template:
 
     - name: Bathroom Dewpoint
       device_class: temperature
-      unit_of_measurement: g
+      unit_of_measurement: C
       state: >
         {% from 'tools2.jinja' import Dewpoint %}
         {{ Dewpoint('sensor.bathroom_thp_temperature', 'sensor.bathroom_thp_humidity') }}
       # Area - manually added in GUI to area
+
+
+powercalc:
+  sensors:
+    - create_group: bathroom_powercalc_power
+      entities:
+        - entity_id: climate.bathroom_heater_thermostat
+          power_sensor_id: sensor.bathroom_heater_puck_power
+    # - create_group: 0flo_sophia_powercalc
+    #   entities:
+    #     - entity_id: sensor.0flo_sophia_floorheating_power
+    #       power_sensor_id: sensor.oflo_sophia_floorheating_power
+    #     - entity_id: light.0flo_sophia_light
+    #       power_sensor_id: sensor.0flo_sophia_light_power
+    #     - entity_id: light.0flo_sophia_night_light
+    #       manufacturer: signify
+    #       model: LCT012
+    #       multiply_factor: 1
+    #       multiply_factor_standby: true
+    #     - entity_id: light.0flo_sophia_desk_light
+    #       manufacturer: ikea
+    #       model: LED1536G5
+    #       multiply_factor: 1
+    #       multiply_factor_standby: true
+    #     - entity_id: switch.0flo_sophia_disco_lamp
+    #       fixed:
+    #         power: 8
+    #     - entity_id: light.wled_skrivepult
+    #       wled:
+    #         voltage: 5

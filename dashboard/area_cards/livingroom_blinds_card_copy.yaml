@@ -1,0 +1,87 @@
+
+      type: vertical-stack
+      cards:
+
+        - type: button
+          entity: cover.livingroom_blind1
+          name: erwer
+          show_name: true
+          show_icon: true
+          # tap_action:
+          #   action: call-service
+          #   service: cover.set_cover_position
+          #   target:
+          #     entity_id: cover.livingroom_blind1
+          #   data:
+          #     position: 20
+         
+        - type: tile
+          features:
+            - type: cover-position
+            - type: cover-open-close
+          entity: cover.livingroom_all_covers
+          state_content:
+            - state
+            - current_position
+            - last-changed
+
+        # - type: custom:mushroom-cover-card
+        #   entity: cover.livingroom_all_covers
+        #   show_position_control: true
+        #   show_tilt_position_control: false
+        #   show_buttons_control: true
+        # - type: custom:mushroom-cover-card
+        #   entity: cover.livingroom_all_covers
+        #   show_position_control: true
+
+        # show battery status of the three blinds:
+
+        # - type: markdown
+        #   card_size: 2
+        #   content: >
+        #     Starting with.
+        
+        # - type: entities
+        #   # title: Entities card sample
+        #   entities:
+        #     - type: section
+        #       label: Section example
+          
+        - type: horizontal-stack
+          cards:
+            - type: tile
+              name: Blind1
+              entity: cover.livingroom_blind1
+            - type: tile
+              name: Blind2
+              entity: cover.livingroom_blind2
+            - type: tile
+              name: Blind3
+              entity: cover.livingroom_blind3
+
+
+        - type: custom:auto-entities
+          card:
+            type: entities
+            # title: 'Entities named ''*battery'' with <70% :'
+            state_color: true
+          filter:
+            include:
+              - entity_id: '*livingroom_blind*battery'
+                state: < 40
+          sort:
+            method: state
+            numeric: true
+    
+
+            # - type: custom:mushroom-template-card
+            #   entity: sensor.livingroom_blind3_battery
+            #   secondary: Blind3
+            #   primary: >
+            #     {{ states(entity) | round(1) }}
+            #   icon: mdi:battery
+            #   icon_color: orange
+            #   tap_action:
+            #     action: more-info
+            #   card_mod: *card_mod_chips
+

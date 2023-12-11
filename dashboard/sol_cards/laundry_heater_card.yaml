@@ -24,7 +24,7 @@ entities:
         name: Room
       - entity: input_number.laundry_heater_longterm_target
         name: LongTarget
-      - entity: sensor.priceanalyzer
+      - entity: sensor.priceanalyzer_main
         name: Priceanalyzer
   - entity: input_boolean.laundry_heater_powerauto
     type: custom:multiple-entity-row

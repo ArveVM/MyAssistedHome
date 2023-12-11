@@ -1,0 +1,110 @@
+{% set n = {
+    "elavgift_incl_vat":     0.1980,
+    "enova_incl_vat":        0.0125,
+    "vat_percent":           25
+}
+%}
+
+# Some power subsidies on national level:
+{% set p = {
+    "power_subsidy_treshold_ex_vat": 0.875 / (1+(n.vat_percent/100)),
+    "power_subsidy_percent": 90
+}
+%}
+
+{# _ _ Norway transport-company-settings settings: #}
+{% set linja = {
+    "transport_day":    ( 0.4542 - n.elavgift_incl_vat - n.enova_incl_vat)/(100+n.vat_percent)*100,
+    "transport_night":  ( 0.3667 - n.elavgift_incl_vat - n.enova_incl_vat)/(100+n.vat_percent)*100,
+    "hour_start_night": 22,
+    "hour_start_day":    6
+  }
+%}
+
+
+{% macro SpotTest(curr_hour, curr_month, broker_fee_43, current_price, price_in_cents, output) %}
+
+
+{# _ _ _ Set price in cents and cent multiplier: #}
+{% if price_in_cents == true %}
+  {% set cent_multiplier = 100 %}
+{% else%}
+  {% set cent_multiplier = 1 %}
+{%endif%}
+{% set current_price_40 = current_price/cent_multiplier %}
+
+
+{# _ _ _ Calculate net power subsidy: #}
+{% set power_subsidy_41 = 0 %}
+{% if current_price_40 > p.power_subsidy_treshold_ex_vat %}
+  {% set power_subsidy_41 = 
+         (current_price_40 - p.power_subsidy_treshold_ex_vat ) 
+         * p.power_subsidy_percent/100 %}
+{%endif%}
+
+
+{# _ _ _ Calculate subidized spot price #}
+{% set current_subsidized_price_42 = current_price_40 - power_subsidy_41 %}
+
+
+{# _ _ _ Calculate transport cost night/day #}
+{% if curr_hour >= linja.hour_start_night or curr_hour < linja.hour_start_day %}
+  {% set transport_net_44 = linja.transport_night %}
+{% else%}
+  {% set transport_net_44 = linja.transport_day %}
+{% endif %}
+
+
+{# _ _ _ Calculate combined price/fee for power-transport and power-broker: #}
+{% set transp_broker_31 = broker_fee_43
+                        + transport_net_44 %}
+
+{# _ _ _ Calculate price for net transport, broker and subsidized spot: #}
+{% set subsidizedspot_transp_broker_32 = current_price_40
+                                    - power_subsidy_41 %}
+
+
+
+{% if output == 1 %}
+  {{ (transp_broker_31 - current_price_40) * cent_multiplier }}
+{% elif output == 2 %}
+  {{ (transp_broker_31 - current_price_40) * cent_multiplier }}
+{% elif output == 3 %}
+  {{ ( subsidizedspot_transp_broker_statefees - current_price_40 ) }}
+{% elif output == 4 %}
+  {{ total_no_subsidy  }}
+{% elif output == 222 %}
+  {{ ( subsidizedspot_transp_broker_32 - current_price_40) * cent_multiplier }}
+
+{% elif output == 11 %}
+  {{ state_fees }}
+{% elif output == 12 %}
+  {{ state_fees_withdrawn_subsidy }}
+
+{% elif output == 31 %}
+  {{ transp_broker_31  }}
+{% elif output == 32 %}
+  {{ subsidizedspot_transp_broker_32 }}
+{% elif output == 33 %}
+  {{ subsidizedspot_transp_broker_statefees }}
+{% elif output == 34 %}
+  {{ total_no_subsidy * cent_multiplier }}
+
+{% elif output == 40 %}
+  {{ current_price_40 }}
+{% elif output == 41 %}
+  {{ power_subsidy_41 * cent_multiplier }}
+{% elif output == 42 %}
+  {{ current_subsidized_price_42  }}
+{% elif output == 43 %}
+  {{ broker_fee_43 }}
+{% elif output == 44 %}
+  {{ transport_net_44 }}
+
+{% elif output == 99 %}
+  {{ cent_multiplier }}
+{% else %}
+  {{ 0 }}
+{%endif%}
+
+{% endmacro %}

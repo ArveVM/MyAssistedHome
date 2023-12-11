@@ -46,6 +46,6 @@ automation:
     use_blueprint:
       path: erlendsellie/priceanalyzer.yaml
       input:
-        sensor: sensor.priceanalyzer
+        sensor: sensor.priceanalyzer_main
         number: input_number.kitchen_heatpump_target
         climate: climate.kitchen_heatpump

@@ -4,8 +4,8 @@
 homeassistant:
   customize:
     package.node_anchors:
-      temp1: &temp1 sensor.hallway_thp_temperature
-      humidity1: &humidity1 sensor.hallway_thp_humidity
+      temp1: &temp1 sensor.entry_thp_temperature
+      humidity1: &humidity1 sensor.entry_thp_humidity
 
 type: custom:stack-in-card
 card_mod:

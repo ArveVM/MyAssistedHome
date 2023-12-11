@@ -4,15 +4,39 @@
 # https://github.com/ArveVM/MyAssistedHome/wiki/Int-CATT
 
 
+input_boolean:
+  catt_auto:
+    name: Catt Auto
+
 shell_command:
   # first uninstall, then uninstall newest version
   uninstall_catt: "pip uninstall catt -y"
   install_catt: "pip install catt"
+  killstray_catt: "killall catt"
 
+command_line:
+  - sensor:
+      name: Catt stray catt count
+      command: "ps -A --no-header | grep catt | wc -l"
+      scan_interval: 120    # integer (optional, default: 60)
+
+template:
+  - sensor:
+      - name: Catt cpu HA1
+        unique_id: 2378e89b-953d-44ee-a4db-8df11dc163a0sdfsdf
+        unit_of_measurement: "%"
+        state: >
+          {{ state_attr('sensor.monitordocker_ha1', 'cpu_percentage') | float(default=1)  }}
+# template:
+#   - sensor:
+#       - name: PwrCtrl Use Total power
+#         unit_of_measurement: W
+#         state: >
+#           {{ states('sensor.evahan_power') }}
 
 automation:
   - id: c141fc81-b0f5-42ad-be3a-b4fca9509573-4
-    alias: "_Install CATT"
+    alias: "_CATT-install"
     description: "Install Python-functionality CastAllTheThings)"
     mode: single
     
@@ -20,10 +44,33 @@ automation:
       - platform: homeassistant
         event: start
     
-    condition: []
+    condition:
+      - condition: state
+        entity_id: input_boolean.catt_auto
+        state: "on"
     
     action:
       - service: shell_command.uninstall_catt
       - delay: 00:01:00
       - service: shell_command.install_catt
 
+
+  - id: 5d10f371-cdb6-464b-987e-098488fd086e
+    alias: "_catt, kill stray cats"
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.catt_stray_catt_count
+        above: 1
+      - platform: numeric_state
+        entity_id: sensor.catt_cpu_ha1
+        above: 100
+        
+        
+    condition: 
+      - condition: state
+        entity_id: input_boolean.catt_auto
+        state: "on"
+
+    action:
+      - service: shell_command.killstray_catt
+      

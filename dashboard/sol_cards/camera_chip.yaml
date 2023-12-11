@@ -2,7 +2,7 @@
 
 type: action
 icon: mdi:cctv
-icon_color: disabled
+icon_color: dark-grey
 tap_action:
   action: fire-dom-event
   browser_mod:

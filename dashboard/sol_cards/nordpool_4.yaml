@@ -53,7 +53,7 @@ apex_config:
       extend_to: now
 
 series:
-  - entity: sensor.priceanalyzer
+  - entity: sensor.priceanalyzer_main
     yaxis_id: price
     extend_to: now
     name: VariabelPris

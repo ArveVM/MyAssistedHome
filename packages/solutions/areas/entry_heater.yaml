@@ -76,6 +76,12 @@ input_boolean:
     icon: mdi:currency-usd
 
 
+input_number:
+  entry_heater_longterm_target:
+    name: Entry Heater longterm target # - used in automation 'control climate'
+    min: 5
+    max: 22
+
 template:
   - sensor:
     - name: Entry Heater Thermostat mode

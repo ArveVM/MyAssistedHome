@@ -69,7 +69,7 @@ tabs:
                   fill: rgba(151,187,205,0.15)
                 - entity: sensor.hotwater_temp_mixscrew_filtererd_temperature
                   name: Mixscrew filtered
-                - entity: sensor.priceanalyzer_vvb
+                - entity: sensor.priceanalyzer_main_vvb
                   name: Termostat Target
                 - entity: sensor.hotwater_puck_bottom_temperature
                   color: "#ee3452"

@@ -1,0 +1,435 @@
+{# _ _ _ First set some country related settings: #}
+
+{# _ _ Norway: #}
+{% set n = {
+    "elavgift_incl_vat":                 0.1980,
+    "enova_incl_vat":                    0.0125,
+    "vat_percent":                       25,
+    "power_subsidy_treshold_ex_vat":     (0.875 / 1.25),
+    "power_subsidy_percent":             90
+}
+%}
+
+{# _ _ Norway transport-company-settings settings: #}
+{% set n_linja = {
+    "transport_day":    ( 0.4542 - n.elavgift_incl_vat - n.enova_incl_vat)/(100+n.vat_percent)*100,
+    "transport_night":  ( 0.3667 - n.elavgift_incl_vat - n.enova_incl_vat)/(100+n.vat_percent)*100,
+    "hour_start_night": 22,
+    "hour_start_day":    6
+  }
+%}
+
+{% macro norway_state_subsidy(no_function,curr_price) %}
+{%- set country2 = {
+    "elavgift_incl_vat":                 0.1980,
+    "enova_incl_vat":                    0.0125,
+    "vat_percent":                       25,
+    "power_subsidy_treshold_ex_vat":     (0.875 / 1.25),
+    "power_subsidy_percent":             90
+  } -%}
+
+{# _ _ _ Calculate net power subsidy: #}
+{% set power_subsidy_41 = 0 %}
+{% if curr_price > country2.power_subsidy_treshold_ex_vat %}
+  {% set power_subsidy_41 = 
+         (current_price_40 - country2.power_subsidy_treshold_ex_vat ) 
+         * country2.power_subsidy_percent/100 %}
+{%endif%}
+
+{# _ _ _ Choose Output from chosen function: #}
+{%- if no_function == "bla_verify" -%}
+  {{ power_subsidy_41 }}
+
+{% elif no_function == "transport_add" %}
+  {{ 15 }}
+{% else %}
+  {{ "ya gotta choooose a valid function!" }}
+{%endif%}
+
+{% endmacro %}
+
+
+{# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #}
+{# _ _ _ Then the actual macro with it's inputs: #}
+{% macro nac2(config) %}
+
+{#  (function, transporter, timeslot, brokerfee, timeslot_price, price_in_cents, output_mva) #}
+
+{# _ _ _ Set price in full-currency and cent multiplier: #}
+{%- if config.price_in_cents == true -%}
+  {%- set cent_multiplier = 100 -%}
+{%- else -%}
+  {%- set cent_multiplier = 1 -%}
+{%- endif -%}
+{%- set current_price_40 = config.timeslot_price/cent_multiplier -%}
+
+{%- set time = {
+      "hour": config.timeslot.hour,
+      "month": config.timeslot.month
+    } -%}
+
+{# _ _ _ Get country out of transporter-prefix #}
+{% set country_id = config.transporter[0:3] %}
+
+{# _ _ _ Get country out of transporter-prefix, set some country related settings: #}
+{%- if country_id == "no_" -%}
+  {%- set country = {
+      "elavgift_incl_vat":                 0.1980,
+      "enova_incl_vat":                    0.0125,
+      "vat_percent":                       25,
+      "power_subsidy_treshold_ex_vat":     (0.875 / 1.25),
+      "power_subsidy_percent":             90
+    } -%}
+{%- else -%}
+  {%- set country = {
+      "elavgift_incl_vat":                 0.0,
+      "enova_incl_vat":                    0.0,
+      "vat_percent":                       0,
+      "power_subsidy_treshold_ex_vat":     0,
+      "power_subsidy_percent":             0
+    } -%}
+{%- endif -%}
+
+{# _ _ Norway transport-company-settings settings: #}
+{# _ _ First a general setting,, might be overwritten for special-special transporter's: #}
+{%- set transport_daynight = {
+    "hour_start_night": 22,
+    "hour_start_day":    6
+    }
+-%}
+
+{# _ _ Transport-prices pr transporter's: #}
+{%- if config.transporter == "no_linja_m" -%}
+  {%- set transport = { "day":    ( 0.4542 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+                      "night":  ( 0.3667 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,  
+} -%}
+{%- elif config.transporter == "no_tensio_s" -%}
+  {%- set transport = { "day":    ( 0.4030 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+                      "night":  ( 0.3068 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,  
+} -%}
+{%- else -%}
+  {%- set transport = { "day":    ( 0.4542 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+                      "night":  ( 0.3667 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,  
+} -%}
+
+{%- endif -%}
+
+{# _ _ Calculate Transport-price: #}
+{% if config.timeslot.hour >= transport_daynight.hour_start_night or config.timeslot.hour < transport_daynight.hour_start_day %}
+  {% set transport_net = transport.night %}
+{% else%}
+  {% set transport_net = transport.day %}
+{% endif %}
+
+{% set state_fees_ex_vat = norway_state_subsidy("bla_verify",current_price_40)
+                   %}
+
+
+{# _ _ _ nv,, denne mangler state_fees_transp_broker #}
+{% set state_fees_no_subsidy = current_price_40 * (n.vat_percent/100)
+                  + n.enova_incl_vat
+                  + n.elavgift_incl_vat
+                   %}
+
+
+{# _ _ _ Choose Output from chosen function: #}
+{%- if config.function == "function_verify" -%}
+  {{ config.function }}
+
+{% elif config.function == "transport_add_test1" %}
+  {{ test1(transport_net) }}
+{% elif config.function == "test2" %}
+  {{ state_fees_ex_vat }}
+
+
+
+{% elif config.function == "transport_add" %}
+  {{ transport_net }}
+{% elif config.function == "transport_pure" %}
+  {{ ( transport_net - current_price_40 ) }}
+{% elif config.function == "transport_pure2c" %}
+  {{ ( transport_net - current_price_40 ) * cent_multiplier}}
+
+
+{% elif config.function == "broker_add" %}
+  {{ config.brokerfee }}
+{% elif config.function == "broker_pure2c" %}
+  {{ ( config.brokerfee - current_price_40 ) * cent_multiplier}}
+
+{% elif config.function == "transport_broker_add" %}
+  {{ config.brokerfee + transport_net}}
+{% elif config.function == "transport_broker_pure2c" %}
+  {{ ( config.brokerfee + transport_net - current_price_40 ) * cent_multiplier}}
+
+
+{%- elif config.function == "transport_broker_pure" -%}
+  {{ (current_price_40) * cent_multiplier * cent_multiplier }}
+
+{# _ _ _ All the possible test you can output just to make sure you get sub-calculations right (and verify you work with the right inputs :)  #}
+{%- elif config.function == "function_verify" -%}
+  {{ config.function }}
+{% elif config.function == "transporter_verify" %}
+  {{ transporter }}
+{% elif config.function == "nuh_verify" %}
+  {{ nuh }}
+{% elif config.function == "time_verify" %}
+  {{ time }}
+{% elif config.function == "time_hour_verify" %}
+  {{ time.hour }}
+{% elif config.function == "time_month_verify" %}
+  {{ time.month }}
+
+{%- elif config.function == "cent_multiplier_verify" -%}
+  {{ cent_multiplier }}
+{% elif config.function == "transport_verify" %}
+  {{ transport }}
+{% elif config.function == "transport_daynight_verify" %}
+  {{ transport_daynight }}
+{% elif config.function == "transport_net_verify" %}
+  {{ transport_net }}
+{% elif config.function == "price_verify" %}
+  {{ config.timeslot_price }}
+{% elif config.function == "current_price_40_verify" %}
+  {{ current_price_40 }}
+{% elif config.function == "curr_hour_verify" %}
+  {{ nuh().hour }}
+{% elif config.function == "country_id_verify" %}
+  {{ country_id }}
+{% elif config.function == "elavgift_incl_vat_verify" %}
+  {{ country.elavgift_incl_vat }}
+{% elif config.function == "enova_incl_vat_verify" %}
+  {{ country.enova_incl_vat }}
+
+{% else %}
+  {{ "ya gotta choooose a valid function!" }}
+{%endif%}
+
+{% endmacro %}
+
+
+
+{# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #}
+{# _ _ _ Then the actual macro with it's inputs: #}
+{% macro nac(function, transporter, timeslot, brokerfee, price, price_in_cents, output_mva) %}
+
+{# _ _ _ Set price in cents and cent multiplier: #}
+{%- if price_in_cents == true -%}
+  {%- set cent_multiplier = 100 -%}
+{%- else -%}
+  {%- set cent_multiplier = 1 -%}
+{%- endif -%}
+{%- set current_price_40 = price/cent_multiplier -%}
+
+{%- set time = {
+      "hour": timeslot.hour,
+      "month": timeslot.month
+    } -%}
+
+{# _ _ _ Get country out of transporter-prefix #}
+{% set country_id = transporter[0:3] %}
+
+{# _ _ _ Get country out of transporter-prefix, set some country related settings: #}
+{%- if country_id == "no_" -%}
+  {%- set country = {
+      "elavgift_incl_vat":                 0.1980,
+      "enova_incl_vat":                    0.0125,
+      "vat_percent":                       25,
+      "power_subsidy_treshold_ex_vat":     (0.875 / 1.25),
+      "power_subsidy_percent":             90
+    } -%}
+{%- else -%}
+  {%- set country = {
+      "elavgift_incl_vat":                 0.0,
+      "enova_incl_vat":                    0.0,
+      "vat_percent":                       0,
+      "power_subsidy_treshold_ex_vat":     0,
+      "power_subsidy_percent":             0
+    } -%}
+{%- endif -%}
+
+{# _ _ Norway transport-company-settings settings: #}
+{# _ _ First a general setting,, might be overwritten for special-special transporter's: #}
+{%- set transport_daynight = {
+    "hour_start_night": 22,
+    "hour_start_day":    6
+    }
+-%}
+
+{# _ _ Transport-prices pr transporter's: #}
+{%- if transporter == "no_linja_m" -%}
+  {%- set transport = {
+    "transport_day":    ( 0.4542 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+    "transport_night":  ( 0.3667 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+    } -%}
+{%- else -%}
+  {%- set transport = {
+    "transport_day":    ( 0.4542 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+    "transport_night":  ( 0.3667 - country.elavgift_incl_vat - country.enova_incl_vat)/(100+n.vat_percent)*100,
+    } -%}
+{%- endif -%}
+
+
+{# _ _ Calculate Transport-price: #}
+{% if timeslot.hour >= transport_daynight.hour_start_night or timeslot.hour < transport_daynight.hour_start_day %}
+  {% set transport_net = transport.transport_night %}
+{% else%}
+  {% set transport_net = transport.transport_day %}
+{% endif %}
+
+
+
+{# _ _ _ nv,, denne mangler state_fees_transp_broker #}
+{% set state_fees_no_subsidy = current_price_40 * (n.vat_percent/100)
+                  + n.enova_incl_vat
+                  + n.elavgift_incl_vat
+                   %}
+
+
+{# _ _ _ Choose Output from chosen function: #}
+{%- if function == "transport_broker_pure" -%}
+  {{ (current_price_40) * cent_multiplier * cent_multiplier }}
+{% elif function == "transport_net_pure" %}
+  {{ transport_net - current_price_40 }}
+
+
+{# _ _ _ All the possible test you can output just to make sure you get sub-calculations right (and verify you work with the right inputs :)  #}
+{%- elif function == "function_verify" -%}
+  {{ function }}
+{% elif function == "transporter_verify" %}
+  {{ transporter }}
+{% elif function == "nuh_verify" %}
+  {{ nuh }}
+{% elif function == "time_verify" %}
+  {{ time }}
+{% elif function == "time_hour_verify" %}
+  {{ time.hour }}
+{% elif function == "time_month_verify" %}
+  {{ time.month }}
+
+{%- elif function == "cent_multiplier_verify" -%}
+  {{ cent_multiplier }}
+{% elif function == "transport_verify" %}
+  {{ transport }}
+{% elif function == "transport_daynight_verify" %}
+  {{ transport_daynight }}
+{% elif function == "transport_net_verify" %}
+  {{ transport_net }}
+{% elif function == "price_verify" %}
+  {{ price }}
+{% elif function == "current_price_40_verify" %}
+  {{ current_price_40 }}
+{% elif function == "curr_hour_verify" %}
+  {{ nuh().hour }}
+{% elif function == "country_id_verify" %}
+  {{ country_id }}
+{% elif function == "elavgift_incl_vat_verify" %}
+  {{ country.elavgift_incl_vat }}
+{% elif function == "enova_incl_vat_verify" %}
+  {{ country.enova_incl_vat }}
+
+{% else %}
+  {{ "ya gotta choooose a valid function!" }}
+{%endif%}
+
+{% endmacro %}
+
+
+
+{# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #}
+{# _ _ _ Then the actual macro with it's inputs: #}
+{% macro add_cost(function, country, transport, time, broker_fee_43, current_price, price_in_cents, output_mva ) %}
+
+
+{% set time.hour = time().hour %}
+{% set time.month = time().month %}
+
+
+{# _ _ _ Set price in cents and cent multiplier: #}
+{% if price_in_cents == true %}
+  {% set cent_multiplier = 100 %}
+{% else%}
+  {% set cent_multiplier = 1 %}
+{%endif%}
+{% set current_price_40 = current_price/cent_multiplier %}
+
+
+{# _ _ _ Calculate net power subsidy: #}
+{% set power_subsidy_41 = 0 %}
+{% if current_price_40 > n.power_subsidy_treshold_ex_vat %}
+  {% set power_subsidy_41 = 
+         (current_price_40 - n.power_subsidy_treshold_ex_vat ) 
+         * n.power_subsidy_percent/100 %}
+{%endif%}
+
+
+{# _ _ _ Calculate subidized spot price #}
+{% set current_subsidized_price_42 = current_price_40 - power_subsidy_41 %}
+
+
+{# _ _ _ Calculate transport cost night/day #}
+{% if time.hour >= n_linja.hour_start_night or time.hour < n_linja.hour_start_day %}
+  {% set transport_net_44 = n_linja.transport_night %}
+{% else%}
+  {% set transport_net_44 = n_linja.transport_day %}
+{% endif %}
+
+
+{# _ _ _ Calculate combined price/fee for power-transport and power-broker: #}
+{% set transp_broker_31 = broker_fee_43
+                        + transport_net_44 %}
+
+{# _ _ _ Calculate price for net transport, broker and subsidized spot: #}
+{% set subsidizedspot_transp_broker_32 = current_price_40
+                                    - power_subsidy_41 %}
+
+
+
+{% if output == 1 %}
+  {{ (transp_broker_31 - current_price_40) * cent_multiplier }}
+{% elif output == 2 %}
+  {{ (transp_broker_31 - current_price_40) * cent_multiplier }}
+{% elif output == 3 %}
+  {{ ( subsidizedspot_transp_broker_statefees - current_price_40 ) }}
+{% elif output == 4 %}
+  {{ total_no_subsidy  }}
+{% elif output == 222 %}
+  {{ ( subsidizedspot_transp_broker_32 - current_price_40) * cent_multiplier }}
+
+{% elif output == 11 %}
+  {{ state_fees }}
+{% elif output == 12 %}
+  {{ state_fees_withdrawn_subsidy }}
+
+{% elif output == 31 %}
+  {{ transp_broker_31  }}
+{% elif output == 32 %}
+  {{ subsidizedspot_transp_broker_32 }}
+{% elif output == 33 %}
+  {{ subsidizedspot_transp_broker_statefees }}
+{% elif output == 34 %}
+  {{ total_no_subsidy * cent_multiplier }}
+
+{% elif output == 40 %}
+  {{ current_price_40 }}
+{% elif output == 41 %}
+  {{ power_subsidy_41 * cent_multiplier }}
+{% elif output == 42 %}
+  {{ current_subsidized_price_42  }}
+{% elif output == 43 %}
+  {{ broker_fee_43 }}
+{% elif output == 44 %}
+  {{ transport_net_44 }}
+
+{% elif output == 99 %}
+  {{ cent_multiplier }}
+{% else %}
+  {{ 0 }}
+{%endif%}
+
+{% endmacro %}
+
+
+{# - - - - - - - - - - - - - - - - - - - - - - - - - - - - #}
+{% macro test1(price) %}
+  {{ price * 2 }}
+{% endmacro %}

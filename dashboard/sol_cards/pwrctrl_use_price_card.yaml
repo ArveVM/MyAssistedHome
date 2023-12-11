@@ -9,7 +9,7 @@ cards:
   - type: horizontal-stack
     cards:
       - type: custom:mushroom-template-card
-        entity: sensor.priceanalyzer_price
+        entity: sensor.priceanalyzer_main_price
         secondary: øre/kWh
         primary: >
           {{ states(entity) | round(1) }}
@@ -107,7 +107,7 @@ cards:
 
     series:
       - name: Price today
-        entity: sensor.priceanalyzer
+        entity: sensor.priceanalyzer_main
         float_precision: 0
         unit: Øre/kWh
         yaxis_id: one
@@ -128,7 +128,7 @@ cards:
           return today;
 
       - name: Price tomorrow
-        entity: sensor.priceanalyzer
+        entity: sensor.priceanalyzer_main
         # https://github.com/RomRider/apexcharts-card#confirmation-options
         # add popup to usage    - and the same for limit
         float_precision: 0

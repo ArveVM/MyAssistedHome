@@ -51,7 +51,7 @@ apex_config:
       max: 15000
       min: 0
 series:
-  - entity: sensor.priceanalyzer
+  - entity: sensor.priceanalyzer_main
     yaxis_id: pris
     extend_to: now
     name: Price
@@ -72,7 +72,7 @@ series:
         return today.concat(tomorrow);
       }
       return today;
-  - entity: sensor.priceanalyzer_vvb
+  - entity: sensor.priceanalyzer_main_vvb
     yaxis_id: temp
     name: VVBtarget
     type: line
@@ -97,13 +97,13 @@ series:
     #color: black
     extend_to: now
 
-  - entity: sensor.priceanalyzer_price
+  - entity: sensor.priceanalyzer_main_price
     unit: Øre/Nok
     name: Pris
     show:
       in_chart: false
       in_header: true
-  - entity: sensor.priceanalyzer_vvb
+  - entity: sensor.priceanalyzer_main_vvb
     name: VVBTarget
     show:
       in_chart: false

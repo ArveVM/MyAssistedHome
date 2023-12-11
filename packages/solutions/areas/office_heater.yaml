@@ -72,7 +72,7 @@ automation:
     use_blueprint:
       path: erlendsellie/priceanalyzer.yaml
       input:
-        sensor: sensor.priceanalyzer
+        sensor: sensor.priceanalyzer_main
         number: *target
         climate: *gen_thermostat
 

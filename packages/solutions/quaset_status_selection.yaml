@@ -1,0 +1,49 @@
+
+
+
+# Source: Glen Wesley in Facebook-HomeAssistant: https://www.facebook.com/groups/HomeAssistant/permalink/3619641354973875/?mibextid=c7yyfP
+
+timer:
+  laundry:
+    duration: "00:01:00"
+    # duration: >
+    #   {% set s = states('sensor.quaset_timer_duration')|int %}
+    #   {{ s | timestamp_custom("%H:%M:%S", false) }}
+
+template:
+  - trigger:
+      # - platform: time_pattern
+      #   hours: "/1"
+        # minutes: 4  # run once every hour,, 4min past the hour
+      - platform: template
+        value_template: "{{ is_state('device_tracker.paulus', 'home') }}"
+      - platform: event
+        event_type: event_template_reloaded # AVM; trigger at reload Template entities
+
+    sensor:
+      - name: Quaset status
+        state: >
+          {{ [ 'Temporalified', 'Etheralised', 'Flirterated', 'Entanglated',
+          'Neuralised', 'Divergent', 'Hoppefied', 'Chronoquarked',
+          'Quantumfluxed', 'Hyperflexed', 'Hyperspliced', 'Nebulondriven',
+          'Solartuned', 'Aetherforged', 'Tachyonised', 'Hyperfluctuated',
+          'Biocircuitised', 'Infinifluxed', 'Solodimentionalised',
+          'Pseudoresonated', 'Spectrofluxed', 'Quantumfluctuated',
+          'Tesseractified', 'Compartmentalised', 'Esotericised',
+          'Transdimensionalised', 'Multiversedwarped', 'Photonised',
+          'Hyperresonated' ] | random }}
+
+      - name: Quaset color
+        state: >
+          {{ [ 'Red', 'Orange', 'Blue', 'Purple',
+          'Grey', 'Yellow', 'Green' ] | random }}
+        attributes:
+          quaset_text_color: "dark-grey"
+          quaset_icon_color: "dark-grey"
+
+      - name: Quaset timer duration
+        device_class: timestamp
+        state: >
+          {{ 1800 }}
+          # {{ "00:01:00" }}
+          # {{ range(10800, 43200) | random }}

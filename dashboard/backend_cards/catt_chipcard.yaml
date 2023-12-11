@@ -1,0 +1,22 @@
+# Integration: Dashboards  # https://github.com/ArveVM/MyAssistedHome/wiki/Int-CATT
+# NB, this is a Mushroom chip,, so it should be !included as a component in the mushroom-chip-card
+
+type: template
+icon: mdi:cast-variant
+icon_color: disabled
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      content:
+        type: entities
+        title: Catt
+        show_header_toggle: false
+        entities:
+          - entity: input_boolean.catt_auto
+          - entity: automation.install_catt
+          - type: divider
+          - entity: sensor.catt_stray_catt_count
+          - entity: automation.catt_kill_stray_cats  
+          - type: divider

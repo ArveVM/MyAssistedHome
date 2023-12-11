@@ -55,7 +55,7 @@ cards:
           max: 4000
           min: 0
     series:
-      - entity: sensor.priceanalyzer
+      - entity: sensor.priceanalyzer_main
         yaxis_id: pris
         extend_to: now
         name: Price
@@ -76,7 +76,7 @@ cards:
             return today.concat(tomorrow);
           }
           return today;
-      - entity: sensor.priceanalyzer_vvb
+      - entity: sensor.priceanalyzer_main_vvb
         yaxis_id: temp
         name: VVBTtarget
         type: line
@@ -101,7 +101,7 @@ cards:
         color: cyan
 
         extend_to: now
-      - entity: sensor.priceanalyzer
+      - entity: sensor.priceanalyzer_main
         attribute: current_price
         transform: return x * 100
         unit: Øre/Nok

@@ -19,7 +19,7 @@ cards:
               - type: menu
               - !include ../sol_cards/dashboard_chipcard.yaml
 
-          # heading1:
+          # heading1:      ####################################################
           - type: markdown
             content: |
               # Solutions - Views
@@ -38,7 +38,7 @@ cards:
                   action: navigate
                   navigation_path: /kidm-tablet/KidM_home
 
-          # heading:
+          # heading2:      ####################################################
           - type: markdown
             content: |
               # Solutions - WIP
@@ -76,6 +76,7 @@ cards:
               
               - !include ../sol_cards/z2m_offline_chipcard.yaml
               - !include ../area_cards/hallway_nest_hub_chipcard.yaml
+              - !include ../backend_cards/catt_chipcard.yaml
               
 
           # cards:
@@ -83,7 +84,45 @@ cards:
             content: |
               cards:
 
-              
+          - type: horizontal-stack
+            cards:   
+              - type: button
+                entity: cover.livingroom_blind1
+                name: set20
+                show_name: true
+                show_icon: true
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  target:
+                    entity_id: cover.livingroom_blind1
+                  data:
+                    position: 20
+              - type: button
+                entity: cover.livingroom_blind1
+                name: set40
+                show_name: true
+                show_icon: true
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  target:
+                    entity_id: cover.livingroom_blind1
+                  data:
+                    position: 40
+              - type: button
+                entity: cover.livingroom_blind1
+                name: set80
+                show_name: true
+                show_icon: true
+                tap_action:
+                  action: call-service
+                  service: cover.set_cover_position
+                  target:
+                    entity_id: cover.livingroom_blind1
+                  data:
+                    position: 80
+            
 
           - type: entities
             entities:
@@ -107,29 +146,29 @@ cards:
 
 
           # test updates
-          - type: custom:mushroom-template-card
-            entity: update.dream_machine_pro
-            primary: |
-              {{ state_attr(entity,'friendly_name') }}
-            secondary: >-
-              {% if state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version') %}
-              {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
-              {% else %} 
-              {{state_attr(entity,'installed_version') }} -> {{
-              state_attr(entity,'latest_version') }} {% endif %}
-            icon: |
-              {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
-            icon_color: >-
-              {% if state_attr(entity,'entity_picture') == none %}
-              {{ 'blue' if (state_attr(entity,'installed_version') ==
-              state_attr(entity,'latest_version')) else 'orange' }}
-              {% endif %}
-            picture: >
-              {{ state_attr(entity,'entity_picture') if
-              state_attr(entity,'entity_picture') != none }}
-            tap_action:
-              action: more-info
+          # - type: custom:mushroom-template-card
+          #   entity: update.dream_machine_pro
+          #   primary: |
+          #     {{ state_attr(entity,'friendly_name') }}
+          #   secondary: >-
+          #     {% if state_attr(entity,'installed_version') ==
+          #     state_attr(entity,'latest_version') %}
+          #     {{"Aggiornato: "+ state_attr(entity,'installed_version')}} 
+          #     {% else %} 
+          #     {{state_attr(entity,'installed_version') }} -> {{
+          #     state_attr(entity,'latest_version') }} {% endif %}
+          #   icon: |
+          #     {{ 'mdi:cog-outline' if state_attr(entity,'entity_picture') == none}}
+          #   icon_color: >-
+          #     {% if state_attr(entity,'entity_picture') == none %}
+          #     {{ 'blue' if (state_attr(entity,'installed_version') ==
+          #     state_attr(entity,'latest_version')) else 'orange' }}
+          #     {% endif %}
+          #   picture: >
+          #     {{ state_attr(entity,'entity_picture') if
+          #     state_attr(entity,'entity_picture') != none }}
+          #   tap_action:
+          #     action: more-info
 
           # test updates with cool autu-entities card,,,  https://github.com/jumping2000/ha-templates/tree/main/card/mushroom_update
           - type: custom:auto-entities
@@ -242,9 +281,9 @@ cards:
 
           # - !include ../cards/nordpool_3days.yaml
           # - !include ../cards/nordpool_test.yaml
-          # # - !include ../cards/priceanalyzer_02_copy.yaml
+          # # - !include ../cards/priceanalyzer_main_02_copy.yaml
 
-        #  - !include ../cards/priceanalyzer_03.yaml
+        #  - !include ../cards/priceanalyzer_main_03.yaml
           #  - !include ../cards/pwrctrl_energyscore_card.yaml
           #  - !include ../cards/alert_card.yaml
 

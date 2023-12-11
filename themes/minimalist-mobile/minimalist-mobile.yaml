@@ -44,6 +44,7 @@ minimalist-mobile:
       color-blue: "61, 90, 254"
       color-purple: "102, 31, 255"
       color-grey: "187, 187, 187"
+      color-darkgrey: "#bdbdbd"        # AVM, copy the "disabled colour": https://github.com/home-assistant/frontend/blob/master/src/resources/ha-style.ts
       color-pink: "233, 30, 99"
       color-theme: "51,51,51"
       color-background-yellow: "250, 250, 250"

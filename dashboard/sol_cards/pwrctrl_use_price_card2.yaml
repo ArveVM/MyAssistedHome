@@ -30,7 +30,7 @@ yaxis:
 
 series:
   - name: Price today
-    entity: sensor.priceanalyzer
+    entity: sensor.priceanalyzer_main
     float_precision: 0
     unit: Øre/kWh
     yaxis_id: one
@@ -52,7 +52,7 @@ series:
       return today;
 
   - name: Price tomorrow
-    entity: sensor.priceanalyzer
+    entity: sensor.priceanalyzer_main
     # https://github.com/RomRider/apexcharts-card#confirmation-options
     # add popup to usage    - and the same for limit
     float_precision: 0
@@ -78,7 +78,7 @@ series:
       }
 
   - name: Price current hour
-    entity: sensor.priceanalyzer_price
+    entity: sensor.priceanalyzer_main_price
     yaxis_id: header
     float_precision: 1
     unit: Øre/kWh

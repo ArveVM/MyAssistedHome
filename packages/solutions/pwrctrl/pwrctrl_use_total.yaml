@@ -15,35 +15,61 @@ sensor:
       - filter: lowpass
         time_constant: 10
 
+# sensor:
+  # convert from W to kWh   - need this to get values throughout the hour, as Eva is only reporting accumulated until next hours
+  - platform: integration
+    unique_id: pwrctrl_use_total_inst_energy
+    name: PwrCtrl Use Total inst energy
+    source: sensor.evahan_power
+    method: left
+    unit_prefix: k
+    round: 1
 
-powercalc:
-  sensors:
-    - create_group: PwrCtrl Use Total
-      ignore_unavailable_state: true
-      create_energy_sensor: true
-      create_utility_meters: true
-      force_energy_sensor_creation: true 
-      entities:
-        - power_sensor_id: sensor.evahan_power
+utility_meter:
+  # log usage in periods
+  #   cycle string-> How often to reset the counter.
+  #       Valid values: quarter-hourly, hourly, daily, weekly, monthly, bimonthly, quarterly and yearly
+  pwrctrl_use_total_energy_hourly:
+    source: sensor.pwrctrl_use_total_inst_energy
+    name: PwrCtrl Use Total Energy hourly
+    cycle: hourly
 
-    - create_group: PwrCtrl Use Total 22
-      ignore_unavailable_state: true
-      create_energy_sensor: true
-      create_utility_meters: true
-      force_energy_sensor_creation: true 
-      entities:
-        # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
-        - entity_id: sensor.dummy
-          power_sensor_id: sensor.evahan_power
+template:
+  - sensor:
+      - name: PwrCtrl Use Total power
+        unit_of_measurement: W
+        state: >
+          {{ states('sensor.evahan_power') }}
 
-    - create_group: PwrCtrl Use Total 55
-      ignore_unavailable_state: true
-      create_energy_sensor: true
-      create_utility_meters: true
-      force_energy_sensor_creation: true 
-      entities:
-        # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
-        - entity_id: sensor.dummy
-          name: EvaHan55
-          fixed:
-            power: "{{ states('sensor.evahan_power') }}"
+# powercalc:
+#   sensors:
+#     - create_group: PwrCtrl Use Total
+#       ignore_unavailable_state: true
+#       create_energy_sensor: true
+#       create_utility_meters: true
+#       force_energy_sensor_creation: true 
+#       entities:
+#         - entity_id: sensor.evahan_power
+#           power_sensor_id: sensor.evahan_power
+
+#     - create_group: PwrCtrl Use Total 22
+#       ignore_unavailable_state: true
+#       create_energy_sensor: true
+#       create_utility_meters: true
+#       force_energy_sensor_creation: true 
+#       entities:
+#         # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
+#         - entity_id: sensor.dummy
+#           power_sensor_id: sensor.evahan_power
+
+#     - create_group: PwrCtrl Use Total 55
+#       ignore_unavailable_state: true
+#       create_energy_sensor: true
+#       create_utility_meters: true
+#       force_energy_sensor_creation: true 
+#       entities:
+#         # optional config from: https://homeassistant-powercalc.readthedocs.io/en/latest/strategies/fixed.html#configuration-options
+#         - entity_id: sensor.dummy
+#           name: EvaHan55
+#           fixed:
+#             power: "{{ states('sensor.evahan_power') }}"
