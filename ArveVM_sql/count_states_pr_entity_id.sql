@@ -1,6 +1,7 @@
 -- ArveVM; Show all entities sorted by count of states for each entity_id
 -- thanks to KennethM for original idea and ThomasH for the actual select/group/sort-statement 
 
+
 SELECT
   states_meta.entity_id,
   count(*) as cnt
