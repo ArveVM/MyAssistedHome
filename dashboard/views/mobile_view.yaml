@@ -15,10 +15,10 @@ cards:
       # Card/page1:
       - type: custom:mushroom-chips-card
         card_mod:
-        style: |
-          ha-card {
-            --primary-text-color: grey;
-          }
+          style: |
+            ha-card {
+              --primary-text-color: grey;
+            }
         alignment: justify
         chips:
           - !include ../sol_cards/dashboard_chipcard.yaml
@@ -40,10 +40,11 @@ cards:
       # Card/page2 - StartPage:
       - type: custom:mushroom-chips-card
         alignment: justify
-        style: |
-          ha-card {
-            --primary-text-color: grey;
-          }
+        card_mod:
+          style: |
+            ha-card {
+              --primary-text-color: grey;
+            }
         chips:
           - !include ../sol_cards/weather_chip.yaml
 

@@ -1,7 +1,7 @@
 
 
 type: vertical-stack
-title: Containers Running
+title: Containers Running2
 cards:
   - type: custom:auto-entities
     card:
@@ -27,12 +27,13 @@ cards:
               #   return '/local/icons/code_server.png';
             show_label: false
             show_entity_picture: true
-            style: |
-              ha-card {
-                box-shadow: none;
-                overflow: visible;
-                border-top: 1px solid #333333;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  box-shadow: none;
+                  overflow: visible;
+                  border-top: 1px solid #333333;
+                }
             name: |
               [[[
                 return states['this.entity_id'.replace("switch.", "sensor.")].attributes.friendly_name;
@@ -129,10 +130,11 @@ cards:
                   show_name: false
                   show_state: false
                   color: lightgreen
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                    }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        box-shadow: none;
+                      }
                   tap_action:
                     action: toggle
                     confirmation:
@@ -176,11 +178,12 @@ cards:
                     icon:
                       - color: rgba(0,0,0,0)
                       - width: 32px
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                      background-color: rgba(0,0,0,0);
-                    }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        box-shadow: none;
+                        background-color: rgba(0,0,0,0);
+                      }
                   hold_Action:
                     action: more-info
                   tap_action:
@@ -218,11 +221,12 @@ cards:
                     icon:
                       - color: rgba(0,0,0,0)
                       - width: 25px
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                      background-color: rgba(0,0,0,0);
-                    }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        box-shadow: none;
+                        background-color: rgba(0,0,0,0);
+                      }
                   hold_Action:
                     action: more-info
                   tap_action:
@@ -260,11 +264,12 @@ cards:
                     icon:
                       - color: rgba(0,0,0,0)
                       - width: 25px
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                      background-color: rgba(0,0,0,0);
-                    }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        box-shadow: none;
+                        background-color: rgba(0,0,0,0);
+                      }
                   hold_Action:
                     action: more-info
                   tap_action:
@@ -286,10 +291,11 @@ cards:
                     card:
                       - height: 100px
                       - background-color: rgba(0,0,0,0)
-                  style: |
-                    ha-card {
-                      box-shadow: none;
-                    }
+                  card_mod:
+                    style: |
+                      ha-card {
+                        box-shadow: none;
+                      }
                   tap_action:
                     action: fire-dom-event
                     browser_mod:
@@ -308,12 +314,13 @@ cards:
                               show_icon: false
                               show_label: false
                               show_entity_picture: true
-                              style: |
-                                ha-card {
-                                  box-shadow: none;
-                                  overflow: visible;
-                                  border-top: 0px solid #333333;
-                                }
+                              card_mod:
+                                style: |
+                                  ha-card {
+                                    box-shadow: none;
+                                    overflow: visible;
+                                    border-top: 0px solid #333333;
+                                  }
                               tap_action:
                                 action: more-info
                               name: |
@@ -386,10 +393,11 @@ cards:
                                     show_name: false
                                     show_state: false
                                     color: orange
-                                    style: |
-                                      ha-card {
-                                        box-shadow: none;
-                                      }
+                                    card_mod:
+                                      style: |
+                                        ha-card {
+                                          box-shadow: none;
+                                        }
                                     hold_action:
                                       action: more-info
                                     tap_action:
@@ -405,16 +413,17 @@ cards:
                             - type: history-graph
                               entities:
                                 - entity: this.entity_id
-                              style: |
-                                ha-card {
-                                    margin: 0px;
-                                    margin-top: 0px;
-                                    padding: 0px;
-                                    border-radius: 0px;
-                                    border: 0px;
-                                    border-bottom: 2px solid #111;
-                                    box-shadow: none;
-                                }
+                              card_mod:
+                                style: |
+                                  ha-card {
+                                      margin: 0px;
+                                      margin-top: 0px;
+                                      padding: 0px;
+                                      border-radius: 0px;
+                                      border: 0px;
+                                      border-bottom: 2px solid #111;
+                                      box-shadow: none;
+                                  }
                             - type: horizontal-stack
                               cards:
                                 - type: custom:apexcharts-card
@@ -469,16 +478,17 @@ cards:
                                       show:
                                         legend_value: false
                                       fill_raw: last
-                                  style: |
-                                    ha-card {
-                                        margin: 0px;
-                                        padding: 0px;
-                                        padding-right: 10px;
-                                        border-radius: 0px;
-                                        border: 0px;
-                                        border-bottom: 2px solid #111;
-                                        box-shadow: none;
-                                    }
+                                  card_mod:
+                                    style: |
+                                      ha-card {
+                                          margin: 0px;
+                                          padding: 0px;
+                                          padding-right: 10px;
+                                          border-radius: 0px;
+                                          border: 0px;
+                                          border-bottom: 2px solid #111;
+                                          box-shadow: none;
+                                      }
                             - type: horizontal-stack
                               cards:
                                 - type: custom:apexcharts-card
@@ -533,25 +543,27 @@ cards:
                                       show:
                                         legend_value: false
                                       fill_raw: last
-                                  style: |
-                                    ha-card {
-                                        margin: 0px;
-                                        padding: 0px;
-                                        padding-right: 10px;
-                                        border-radius: 0px;
-                                        border: 0px;
-                                        border-bottom: 2px solid #111;
-                                        box-shadow: none;
-                                    }
+                                  card_mod:
+                                    style: |
+                                      ha-card {
+                                          margin: 0px;
+                                          padding: 0px;
+                                          padding-right: 10px;
+                                          border-radius: 0px;
+                                          border: 0px;
+                                          border-bottom: 2px solid #111;
+                                          box-shadow: none;
+                                      }
                             - type: custom:logbook-card
                               desc: true
                               entity: this.entity_id
                               title: History
-                              style: |
-                                ha-card {
-                                    margin: 0px;
-                                    padding: 0px;
-                                    padding-right: 10px;
-                                    border: 0px;
-                                    box-shadow: none;
-                                }
+                              card_mod:
+                                style: |
+                                  ha-card {
+                                      margin: 0px;
+                                      padding: 0px;
+                                      padding-right: 10px;
+                                      border: 0px;
+                                      box-shadow: none;
+                                  }

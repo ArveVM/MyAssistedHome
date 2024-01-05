@@ -25,7 +25,7 @@ homeassistant:
       gen_thermostat: &gen_thermostat climate.hotwater_temp_thermostat # the generic thermostat,, used in automations to turn switch on/off
       local_temp: &local_temp sensor.hotwater_temp_temperature # this is input from Shelly
       gen_thermostat_output: &gen_thermostat_output input_boolean.hotwater_temp_thermostat_output # output from generic thermostat,, used in automations to turn switch on/off
-      gen_thermostat_target: &gen_thermostat_target sensor.priceanalyzer_vvb # target degrees,, fluctuates with prices from Nordpool
+      gen_thermostat_target: &gen_thermostat_target sensor.priceanalyzer_main_vvb # target degrees,, fluctuates with prices from Nordpool
 
     # tagging entities used (as input) by this file/Solution with the 'Solution name' as an attribute:
     switch.hotwater_puck:

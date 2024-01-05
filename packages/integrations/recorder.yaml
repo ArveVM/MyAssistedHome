@@ -21,7 +21,7 @@ recorder:
   # db_url: !secret recorder_db_url
 
   # The number of days of history to keep in the recorder database
-  purge_keep_days: 10
+  purge_keep_days: 9       # changed from 10 to 9 on 2023-12-11
   # ArveVM; default is 10 days
 
   #  auto_purge: false
@@ -29,12 +29,45 @@ recorder:
   exclude:
     domains:
       #- automation
+      - cover
+      - light
       - updater
     entity_globs:
+      - sensor.sun*
       - sensor.weather_*
     entities:
       #- sun.sun # Don't record sun data
       - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - sensor.time_date
+      - sensor.time
       - sensor.date
     event_types:
       - call_service # Don't record service calls
+
+automation:
+  - id: 3cfabc7f-de0f-42cc-8470-16b39c5aed71
+    alias: Recorder purge noizy entities
+    trigger:
+      - platform: time
+        at: "02:07:00"
+    condition:
+    action:
+      - service: recorder.purge_entities
+        target:
+          entity_id:
+            - sensor.evahan_power
+            - sensor.evahan_voltage
+            - sensor.evahan_voltage_phase_b
+            - sensor.evahan_voltage_phase_c
+            - sensor.evahan_current
+            - sensor.evahan_current_phase_b
+            - sensor.evahan_current_phase_c
+            - sensor.evahan_linkquality
+            - sensor.evahan_temperature
+            - sensor.evahan_org_energy2
+            - sensor.evahan_last_seen
+            - binary_sensor.evahan_update_available
+        data:
+          domains: []
+          entity_globs: []
+          keep_days: 2

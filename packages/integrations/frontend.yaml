@@ -1,0 +1,14 @@
+# Frontend is originally part of default config,, but adding it here to keep 
+# additional config separte pr integrations that are adding them:
+
+
+
+frontend:
+  # ArveVM: enable UI-Minimalist-themes
+  themes: !include_dir_merge_named ../../themes
+  
+  # ArveVM: added in 4.1.2024, add performance to card-mod by adding as frontend-module
+  # http://192.168.2.141:8121/hacs/repository/190927524
+  extra_module_url:            
+  #   - /local/card-mod.js    
+    - /hacsfiles/lovelace-card-mod/card-mod.js

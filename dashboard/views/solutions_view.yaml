@@ -4,10 +4,10 @@ cards:
   # header chips:
   - type: custom:mushroom-chips-card
     card_mod:
-    style: |
-      ha-card {
-        --primary-text-color: grey;
-      }
+      style: |
+        ha-card {
+          --primary-text-color: grey;
+        }
     chips:
       - type: back
       - type: menu

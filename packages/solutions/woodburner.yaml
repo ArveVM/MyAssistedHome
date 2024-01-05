@@ -1,0 +1,40 @@
+sensor:
+  - platform: derivative
+    source: sensor.woodburner_thp_temperature
+    name: Woodburner Temperature change per hour
+    round: 1
+    unit_time: h # the resulting "unit_of_measurement" will be °C/h if the sensor.temperate has set °C as its unit
+    time_window: "00:30:00" # we look at the change over the last half hour
+
+  - platform: derivative
+    source: sensor.woodburner_thp_temperature
+    name: Woodburner Temperature change per hour
+    round: 1
+    unit_time: h # the resulting "unit_of_measurement" will be °C/h if the sensor.temperate has set °C as its unit
+    time_window: "00:10:00" # we look at the change over the last half hour
+
+  - platform: derivative
+    source: sensor.woodburner_tempdiff
+    name: Woodburner TempDiff change per hour
+    round: 1
+    unit_time: h # the resulting "unit_of_measurement" will be °C/h if the sensor.temperate has set °C as its unit
+    time_window: "00:10:00" # we look at the change over the last half hour
+
+template:
+  #  
+  - sensor:
+      - name: Woodburner TempDiff
+        unique_id: woodburner_tempdiff
+        state: >
+          {{ states('sensor.woodburner_thp_temperature') | float(default=18)
+          - states('sensor.livingroom_netatmo_temperature') | float(default=0)
+          }}
+        state_class: measurement
+        unit_of_measurement: °C
+        device_class: temperature
+  - binary_sensor:
+      - name: Woodburner running
+        unique_id: woodburner_running
+        state: >
+          {{ states('sensor.woodburner_tempdiff') | float(default=0) > 1.8}}      
+

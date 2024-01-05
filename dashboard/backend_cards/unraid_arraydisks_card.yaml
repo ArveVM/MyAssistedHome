@@ -30,18 +30,19 @@ filter:
           - color: red
             from: 76
             to: 100
-        style: |
-          :host {
-            box-shadow: none;
-          }
-          bar-card-currentbar, bar-card-backgroundbar {
-            border-radius: 0px;
-          }
-          ha-card {
-            box-shadow: none;
-            margin: -10px
-          }
-          bar-card-name, bar-card-value {
-            color: black;
-            font-weight: normal;
-          }
+        card_mod:
+          style: |
+            :host {
+              box-shadow: none;
+            }
+            bar-card-currentbar, bar-card-backgroundbar {
+              border-radius: 0px;
+            }
+            ha-card {
+              box-shadow: none;
+              margin: -10px
+            }
+            bar-card-name, bar-card-value {
+              color: black;
+              font-weight: normal;
+            }

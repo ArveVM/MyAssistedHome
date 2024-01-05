@@ -34,9 +34,7 @@ automation: !include ../../automations.yaml
 #dhcp:
 #energy:
 
-# AVM: enable UI-Minimalist-themes
-frontend:
-  themes: !include_dir_merge_named ../../themes
+#frontend:   # ArveVM, moved to separate config-file
 
 #hardware        #AVM: added in 2022.6  
 #history:

@@ -39,7 +39,8 @@ series:
     float_precision: 1
     show:
       in_chart: false
-style: |
-  ha-card {
-    padding-bottom: 30px;
-  }
+card_mod:
+  style: |
+    ha-card {
+      padding-bottom: 30px;
+    }

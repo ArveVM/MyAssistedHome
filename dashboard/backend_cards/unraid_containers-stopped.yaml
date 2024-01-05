@@ -27,12 +27,13 @@ filter:
         show_entity_picture: true
         tap_action:
           action: more-info
-        style: |
-          ha-card {
-            box-shadow: none;
-            overflow: visible;
-            border-top: 1px solid #333333;
-          }
+        card_mod:
+          style: |
+            ha-card {
+              box-shadow: none;
+              overflow: visible;
+              border-top: 1px solid #333333;
+            }
         name: |
           [[[
             return states['this.entity_id'.replace("switch.", "sensor.")].attributes.friendly_name;
@@ -100,10 +101,11 @@ filter:
               styles:
                 icon:
                   - color: red
-              style: |
-                ha-card {
-                  box-shadow: none;
-                }
+              card_mod:
+                style: |
+                  ha-card {
+                    box-shadow: none;
+                  }
               tap_action:
                 action: toggle
                 confirmation:

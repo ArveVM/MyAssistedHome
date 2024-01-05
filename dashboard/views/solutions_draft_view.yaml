@@ -10,10 +10,10 @@ cards:
         cards:
           - type: custom:mushroom-chips-card
             card_mod:
-            style: |
-              ha-card {
-                --primary-text-color: grey;
-              }
+              style: |
+                ha-card {
+                  --primary-text-color: grey;
+                }
             chips:
               - type: back
               - type: menu
@@ -26,10 +26,10 @@ cards:
 
           - type: custom:mushroom-chips-card
             card_mod:
-            style: |
-              ha-card {
-                --primary-text-color: grey;
-              }
+              style: |
+                ha-card {
+                  --primary-text-color: grey;
+                }
             chips:
               - type: template
                 icon: mdi:soccer
@@ -46,10 +46,10 @@ cards:
 
           - type: custom:mushroom-chips-card
             card_mod:
-            style: |
-              ha-card {
-                --primary-text-color: grey;
-              }
+              style: |
+                ha-card {
+                  --primary-text-color: grey;
+                }
             chips:
               - !include ../area_cards/house_light_chip.yaml 
               - !include ../sol_cards/camera1_chip.yaml 
@@ -64,10 +64,10 @@ cards:
               chips -> popup - LOW-PRI:
           - type: custom:mushroom-chips-card
             card_mod:
-            style: |
-              ha-card {
-                --primary-text-color: grey;
-              }
+              style: |
+                ha-card {
+                  --primary-text-color: grey;
+                }
             chips:
               - !include ../sol_cards/cpu_chip.yaml
               - !include ../sol_cards/pollen_chipcard.yaml

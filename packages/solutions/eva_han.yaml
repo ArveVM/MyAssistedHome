@@ -70,6 +70,8 @@ sensor:
       - filter: lowpass
         time_constant: 10
 
+
+
 # template:
 #   - trigger:
 #       - platform: time_pattern

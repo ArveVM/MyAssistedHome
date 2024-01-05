@@ -17,7 +17,7 @@
 {# _ _ _ Get country out of transporter-prefix #}
 {%- set country_id = config.transporter[0:3] %}
 
-{%- if country_id == "no_" %}
+{%- if country_id == "no__" %}
   {%- set transport         = norway_transport_fee(config.transporter, config.timeslot)|float %}
   {%- set transport_broker  = transport + config.brokerfee|float %}
   {%- set subsidy           = norway_state_subsidy(price_currency)|float %}
@@ -28,7 +28,26 @@
     {%- set state_fee_vat     = (transport_broker + price_subsidized + state_fee_ex_vat) 
                               * norway_state_fees("vat_ontop")|float -%}
     {%- set price_subz_tb_sf_vat = price_subz_tb +  state_fee_ex_vat + state_fee_vat %}
+  {%- else %}
+    {%- set state_fee_vat     = 0 %} 
   {%- endif %}
+
+{%- elif country_id == "no_" %}
+  {%- set transport         = norway_transport_fee(config.transporter, config.timeslot)|float %}
+  {%- set transport_broker  = transport + config.brokerfee|float %}
+  {%- set subsidy           = norway_state_subsidy(config.timeslot_price)|float %}
+  {%- set subsidy2           = 0.42723 %}
+  {%- set price_subsidized  = config.timeslot_price + subsidy %}
+  {%- set price_subz_tb     = price_subsidized + transport_broker %}
+  {%- set state_fee_ex_vat  = 0.1684 %}
+  {%- if config.output_vat == true %}
+    {%- set state_fee_vat     = (transport_broker + price_subsidized + state_fee_ex_vat) 
+                              * 0.25 -%}
+    {%- set price_subz_tb_sf_vat = price_subz_tb +  state_fee_ex_vat + state_fee_vat %}
+  {%- else %}
+    {%- set state_fee_vat     = 0 %} 
+  {%- endif %}
+  
 {%- else %}
   {%- set out_function = "error" %}
   {%- set out_msg = "no vaild country code out of transporter-prefix" %}
@@ -44,11 +63,11 @@
 {%- elif out_function == "transport_broker" %}
   {{ transport_broker }}
 {%- elif out_function == "transport_broker_pure" %}
-  {{ transport_broker - price_currency }}
+  {{ (transport_broker - config.timeslot_price ) }}
 {%- elif out_function == "subsidy" %}
   {{ subsidy }}
-{%- elif out_function == "price_subsidized" %}
-  {{ price_subsidized }}
+{%- elif out_function == "price_subsidized_pure" %}
+  {{ ( subsidy ) }}
 {%- elif out_function == "price_subz_tb" %}
   {{ price_subz_tb }}
 {%- elif out_function == "price_subz_tb_sf_vat" %}
@@ -67,7 +86,7 @@
 {%- elif out_function == "brokerfee" %}
   {{ config.brokerfee }}
 {%- elif out_function == "price_currency" %}
-  {{ price_currency }}
+  {{ config.timeslot_price  }}
 {%- elif out_function == "state_fee_ex_vat" %}
   {{ state_fee_ex_vat }}
 {%- elif out_function == "state_fee_vat" %}
@@ -120,10 +139,12 @@
 {%- endmacro %}
 
 
+
 {#- - - - - - - - - - Calculate Norwegian el-subsidies for private recidents - - - - - - - - #}
 {% macro norway_state_subsidy(price_nok_no_vat) %}
 
-{%- set power_subsidy_treshold_ex_vat = (0.875 / 1.25) %}
+{# {%- set power_subsidy_treshold_ex_vat = (0.875 / 1.25) %} #} 
+{%- set power_subsidy_treshold_ex_vat = (0.25 / 1.25) %}
 {%- set power_subsidy_percent = 90 %}
 {%- set price = price_nok_no_vat|float %}
 {%- set power_subsidy_nok = 0 %}
@@ -131,7 +152,7 @@
 {#- _ _ _ Calculate net el-subsidy: #}
 {%- if price > power_subsidy_treshold_ex_vat %}
   {%- set power_subsidy_nok = (price_nok_no_vat - power_subsidy_treshold_ex_vat ) 
-                            * power_subsidy_percent/100 -%}
+                            * power_subsidy_percent/100 * -1 -%}
 {%- endif %}
 
 {#- _ _ _ return output from chosen function: #}

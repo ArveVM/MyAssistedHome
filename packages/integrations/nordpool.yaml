@@ -223,23 +223,23 @@
   #           true,
   #           3)}}
 
-template:
-  - sensor:
-      - name: Nordpool Additional Cost
-        state: >
-          {% set current_price = (states('sensor.nordpool')|float) %}
-          {% set curr_hour = now().hour %}
-          {% set curr_month = now().month %}
-          {% set curr_price = current_price %}
-          {% from 'nordpool_additional_cost.jinja' import add_cost %} 
-          {{ SpotTest(
-              curr_hour,
-              curr_month,
-              0.029|float/1.25,
-              curr_price,
-              true,
-              1
-              )}}
+# template:
+#   - sensor:
+#       - name: Nordpool Additional Cost
+#         state: >
+#           {% set current_price = (states('sensor.nordpool')|float) %}
+#           {% set curr_hour = now().hour %}
+#           {% set curr_month = now().month %}
+#           {% set curr_price = current_price %}
+#           {% from 'nordpool_additional_cost.jinja' import add_cost %} 
+#           {{ SpotTest(
+#               curr_hour,
+#               curr_month,
+#               0.029|float/1.25,
+#               curr_price,
+#               true,
+#               1
+#               )}}
 
 
   # - platform: nordpool
