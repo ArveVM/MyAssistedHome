@@ -13,12 +13,8 @@
 ###############################################################################
 
 recorder:
-  commit_interval: 1
-  #ArveVM; default is 1 sec, but I'll try if I can "feel the lagging" if increased to two seconds
-
-  # Use the Core MariaDB add-on to store the recorder data in
-  # e.g.: "mysql://homeassistant:PASSWORD@core-mariadb/homeassistant?charset=utf8"
-  # db_url: !secret recorder_db_url
+  commit_interval: 5
+  #ArveVM; default was before 1 sec, changed ot new standard 5sec in march-25
 
   # The number of days of history to keep in the recorder database
   purge_keep_days: 9       # changed from 10 to 9 on 2023-12-11
@@ -36,7 +32,6 @@ recorder:
       - sensor.sun*
       - sensor.weather_*
     entities:
-      #- sun.sun # Don't record sun data
       - sensor.last_boot # Comes from 'systemmonitor' sensor platform
       - sensor.time_date
       - sensor.time
@@ -51,21 +46,26 @@ automation:
       - platform: time
         at: "02:07:00"
     condition:
-    action:
-      - service: recorder.purge_entities
+    actions:
+      - action: recorder.purge_entities
         target:
           entity_id:
-            - sensor.evahan_power
-            - sensor.evahan_voltage
-            - sensor.evahan_voltage_phase_b
-            - sensor.evahan_voltage_phase_c
-            - sensor.evahan_current
-            - sensor.evahan_current_phase_b
-            - sensor.evahan_current_phase_c
-            - sensor.evahan_linkquality
-            - sensor.evahan_temperature
-            - sensor.evahan_org_energy2
-            - sensor.evahan_last_seen
+            - sensor.pwrctrl_ug_all_power      # +430' rows with 10days storage !!
+            - sensor.pwrctrl_ug_ungrouped      # +290' rows with 10days storage !!
+            - sensor.dream_machine_pro_cpu_utilization  # +415' rows with 10days storage !!
+        #    - sensor.evahan_power
+        #    - sensor.evahan_voltage
+        #    - sensor.evahan_voltage_phase_b
+        #    - sensor.evahan_voltage_phase_c
+        #    - sensor.evahan_current
+        #    - sensor.evahan_current_phase_b
+        #    - sensor.evahan_current_phase_c
+        #    - sensor.evahan_linkquality
+        #    - sensor.evahan_temperature
+        #    - sensor.evahan_org_energy2
+        #    - sensor.evahan_last_seen
+          entity_globs:
+            - sensor.evahan_*
         data:
           domains: []
           entity_globs: []

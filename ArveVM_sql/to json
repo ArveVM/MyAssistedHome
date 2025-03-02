@@ -1,0 +1,7 @@
+select json_group_array(
+	json_object(
+	'tbl', tbl,
+	'idx', idx,
+	'stat', stat
+	))
+FROM sqlite_stat1

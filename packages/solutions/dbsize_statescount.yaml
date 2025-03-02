@@ -1,0 +1,105 @@
+
+
+#Source/inspiration: https://community.home-assistant.io/t/simple-way-to-reduce-your-db-size/234787/7
+# but I will inject 10 largest into a json-string and use that to create a different sensor
+
+sql:
+  - name: DBsize statesCount top3 json
+    query: >
+      SELECT json_group_array(
+        json_object(
+          'entity_id', entity_id, 
+          'count', count)) AS jgo
+        FROM (SELECT m.entity_id, COUNT(*) as count FROM states AS s 
+          INNER JOIN states_meta AS M ON M.metadata_id = s.metadata_id 
+          GROUP BY m.entity_id 
+          ORDER BY count 
+          DESC
+          LIMIT 3
+          );
+    column: jgo
+  - name: DBsize statesCount top4 6 json
+    query: >
+      SELECT json_group_array(
+        json_object(
+          'entity_id', entity_id, 
+          'count', count)) AS jgo
+        FROM (SELECT m.entity_id, COUNT(*) as count FROM states AS s 
+          INNER JOIN states_meta AS M ON M.metadata_id = s.metadata_id 
+          GROUP BY m.entity_id 
+          ORDER BY count 
+          DESC
+          LIMIT 3 OFFSET 3
+          );
+    column: jgo
+
+
+
+template:
+  - sensor:
+      - name: "DBsize statesCount top6"
+        state: >
+          {{ (states('sensor.dbsize_statescount_no1') | int +
+              states('sensor.dbsize_statescount_no2') | int +
+              states('sensor.dbsize_statescount_no4') | int +
+              states('sensor.dbsize_statescount_no6') | int +
+              states('sensor.dbsize_statescount_no5') | int +
+              states('sensor.dbsize_statescount_no6') | int) | string }}
+        unit_of_measurement: rows
+        state_class: measurement
+
+      - name: "DBsize statesCount no1"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+          {{ data[0]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >-
+            {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+            {{ data[0]['entity_id'] if data | length > 0 else 'unknown' }}
+      - name: "DBsize statesCount no2"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+          {{ data[1]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >-
+            {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+            {{ data[1]['entity_id'] if data | length > 0 else 'unknown' }}
+      - name: "DBsize statesCount no3"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+          {{ data[2]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >-
+            {% set data = state_attr('sensor.dbsize_statescount_top3_json', 'jgo') | from_json %}
+            {{ data[2]['entity_id'] if data | length > 0 else 'unknown' }}
+
+      - name: "DBsize statesCount no4"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+          {{ data[0]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >
+            {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+            {{ data[0]['entity_id'] if data | length > 0 else 'unknown' }}
+      - name: "DBsize statesCount no5"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+          {{ data[1]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >
+            {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+            {{ data[1]['entity_id'] if data | length > 0 else 'unknown' }}
+      - name: "DBsize statesCount no6"
+        state: >
+          {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+          {{ data[2]['count'] | int if data | length > 0 else 'unknown' }}
+        unit_of_measurement: rows
+        attributes:
+          entity_id: >
+            {% set data = state_attr('sensor.dbsize_statescount_top4_6_json', 'jgo') | from_json %}
+            {{ data[2]['entity_id'] if data | length > 0 else 'unknown' }}

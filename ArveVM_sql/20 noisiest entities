@@ -1,0 +1,3 @@
+SELECT m.entity_id, COUNT(*) as count FROM states AS S
+INNER JOIN states_meta AS M ON M.metadata_id = s.metadata_id
+GROUP BY m.entity_id ORDER BY count DESC LIMIT 20;
