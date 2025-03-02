@@ -31,6 +31,15 @@ template:
         state: "{{ states('sensor.kitchen_heater_south_power') | float(0) > 7 }}"
 
 
+mqtt:
+  # ArveVM; faking an MQTT-sensor and not input_boolean to disable user interference in UI
+  sensor:
+    - name: Kitchen Heater Plug MQTT Temperature
+      state_topic: "shellies/Kitchen_Heater_Plug/temperature"
+      unit_of_measurement: °C
+
+
+
 input_boolean:
   kitchen_heater_thermostat_output:
     name: Kitchen Heater Thermostat Output

@@ -9,10 +9,10 @@ cards:
   - type: horizontal-stack
     cards:
       - type: custom:mushroom-template-card
-        entity: sensor.priceanalyzer_main_price
+        entity: sensor.nordpool
         secondary: øre/kWh
         primary: >
-          {{ states(entity) | round(1) }}
+          {{ states(entity) | round(0) }}
         icon: mdi:currency-usd
         icon_color: orange
         tap_action:
@@ -107,7 +107,7 @@ cards:
 
     series:
       - name: Price today
-        entity: sensor.priceanalyzer_main
+        entity: sensor.nordpool
         float_precision: 0
         unit: Øre/kWh
         yaxis_id: one
@@ -128,7 +128,7 @@ cards:
           return today;
 
       - name: Price tomorrow
-        entity: sensor.priceanalyzer_main
+        entity: sensor.nordpool
         # https://github.com/RomRider/apexcharts-card#confirmation-options
         # add popup to usage    - and the same for limit
         float_precision: 0

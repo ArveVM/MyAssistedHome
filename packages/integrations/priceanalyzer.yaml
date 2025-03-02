@@ -1,0 +1,24 @@
+
+
+
+# some dummy settings to enable test-layers beteween integration and the template-work,, and the actual solutions that need a sensor continously,,,
+
+
+template:
+  - sensor:
+
+      - name: Priceanalyzer Main
+        unique_id: priceanalyzer_main_temporary
+        unit_of_measurement: °C
+        device_class: temperature
+        state: >
+          {{ states('sensor.priceanalyzer_no3')}}
+      - name: priceanalyzer_main_vvb
+        unique_id: e5886b87-55a8-4e92-93a3-b6eea52afca4
+        unit_of_measurement: °C
+        device_class: temperature
+        state: >
+          {{states('sensor.vvbsensor_no3')}}
+
+
+          #  sensor.priceanalyzer_main_vvb

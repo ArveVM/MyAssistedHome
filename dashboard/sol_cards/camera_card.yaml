@@ -37,12 +37,12 @@ cards:
             default: live
           live:
             preload: false
-          media_viewer:
-            auto_play: all
+          media_viewer: {}
+ #           auto_play: all
           image:
             mode: camera
           timeline:
-            media: all
+            events_media_type: all
           menu:
             style: outside
             position: bottom
@@ -55,17 +55,18 @@ cards:
           elements:
             - type: custom:frigate-card-conditional
               conditions:
-                camera: 
-                  - camera.garage_front
-                  - camera.garage_cam
+                - condition: camera
+                  cameras: 
+                    - camera.garage_front
+  #                - camera.garage_cam
               elements:
                 - type: custom:frigate-card-menu-state-icon
                   entity: switch.garage_dad
                   icon: mdi:garage
                   tap_action:
-                    action: call-service
-                    service: switch.toggle
-                    service_data:
+                    action: perform-action
+                    perform_action: switch.toggle
+                    data:
                       entity_id: switch.garage_dad       
                   hold_action:
                     action: more-info
@@ -73,9 +74,9 @@ cards:
                   entity: switch.garage_t
                   icon: mdi:garage
                   tap_action:
-                    action: call-service
-                    service: switch.toggle
-                    service_data:
+                    action: perform-action
+                    perform_action: switch.toggle
+                    data:
                       entity_id: switch.garage_t       
                   hold_action:
                     action: more-info
@@ -92,7 +93,9 @@ cards:
               title: EntryHD
               live_provider: go2rtc
               id: entry
-              hide: true
+              capabilities:
+                disable_except:
+                  - substream
 
             # For garage-front,, would like high-resolution in live stream:
             - camera_entity: camera.garage_front
@@ -101,9 +104,9 @@ cards:
               # id: west1
 
             # For garaget,, would like high-resolution in live stream:
-            - camera_entity: camera.garage_cam
-              title: Garage HD
-              live_provider: go2rtc
+           # - camera_entity: camera.garage_cam
+           #   title: Garage HD
+           #   live_provider: go2rtc
               # id: west1
           
             # Negligable difference between resolution on substream and main,, so just stream mainstream

@@ -50,7 +50,7 @@ template:
         unit_of_measurement: °C
         device_class: temperature
         state: " {{state_attr('climate.office_heater_thermostat', 'temperature') }} "
-
+      
 
 climate:
   - platform: generic_thermostat

@@ -40,7 +40,8 @@ homeassistant:
         package: 'Laundry Dryer'
       # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
       power: &power sensor.laundry_dryer_plug_power
-      energy: &energy sensor.laundry_washer_energy
+#      energy: &energy sensor.laundry_washer_energy
+      energy: &energy sensor.laundry_dryer_plug_energy
       mqtt_sensor: &mqtt_sensor sensor.laundry_dryer_status
       mqtt_topic: &mqtt_topic house/laundry_dryer/status
       emptying_todo: &emptying_todo input_boolean.laundry_dryer_emptying_todo

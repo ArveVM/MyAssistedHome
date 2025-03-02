@@ -4,8 +4,8 @@
 homeassistant:
   customize:
     package.node_anchors:
-      temp1: &temp1 sensor.livingroom_netatmo_temperature
-      humidity1: &humidity1 sensor.livingroom_netatmo_humidity
+      temp1: &temp1 sensor.livingroom_average_temperature
+      humidity1: &humidity1 sensor.livingroom_vindstyrka_humidity
 
 # Then build the card-code:
 type: custom:stack-in-card
@@ -23,8 +23,8 @@ cards:
     entity: light.livingroom_lights_z2m
     primary: Livingroom
     secondary: >
-      {{states('sensor.livingroom_netatmo_temperature')}}°
-      {{states('sensor.livingroom_netatmo_humidity') | int}}%
+      {{states('sensor.livingroom_average_temperature')}}°
+      {{states('sensor.livingroom_vindstyrka_humidity') | int}}%
       {{states('sensor.livingroom_absolute_humidity') | round(1,'', 5)}}g
     multiline_secondary: false
     icon: mdi:sofa

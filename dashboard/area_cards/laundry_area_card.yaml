@@ -81,7 +81,7 @@ cards:
                   area_temp: *temp1
                   area_temp_compare: sensor.house_average_temperature
                   area_humidity: *humidity1
-                  area_humidity_compare: sensor.house_average_temperature
+                  area_humidity_compare: sensor.house_average_humidity
                   longterm_target: input_number.laundry_heater_longterm_target
                   thermostat_target: sensor.laundry_heater_thermostat_target
                   thermostat_output: input_boolean.laundry_heater_thermostat_output

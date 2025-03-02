@@ -1,0 +1,28 @@
+type: sections
+visible:
+  - user: 0a210c45f1094283adce53cbbaeaf06a
+  - user: bd4dbb51b355483283aa21118d4a66c8
+max_columns: 4
+title: SectionTest
+path: sectiontest
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+      - type: heading
+        icon: mdi:fridge
+        heading: Kitchen
+        heading_style: title
+      - type: tile
+        entity: sensor.priceanalyzer_main
+        vertical: false
+        hide_state: false
+        show_entity_picture: false
+        name: Straumpris
+      - type: tile
+        entity: device_tracker.dad_mobile
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section

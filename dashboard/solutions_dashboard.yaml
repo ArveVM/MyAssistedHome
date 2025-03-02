@@ -10,3 +10,4 @@ views:
 
   # then "main view,, the finished solutions"
   - !include views/solutions_view.yaml
+  - !include views/section_test.yaml

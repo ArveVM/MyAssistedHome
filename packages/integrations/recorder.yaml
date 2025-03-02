@@ -66,7 +66,6 @@ automation:
             - sensor.evahan_temperature
             - sensor.evahan_org_energy2
             - sensor.evahan_last_seen
-            - binary_sensor.evahan_update_available
         data:
           domains: []
           entity_globs: []

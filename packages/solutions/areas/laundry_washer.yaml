@@ -206,7 +206,7 @@ automation:
         - condition: trigger
           id: idle  
         sequence:
-        - service: mqtt.publish
+        - action: mqtt.publish
           data:
             topic: *mqtt_topic
             payload: Idle
@@ -220,7 +220,7 @@ automation:
         - service: input_boolean.turn_off
           target:
             entity_id: *emptying_todo
-        - service: mqtt.publish
+        - action: mqtt.publish
           data:
             topic: *mqtt_topic
             payload: Running
@@ -237,7 +237,7 @@ automation:
         - service: input_boolean.turn_on
           data:
             entity_id: *emptying_todo
-        - service: mqtt.publish
+        - action: mqtt.publish
           data:
             topic: *mqtt_topic
             payload: Finished

@@ -201,3 +201,78 @@ automation:
 
       # ELSE (if none of the choose-conditions apply,,,)
       default: []
+
+
+template:
+  - sensor:
+      - name: Dishwasher optimal 4hours eco
+        # "when is it optimal to start diswasher when it must be completed tomorrow at 07:00"
+        # NB all intelligence of this came from the one and only Erlend Sellie :)
+        state: >
+          {#Config: set hour and day: #}
+          {%set end_hour = 7%}
+          {%set today_or_tomorrow = 'tomorrow'%}
+
+
+          {%if today_or_tomorrow == 'today'%}
+            {%set day = 0%}
+          {% else %}
+            {%set day = 1%}
+          {%endif%}
+            {% set raw_today = state_attr('sensor.priceanalyzer_no3', 'raw_today') %}
+          {% set raw_tomorrow = state_attr('sensor.priceanalyzer_no3', 'raw_tomorrow') %}
+
+          {# Ensure raw_today and raw_tomorrow are lists #}
+          {% if raw_today is not iterable %}
+            {% set raw_today = [raw_today] %}
+          {% endif %}
+          {% if raw_tomorrow is not iterable %}
+            {% set raw_tomorrow = [raw_tomorrow] %}
+          {% endif %}
+
+          {# Combine today's and tomorrow's data #}
+          {% set combined = raw_today + raw_tomorrow %}
+
+          {# Sort combined data by start time #}
+          {% set sorted_data = combined | sort(attribute='start') %}
+
+          {# Get current time #}
+          {% set now = now() %}
+
+          {# Define end time as tomorrow at 7 AM #}
+          {% set end_time = (now + timedelta(days=day)).replace(hour=end_hour, minute=0, second=0, microsecond=0) %}
+
+          {# Filter data between now and end_time #}
+          {% set relevant_data = sorted_data 
+                | selectattr('start', '>=', now) 
+                | selectattr('start', '<', end_time) 
+                | list %}
+
+          {# Initialize a namespace to hold min_sum and cheapest_window #}
+          {% set ns = namespace(min_sum=None, cheapest_window=[]) %}
+
+          {# Check if there are at least 4 entries #}
+          {% if relevant_data | length < 4 %}
+            Not enough data to determine the cheapest 4-hour window.
+          {% else %}
+            {# Initialize min_sum and cheapest_window with the first 4 entries #}
+            {% set first_window = relevant_data[0:4] %}
+            {% set ns.min_sum = first_window | map(attribute='value') | map('float') | sum %}
+            {% set ns.cheapest_window = first_window %}
+            
+            {# Iterate through the remaining 4-hour windows #}
+            {% for i in range(1, (relevant_data | length) - 3) %}
+              {% set window = relevant_data[i:i+4] %}
+              {% set window_sum = window | map(attribute='value') | map('float') | sum %}
+
+              {% if window_sum < ns.min_sum %}              
+                {% set ns.min_sum = window_sum %}
+                {% set ns.cheapest_window = window %}
+              {% endif %}
+            {% endfor %}
+
+            {# Format the output #}
+            {% set start_time = ns.cheapest_window[0].start.strftime('%Y-%m-%d %H:%M') %}
+            {% set total_price = ns.min_sum | float | round(2) %}
+            Cheapest 4-hour window starts at {{ start_time }} with an average price of {{ total_price / 4}}
+          {% endif %}

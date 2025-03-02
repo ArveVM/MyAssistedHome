@@ -56,7 +56,12 @@ sensor:
     type: time
     start: "{{ now().replace(hour=00, minute=00, second=00) }}"
     end: "{{ now() }}"
-
+  - platform: group
+    name: Livingroom avg temperature
+    type: mean
+    entities:
+      - sensor.temperature_kitchen
+      - sensor.temperature_hallway
 
 input_boolean:
   entry_heater_thermostat_output:
@@ -82,18 +87,27 @@ input_number:
     min: 5
     max: 22
 
+#ToDo:  sjekke om vi treng den hersens termostat-mode og thermostat target ??  - kvifor lagre desse når vi brukar sensor som mål og ikkje pricecanalyzer blueprint til climate-input?
+
 template:
   - sensor:
     - name: Entry Heater Thermostat mode
       unique_id : "entry_heater_thermostat_mode"
       state: " {{state_attr('climate.entry_heater_thermostat', 'preset_mode') }} "
-  - sensor:
     - name: Entry Heater Thermostat target
       unique_id : "entry_heater_thermostat_target"
       unit_of_measurement: °C
       device_class: temperature
       state: " {{state_attr('climate.entry_heater_thermostat', 'temperature') }} "
-
+    - name: Entry Heater TempAdj
+      unique_id : entry_heater_temperature_adjustment
+      unit_of_measurement: °C
+      device_class: temperature
+      state: >
+        {{ states('input_number.entry_heater_longterm_target') | float
+         + states('sensor.priceanalyzer_main') | float
+        }}
+        
 
 climate:
   - platform: generic_thermostat
@@ -115,6 +129,24 @@ climate:
 
 
 automation:
+
+  - id: 'entry_heater_temp'
+    alias: "_Entry Heater; temp"
+    description: "Adjust climate temp-target to longterm+adjustments"
+    triggers:
+      - trigger: state
+        entity_id: 
+          - sensor.entry_heater_tempadj
+          - input_number.entry_heater_longterm_target
+    conditions:
+    actions:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.entry_heater_thermostat
+        data:
+          temperature: "{{ states('sensor.entry_heater_tempadj') }}"
+          hvac_mode: heat
+
 
   - id: 'entry_heater_auto_off'
     alias: "_Entry Heater; auto OFF"

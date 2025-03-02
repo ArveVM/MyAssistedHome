@@ -9,3 +9,9 @@ notify:
     tts_service: tts.google_say
     media_player: media_player.kitchen_googlemini
 
+
+# Example configuration.yaml entry
+media_player:
+  - platform: group
+    entities:
+      - media_player.kitchen_googlemini

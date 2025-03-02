@@ -36,6 +36,8 @@ light:
             command: PowerOff
 
 
+
+
 powercalc:
   sensors:
     - create_group: Livingroom lights all
@@ -58,6 +60,15 @@ powercalc:
         - entity_id: light.stick_animals_plug       # ArveVM: 
           power_sensor_id: light.stick_animals_plug_power
 
+sensor:
+  - platform: group
+    name: Livingroom average temperature
+    unique_id: c3f670dd-5ae3-49a2-9eba-edca5f357a81 
+    type: mean
+    entities:
+      - sensor.livingroom_vindstyrka_temperature
+      - sensor.livingroom_woodburner_thp_temperature
+
 template:
   - binary_sensor:
       - name: Livingroom Area Status
@@ -79,7 +90,7 @@ template:
       unit_of_measurement: g
       state: >
         {% from 'tools2.jinja' import AbsoluteHumidity %}
-        {{ AbsoluteHumidity('sensor.livingroom_netatmo_temperature', 'sensor.livingroom_netatmo_humidity') }}
+        {{ AbsoluteHumidity('sensor.livingroom_vindstyrka_temperature', 'sensor.livingroom_vindstyrka_humidity') }}
       # Area - manually added in GUI to area; livingroom
 
 

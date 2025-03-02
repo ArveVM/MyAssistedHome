@@ -11,36 +11,39 @@
 #
 ###############################################################################
 
-homeassistant:
-  customize:
+
+# replaced by gui-config in 2024
+
+# homeassistant:
+#  customize:
     # First create tag:
-    package.node_anchors:
-      customize: &customize
-        package: 'System Monitor INTEGRATION'
+#    package.node_anchors:
+#      customize: &customize
+#        package: 'System Monitor INTEGRATION'
     # Then tag sensors created:
-    sensor.processor_use:
-      <<: *customize
-    sensor.disk_use_percent:
-      <<: *customize
-    sensor.disk_free:
-      <<: *customize
-    sensor.memory_use_percent:
-      <<: *customize
-    sensor.last_boot:
-      <<: *customize
+#    sensor.processor_use:
+#      <<: *customize
+#    sensor.disk_use_percent:
+#      <<: *customize
+#    sensor.disk_free:
+#      <<: *customize
+#    sensor.memory_use_percent:
+#      <<: *customize
+#    sensor.last_boot:
+#      <<: *customize
 
 
 # HA-performance monitor;  
-sensor:
-  - platform: systemmonitor
-    resources:
-    - type: processor_use
-    - type: disk_use_percent
-      arg: "/"
-    - type: disk_free
-      arg: "/"
-    - type: memory_use_percent
-    - type: last_boot
+#sensor:
+#  - platform: systemmonitor
+#    resources:
+#    - type: processor_use
+#    - type: disk_use_percent
+#      arg: "/"
+#    - type: disk_free
+#      arg: "/"
+#    - type: memory_use_percent
+#    - type: last_boot
 #    - type: network_in
 #      arg: eth0
 #    - type: throughput_network_in

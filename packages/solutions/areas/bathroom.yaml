@@ -42,7 +42,7 @@ template:
 
     - name: Bathroom Dewpoint
       device_class: temperature
-      unit_of_measurement: C
+      unit_of_measurement: °C
       state: >
         {% from 'tools2.jinja' import Dewpoint %}
         {{ Dewpoint('sensor.bathroom_thp_temperature', 'sensor.bathroom_thp_humidity') }}

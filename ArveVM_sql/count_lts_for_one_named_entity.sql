@@ -9,3 +9,4 @@ WHERE statistics.start_ts >= strftime( '%s', '2023-11-20' )
   AND entity = 'sensor.evahan_temperature'
 GROUP BY
   date1
+  

@@ -40,6 +40,8 @@ template:
         unit_of_measurement: W
         state: >
           {{ states('sensor.evahan_power') }}
+        device_class: power
+        state_class: measurement
 
 # powercalc:
 #   sensors:

@@ -47,12 +47,12 @@ powercalc:
           create_utility_meters: true
           ignore_unavailable_state: true
           entities:
-            # - fixed:
-            #     power: "{{ states('sensor.easee1_power') | round * 1000 }}"
             - entity_id: sensor.dummy
               name: Bathroom lights
               fixed:
-                power: "{{ states('sensor.easee1_power') | round * 1000 }}"    # Easee reports in KWh, must change to W
+                power: >
+                  {{ (states('sensor.easee1_power') | float(0)) * 1000 | round }}     # Easee reports in KWh, must change to W
+                #"{{ states('sensor.easee1_power') | float(0)) | round * 1000 }}"    
 
         - create_group: PwrCtrl UG Hotwater
           create_energy_sensor: true
@@ -75,8 +75,8 @@ powercalc:
             - entity_id: switch.kitchen_heatpump_plug
               ignore_unavailable_state: true
               power_sensor_id: sensor.kitchen_heatpump_plug_power
-            - entity_id: switch.evaplug                   #livingroom
-              power_sensor_id: sensor.evaplug_power
+            - entity_id: switch.livingroom_heater_plug
+              power_sensor_id: sensor.livingroom_heater_plug_power
             - entity_id: switch.bathroom_heater_puck
               power_sensor_id: sensor.bathroom_heater_puck_power
             - entity_id: switch.bathroom2_heater_puck
