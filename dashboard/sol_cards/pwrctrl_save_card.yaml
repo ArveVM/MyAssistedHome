@@ -19,6 +19,15 @@ tabs:
     card:
       type: vertical-stack
       cards:
+        - type: history-graph
+          hours_to_show: 4
+          entities:
+            - entity: input_number.pwrctrl_limit_capacity_limit
+              name: Current Limit
+            - entity: sensor.evahan_energy_hourly
+              name: Hourly consumption (acc)
+            - entity: sensor.pwrctrl_limit_fullhour_trend
+              name: FullHourTrend
         - !include pwrctrl_limit_card.yaml
 
   - attributes:

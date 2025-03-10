@@ -20,7 +20,7 @@ cards:
           label: Scan
           icon: mdi:eye
         card:
-          type: custom:frigate-card
+          type: custom:advanced-camera-card
           cameras:
             - camera_entity: camera.garage_front
             - camera_entity: camera.entry
@@ -32,7 +32,7 @@ cards:
           label: Camera
           icon: mdi:video
         card:
-          type: custom:frigate-card
+          type: custom:advanced-camera-card
           view:
             default: live
           live:
@@ -53,14 +53,14 @@ cards:
                 enabled: true
                 icon: mdi:high-definition
           elements:
-            - type: custom:frigate-card-conditional
+            - type: custom:advanced-camera-card-conditional
               conditions:
                 - condition: camera
                   cameras: 
                     - camera.garage_front
   #                - camera.garage_cam
               elements:
-                - type: custom:frigate-card-menu-state-icon
+                - type: custom:advanced-camera-card-menu-state-icon
                   entity: switch.garage_dad
                   icon: mdi:garage
                   tap_action:
@@ -70,7 +70,7 @@ cards:
                       entity_id: switch.garage_dad       
                   hold_action:
                     action: more-info
-                - type: custom:frigate-card-menu-state-icon
+                - type: custom:advanced-camera-card-menu-state-icon
                   entity: switch.garage_t
                   icon: mdi:garage
                   tap_action:
@@ -120,6 +120,19 @@ cards:
             - camera_entity: camera.roberto_cam
               live_provider: go2rtc
               
+            - camera_entity: camera.garage2
+              live_provider: go2rtc
+              dependencies:
+                cameras:
+                  - garage2
+            - camera_entity: camera.garage2
+              title: EntryHD
+              live_provider: go2rtc
+              id: garage2
+              capabilities:
+                disable_except:
+                  - substream
+                          
       # AVM: add a tab with some stats/control over frigate:
       - attributes:
           label: Data
@@ -149,33 +162,3 @@ cards:
           icon: mdi:video
         card:
           !include camera_around_us_card.yaml
-
-
-      #show stream/pictures of generic-cameras (Will be removed once comfortable with Frigate)
-      - attributes:
-          label: Glance-test
-          icon: mdi:video
-        card:
-          type: vertical-stack
-          cards:
-
-            # Add both picture and video of cabled D-link DCS-930LB
-            # mask username:passord by adding full link in secrets
-            - type: horizontal-stack
-              cards:
-                - type: picture-glance
-                  camera_view: live
-                  title: Heime - bilde
-                  image: !secret camera_dlink_office_dcs_930lb_jpeg
-                  tap_action:
-                    action: url
-                    url_path: !secret camera_dlink_office_dcs_930lb_jpeg
-                  entities: []
-                - type: picture-glance
-                  camera_view: live
-                  title: Heime - video
-                  image: !secret camera_dlink_office_dcs_930lb_mjpeg_stream
-                  tap_action:
-                    action: url
-                    url_path: !secret camera_dlink_office_dcs_930lb_mjpeg_stream
-                  entities: []

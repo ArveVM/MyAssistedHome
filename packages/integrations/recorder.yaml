@@ -48,11 +48,18 @@ automation:
     condition:
     actions:
       - action: recorder.purge_entities
-        target:
+        data:
+          keep_days: 2
+          entity_globs:
+            - sensor.evahan_*
+            - dream_machine_pro_*
           entity_id:
             - sensor.pwrctrl_ug_all_power      # +430' rows with 10days storage !!
             - sensor.pwrctrl_ug_ungrouped      # +290' rows with 10days storage !!
             - sensor.dream_machine_pro_cpu_utilization  # +415' rows with 10days storage !!
+            - sensor.laundry_washer_2min_mean_power       # breakfix,, should clean the entire laundry-washer solution,, to many good old ideas :)
+            - sensor.laundry_washer_1min_median_power
+            - sensor.laundry_washer_2min_median_power
         #    - sensor.evahan_power
         #    - sensor.evahan_voltage
         #    - sensor.evahan_voltage_phase_b
@@ -64,9 +71,3 @@ automation:
         #    - sensor.evahan_temperature
         #    - sensor.evahan_org_energy2
         #    - sensor.evahan_last_seen
-          entity_globs:
-            - sensor.evahan_*
-        data:
-          domains: []
-          entity_globs: []
-          keep_days: 2

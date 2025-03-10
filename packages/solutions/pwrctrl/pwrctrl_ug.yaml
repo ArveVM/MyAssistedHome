@@ -48,11 +48,10 @@ powercalc:
           ignore_unavailable_state: true
           entities:
             - entity_id: sensor.dummy
-              name: Bathroom lights
+              name: carcharger1
               fixed:
-                power: >
-                  {{ (states('sensor.easee1_power') | float(0)) * 1000 | round }}     # Easee reports in KWh, must change to W
-                #"{{ states('sensor.easee1_power') | float(0)) | round * 1000 }}"    
+                power: "{{ (states('sensor.easee1_power') | float(0)) * 1000 | round(1) }}"
+
 
         - create_group: PwrCtrl UG Hotwater
           create_energy_sensor: true
@@ -168,6 +167,15 @@ powercalc:
                   fixed:
                     power: 71
                   standby_power: 0.2
+                - entity_id: media_player.symfonisk    #Ikea bookshelf
+                  <<: &ikea_bookshelf
+                    fixed:
+                      states_power:
+                        playing: 8.3
+                        paused: 4.4
+                        idle: 4.4
+                - entity_id: media_player.symfonisk_bookshelf    #Ikea bookshelf
+                  <<: *ikea_bookshelf
 
 
 template:

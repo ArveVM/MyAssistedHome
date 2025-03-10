@@ -1,7 +1,7 @@
 type: vertical-stack
 cards:
   - type: history-graph
-    hours_to_show: 4
+    hours_to_show: 6
     entities:
       - entity: input_number.pwrctrl_limit_capacity_limit
         name: Current Limit

@@ -1,6 +1,6 @@
 # lovelace_gen
 
-type: custom:frigate-card
+type: custom:advanced-camera-card
 # view:
 #   default: live
 live:

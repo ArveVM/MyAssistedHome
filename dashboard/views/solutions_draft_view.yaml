@@ -227,6 +227,7 @@ cards:
             content: |
               # Card-test:
               
+          - !include ../sol_cards/pwrctrl_limit_card.yaml
           - !include ../backend_cards/unraid_arraysize_card.yaml
           - !include ../backend_cards/unraid_arraydisks_card.yaml
     
