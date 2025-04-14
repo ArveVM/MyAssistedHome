@@ -78,7 +78,7 @@ series:
       }
 
   - name: Price current hour
-    entity: sensor.priceanalyzer_main_price
+    entity: sensor.nordpool
     yaxis_id: header
     float_precision: 1
     unit: Øre/kWh

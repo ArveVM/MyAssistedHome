@@ -106,12 +106,11 @@ cards:
       #             - !include livingroom_light_card.yaml
 
       - type: template
-        entity: plant.avocado
+        entity: plant.aroid_palm
         icon: mdi:flower-outline
         icon_color: >
           {{ 'orange' if 
-            (is_state(entity, 'problem') or 
-            is_state('plant.aroid_palm', 'problem')) 
+            (is_state(entity, 'problem')) 
           else
             'disabled'
           }}
@@ -124,15 +123,6 @@ cards:
               content:
                 type: vertical-stack
                 cards:
-                  - type: custom:flower-card
-                    entity: plant.avocado
-                    show_bars:
-                      - illumination
-                      - humidity
-                      - moisture
-                      - conductivity
-                      - temperature
-                      - dli
                   - type: custom:flower-card
                     entity: plant.aroid_palm
                     show_bars:

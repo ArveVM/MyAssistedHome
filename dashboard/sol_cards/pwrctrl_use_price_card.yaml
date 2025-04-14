@@ -41,6 +41,7 @@ cards:
           browser_mod:
             service: browser_mod.popup
             data:
+              #size: fullscreen                  #[size: <NORMAL/wide/fullscreen>]
               content:
                 type: vertical-stack
                 cards:

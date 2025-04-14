@@ -56,12 +56,7 @@ sensor:
     type: time
     start: "{{ now().replace(hour=00, minute=00, second=00) }}"
     end: "{{ now() }}"
-  - platform: group
-    name: Livingroom avg temperature
-    type: mean
-    entities:
-      - sensor.temperature_kitchen
-      - sensor.temperature_hallway
+
 
 input_boolean:
   entry_heater_thermostat_output:

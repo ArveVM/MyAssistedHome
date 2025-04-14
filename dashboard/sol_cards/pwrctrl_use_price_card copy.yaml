@@ -9,7 +9,7 @@ cards:
   - type: horizontal-stack
     cards:
       - type: custom:mushroom-template-card
-        entity: sensor.priceanalyzer_main_price
+        entity: sensor.nordpool
         secondary: øre/kWh
         primary: >
           {{ states(entity) | round(1) }}

@@ -172,7 +172,7 @@ cards:
           action: more-info
 
       - type: template
-        entity: sensor.kitchen_fridge_temperature
+        entity: sensor.kitchen_fridge_temp_temperature
         icon: mdi:fridge
         icon_color: |-
           {% set t=states(entity) | float(default=3) %}
@@ -188,9 +188,15 @@ cards:
           action: more-info
 
       - type: template
-        entity: plant.rubber_plant
+        entity: plant.yokka_plant
         icon: mdi:flower-outline
-        icon_color: "{{ 'orange' if is_state(entity, 'problem') else 'disabled' }}"
+        icon_color: >
+          {{ 'orange' if 
+            (is_state(entity, 'problem') or 
+            is_state('plant.mini_rubber_plant', 'problem')) 
+          else
+            'disabled'
+          }}
         card_mod: *card_mod_chip_style
         tap_action:
           action: fire-dom-event
@@ -198,15 +204,26 @@ cards:
             service: browser_mod.popup
             data:
               content:
-                type: custom:flower-card
-                entity: plant.rubber_plant
-                show_bars:
-                  - illumination
-                  - humidity
-                  - moisture
-                  - conductivity
-                  - temperature
-                  - dli
+                type: vertical-stack
+                cards:
+                  - type: custom:flower-card
+                    entity: plant.yokka_plant
+                    show_bars:
+                      - illumination
+                      - humidity
+                      - moisture
+                      - conductivity
+                      - temperature
+                      - dli
+                  - type: custom:flower-card
+                    entity: plant.mini_rubber_plant
+                    show_bars:
+                      - illumination
+                      - humidity
+                      - moisture
+                      - conductivity
+                      - temperature
+                      - dli
 
       - type: action
         card_mod: *card_mod_chip_style

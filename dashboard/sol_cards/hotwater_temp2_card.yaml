@@ -97,7 +97,7 @@ series:
     #color: black
     extend_to: now
 
-  - entity: sensor.priceanalyzer_main_price
+  - entity: sensor.nordpool
     unit: Øre/Nok
     name: Pris
     show:

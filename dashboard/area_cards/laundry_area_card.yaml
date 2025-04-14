@@ -119,7 +119,7 @@ cards:
           action: more-info
 
       - type: template
-        entity: sensor.laundry_freezer_temperature
+        entity: sensor.laundry_freezer_temp_temperature
         icon: mdi:snowflake-thermometer
         # Red if above -18, organge between -18 and  -20, disabled if below 20
         icon_color: |-
