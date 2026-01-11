@@ -66,6 +66,44 @@ cards:
 
       - !include ../sol_cards/roberto_chip.yaml
 
+      - type: template
+        entity: plant.strawberries
+        icon: mdi:flower-outline
+        icon_color: >
+          {{ 'orange' if 
+            (is_state(entity, 'problem') or 
+            is_state('plant.solveig_og_atto', 'problem')) 
+          else
+            'disabled'
+          }}
+        card_mod: *card_mod_chip_style
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.popup
+            data:
+              content:
+                type: vertical-stack
+                cards:
+                  - type: custom:flower-card
+                    entity: plant.strawberries
+                    show_bars:
+                      - illumination
+                      - humidity
+                      - moisture
+                      - conductivity
+                      - temperature
+                      - dli
+                  - type: custom:flower-card
+                    entity: plant.solveig_og_atto
+                    show_bars:
+                      - illumination
+                      - humidity
+                      - moisture
+                      - conductivity
+                      - temperature
+                      - dli
+
       - type: action
         icon: mdi:devices
         card_mod: *card_mod_chip_style

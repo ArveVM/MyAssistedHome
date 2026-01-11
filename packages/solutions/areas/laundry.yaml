@@ -125,7 +125,7 @@ template:
 
 utility_meter:
   laundry_freezer_energy_daily: 
-    source: sensor.apex_smartplug_energy
+    source: sensor.laundry_freezer_energy
     name: Laundry Freezer Energy Daily
     cycle: daily
   
