@@ -79,22 +79,6 @@ cards:
                       area_humidity_compare: sensor.house_average_humidity
         hold_action: none
 
-      - type: template
-        icon: mdi:watch
-        entity: binary_sensor.kidx_xplora_safezone
-        # Off = in safezone
-        icon_color: "{{ 'green' if is_state(entity, 'off') else 'orange' }}"
-        card_mod: *card_mod_chip_style
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.popup
-            data:
-              content:
-                type: vertical-stack
-                cards:
-                  - !include kidl_xplora_card.yaml
-
       - entity: media_player.smartclock_kidl
         type: template
         icon: mdi:cast

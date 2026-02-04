@@ -13,9 +13,13 @@
 # regardless of the air's temperature
 #
 {% macro AbsoluteHumidity(temperature, humidity) %}
-  {% set cur_temp = states(temperature) | float %}
-  {% set cur_humidity = states(humidity) | float %}
-  {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
+  {% set cur_temp = states(temperature) | float(none) %}
+  {% set cur_humidity = states(humidity) | float(none) %}
+  {% if cur_temp is none or cur_humidity is none %}
+    unknown
+  {% else %}
+    {{ ((e ** ((17.67 * cur_temp) / (243.5 + cur_temp )) * 6.112 * cur_humidity * 2.1674 ) / (273.15 + cur_temp)) | round(1) }}
+  {% endif %}
 {% endmacro %}
 
 

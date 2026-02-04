@@ -12,8 +12,10 @@
 #    custom_components.powercalc: debug
 
 powercalc:
-  enable_autodiscovery: false # AVM: added myself, want manual control of structure and config
-  force_update_frequency: 00:01:00 #Each minute
+  discovery:
+    enabled: false # AVM: added myself, want manual control of structure and config
+  energy_update_interval: 60    #Each minute
+  #force_update_frequency: 00:01:00 #Each minute
   # power_sensor_naming: "{} PowerCalc"
   create_energy_sensors: false # AVM: want manual control of structure and config
   energy_integration_method: left # Riemann sum method to be used

@@ -37,6 +37,7 @@ homeassistant:
   packages: !include_dir_named packages
 
 
+
   # enable auto-login for nest hub - must be configured before loading packages
   # see at bottom of docs-page for clarifications: https://www.home-assistant.io/docs/authentication/providers/
   # Int-CATT https://github.com/ArveVM/MyAssistedHome/wiki/Int-CATT

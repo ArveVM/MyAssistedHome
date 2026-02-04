@@ -39,12 +39,12 @@ template:
   - sensor:
       - name: "DBsize statesCount top6"
         state: >
-          {{ (states('sensor.dbsize_statescount_no1') | int +
-              states('sensor.dbsize_statescount_no2') | int +
-              states('sensor.dbsize_statescount_no4') | int +
-              states('sensor.dbsize_statescount_no6') | int +
-              states('sensor.dbsize_statescount_no5') | int +
-              states('sensor.dbsize_statescount_no6') | int) | string }}
+          {{ (states('sensor.dbsize_statescount_no1') | int(0) +
+              states('sensor.dbsize_statescount_no2') | int(0) +
+              states('sensor.dbsize_statescount_no3') | int(0) +
+              states('sensor.dbsize_statescount_no4') | int(0) +
+              states('sensor.dbsize_statescount_no5') | int(0) +
+              states('sensor.dbsize_statescount_no6') | int(0)) | string }}
         unit_of_measurement: rows
         state_class: measurement
 

@@ -4,8 +4,13 @@
 # ArveVM: intro from  https://www.youtube.com/watch?v=atpIP2RYldA
 
 
-browser_mod:
-  prefix: 'browser_mod_'
+#browser_mod:
+#  prefix: 'browser_mod_'
+
+
+
+
+
 #  devices:
 #    a6418cbe_c4021486:
 #      name: dad_pc_chrome
