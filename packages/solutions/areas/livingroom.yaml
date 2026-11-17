@@ -17,23 +17,23 @@ light:
       - light.livingroom_soyle
       - light.stick_animals_plug
 
-  - platform: template
-    lights:
-      livingroom_cosylight:
-        friendly_name: "Livingroom Cosylights"
-        turn_on:
-          service: remote.send_command
-          data:
-            entity_id: remote.hubby
-            device: Vie Selected
-            command: PowerOn
-        turn_off:
-          service: remote.send_command
-          # action: call-service
-          data:
-            entity_id: remote.hubby
-            device: Vie Selected
-            command: PowerOff
+ # - platform: template
+ #   lights:
+ #     livingroom_cosylight:
+ #       friendly_name: "Livingroom Cosylights"
+ #       turn_on:
+ #         service: remote.send_command
+ #         data:
+ #           entity_id: remote.hubby
+ #           device: Vie Selected
+ #           command: PowerOn
+ #       turn_off:
+ #         service: remote.send_command
+ #         # action: call-service
+ #         data:
+ #           entity_id: remote.hubby
+ #           device: Vie Selected
+ #           command: PowerOff
 
 
 
@@ -92,7 +92,22 @@ template:
         {% from 'tools2.jinja' import AbsoluteHumidity %}
         {{ AbsoluteHumidity('sensor.livingroom_vindstyrka_temperature', 'sensor.livingroom_vindstyrka_humidity') }}
       # Area - manually added in GUI to area; livingroom
-
+  
+  - light:
+    - turn_on:
+      - data:
+          entity_id: remote.hubby
+          device: Vie Selected
+          command: PowerOn
+        action: remote.send_command
+      turn_off:
+      - data:
+          entity_id: remote.hubby
+          device: Vie Selected
+          command: PowerOff
+        action: remote.send_command
+      default_entity_id: light.livingroom_cosylight
+      name: Livingroom Cosylights
 
 script:
   livingroom_cosylight1_on:
