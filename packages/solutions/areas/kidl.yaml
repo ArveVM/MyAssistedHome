@@ -71,11 +71,11 @@ homeassistant:
   customize:
     package.node_anchors:
       # Add node-anchor for identification of code-location for created sensors
-      solution_attribute_to_entity: &solution_attribute
-        solution: "KidL Light"
+      # solution_attribute_to_entity: &solution_attribute
+        # solution: "KidL Light"
       
       # Add node-anchor(s) for input-sensors to use as variables   - (theese are sensors from other integrations/solutions)
-      remote: &remote remote.broadlink_2
+      # remote: &remote remote.broadlink_2
 
     # Add node-anchor as attribute on created sensors (exept template-sensors - which is defined as attribute):
 #
@@ -103,60 +103,108 @@ input_select:
     icon: mdi:tea
 
 
-light:
+
+template:
+- light:
+  - turn_on:
+    - target:
+        entity_id:
+        - remote.broadlink_2
+      data:
+        command:
+        - b64:JgBoAAABIZESExIRExISExISExESExISEzYSNRI2EzUTNRI2EjYTNhE2EjYTNhIREzYSEhMSEhISEhMSEhMSNRITEjYSNRM1EwAE/QABIkgTAAwKAAEiSBIADAwAASFJEgAMCwABIUgTAA0F
+      action: remote.send_command
+    turn_off:
+    - target:
+        entity_id:
+        - remote.broadlink_2
+      data:
+        command:
+        - b64:JgBgAAABIJESEhMSEhISExISEhMSEhISEzUTNhE2EjYTNhI1EjYSNhMREjYTNhISEjYSEhMSEhISNhITEhISNhISEzYSNRI2EgAE/QABIUkSAAwLAAEiSBIADAwAASFIEwANBQ==
+      action: remote.send_command
+    set_effect:
+    - target:
+        entity_id:
+        - input_select.kidl_lightstrip_effects
+      data:
+        option: '{{ effect }}'
+      action: input_select.select_option
+    - target:
+        entity_id:
+        - remote.broadlink_2
+      data:
+        command: "{% if effect == 'white down' %}\n  b64:JgBYAAABIZESExISExESExISExISEhITEjYSNhE2EzYSNhI1EzYSNhI1EhMSNhISEjYSExISExESExI2EhMRNhITEjYSNRM2EgAE/QABIUgTAAwKAAEiSREADQU=\n{%
+          elif effect == 'white up' %}\n  b64:JgBoAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2EjUTNhISExESNhMSEjYSEhITEhITNhE2EhMSNhISEjYSNhI1EwAE/QABIkgSAAwLAAEhSBMADAsAASFIEwAMCgABIUkSAA0F\n{%
+          elif effect == 'white 25' %}\n  b64:JgBoAAABIZATERITEhITEhISEhITEhITETYSNhM2EjUSNhM1EzUSNhITEhISEhITEjYSEhISExISNhI2EjYSNhMREjYSNhM1EgAE/QABIkgSAAwLAAEhSRIADAoAASFJEgAMCgABI0gSAA0F\n{%
+          elif effect == 'white 50' %}\n  b64:JgBYAAABIJESExISExESExISExIRExISEzYSNRI2EzYSNhE2EzUTNhI1EhMSEhMSETYTEhITEhETEhI2EzYRNhITEjYSNRI2EwAE/AABIkgSAAwLAAEhSBMADQU=\n{%
+          elif effect == 'white 75' %}\n  b64:JgBgAAABIJESEhMSERMSEhMSEhISEhMSEjYSNhI2EjYTNBM2EjYSNRMSEjYTERITEjYSExIRExISNhMSETYTNRMSEjUTNhI2EgAE/QABIUkSAAwKAAEhSRIADAoAASJIEgANBQ==\n{%
+          elif effect == 'white 100' %}\n  b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=\n{%
+          elif effect == 'white 100' %}\n  b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=\n{%
+          elif effect == 'white 100' %}\n  b64:JgBgAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2ETYTNhISEhISNhM2EhETEhITEhITNRI2EhMSERM2EjYSNRI2EwAE/QABIUgTAAwKAAEiSBIADAsAASFIEwANBQ==\n
+          \ \n{% else %}\n  b64:JgBgAAABIZERExITEhITEhETEhITEhITETYSNhM2ETYSNhM2EjUSNhM2EjUSExI2EhMREhMSEhMSEhISEjYTEhI1EzYSNhE2EwAE/QABIUkSAAwMAAEhSBMADAwAASFIEwANBQ==\n{%
+          endif %}"
+      action: remote.send_command
+    default_entity_id: light.kidl_lightstrip
+    icon: mdi:candle
+    name: KidL LightStrip
+    effect_list: '{{ state_attr(''input_select.kidl_lightstrip_effects'', ''options'')
+      }}'
+    effect: '{{ states(''input_select.kidl_lightstrip_effects'') }}'
+
+# light:
 
   # Original idea:      https://community.home-assistant.io/t/template-light-can-effect-list-be-hardcoded/463588/7
   # My specific case:   https://community.home-assistant.io/t/template-light-effect-list-trigger-different-service-calls/616117
-  - platform: template
-    lights:
-      kidl_lightstrip:
-        icon_template: mdi:candle
-        friendly_name: "KidL LightStrip"
-        effect_list_template: "{{ state_attr('input_select.kidl_lightstrip_effects', 'options') }}"
-        effect_template: "{{ states('input_select.kidl_lightstrip_effects') }}"
-        turn_on:
-          service: remote.send_command
-          target:
-            entity_id: *remote
-          data:
-            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
-              - b64:JgBoAAABIZESExIRExISExISExESExISEzYSNRI2EzUTNRI2EjYTNhE2EjYTNhIREzYSEhMSEhISEhMSEhMSNRITEjYSNRM1EwAE/QABIkgTAAwKAAEiSBIADAwAASFJEgAMCwABIUgTAA0F            
-        turn_off:
-          service: remote.send_command
-          target:
-            entity_id: *remote
-          data:
-            command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
-              - b64:JgBgAAABIJESEhMSEhISExISEhMSEhISEzUTNhE2EjYTNhI1EjYSNhMREjYTNhISEjYSEhMSEhISNhITEhISNhISEzYSNRI2EgAE/QABIUkSAAwLAAEiSBIADAwAASFIEwANBQ==
-        set_effect:
-          - service: input_select.select_option
-            target:
-              entity_id: input_select.kidl_lightstrip_effects
-            data:
-              option: >         
-                {{ effect }}      
-          - service: remote.send_command
-            target:
-              entity_id: *remote
-            data:
-              command: >        
-                {% if effect == 'white down' %}
-                  b64:JgBYAAABIZESExISExESExISExISEhITEjYSNhE2EzYSNhI1EzYSNhI1EhMSNhISEjYSExISExESExI2EhMRNhITEjYSNRM2EgAE/QABIUgTAAwKAAEiSREADQU=
-                {% elif effect == 'white up' %}
-                  b64:JgBoAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2EjUTNhISExESNhMSEjYSEhITEhITNhE2EhMSNhISEjYSNhI1EwAE/QABIkgSAAwLAAEhSBMADAsAASFIEwAMCgABIUkSAA0F
-                {% elif effect == 'white 25' %}
-                  b64:JgBoAAABIZATERITEhITEhISEhITEhITETYSNhM2EjUSNhM1EzUSNhITEhISEhITEjYSEhISExISNhI2EjYSNhMREjYSNhM1EgAE/QABIkgSAAwLAAEhSRIADAoAASFJEgAMCgABI0gSAA0F
-                {% elif effect == 'white 50' %}
-                  b64:JgBYAAABIJESExISExESExISExIRExISEzYSNRI2EzYSNhE2EzUTNhI1EhMSEhMSETYTEhITEhETEhI2EzYRNhITEjYSNRI2EwAE/AABIkgSAAwLAAEhSBMADQU=
-                {% elif effect == 'white 75' %}
-                  b64:JgBgAAABIJESEhMSERMSEhMSEhISEhMSEjYSNhI2EjYTNBM2EjYSNRMSEjYTERITEjYSExIRExISNhMSETYTNRMSEjUTNhI2EgAE/QABIUkSAAwKAAEhSRIADAoAASJIEgANBQ==
-                {% elif effect == 'white 100' %}
-                  b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=
-                {% elif effect == 'white 100' %}
-                  b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=
-                {% elif effect == 'white 100' %}
-                  b64:JgBgAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2ETYTNhISEhISNhM2EhETEhITEhITNRI2EhMSERM2EjYSNRI2EwAE/QABIUgTAAwKAAEiSBIADAsAASFIEwANBQ==
+  # - platform: template
+  #   lights:
+  #     kidl_lightstrip:
+  #       icon_template: mdi:candle
+  #       friendly_name: "KidL LightStrip"
+  #       effect_list_template: "{{ state_attr('input_select.kidl_lightstrip_effects', 'options') }}"
+  #       effect_template: "{{ states('input_select.kidl_lightstrip_effects') }}"
+  #       turn_on:
+  #         service: remote.send_command
+  #         target:
+  #           entity_id: *remote
+  #         data:
+  #           command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+  #             - b64:JgBoAAABIZESExIRExISExISExESExISEzYSNRI2EzUTNRI2EjYTNhE2EjYTNhIREzYSEhMSEhISEhMSEhMSNRITEjYSNRM1EwAE/QABIkgTAAwKAAEiSBIADAwAASFJEgAMCwABIUgTAA0F            
+  #       turn_off:
+  #         service: remote.send_command
+  #         target:
+  #           entity_id: *remote
+  #         data:
+  #           command:            # command learned by Broadlink-integration: https://github.com/ArveVM/MyAssistedHome/wiki/Int-Broadlink-%E2%80%90-BestCon-RMC4-mini
+  #             - b64:JgBgAAABIJESEhMSEhISExISEhMSEhISEzUTNhE2EjYTNhI1EjYSNhMREjYTNhISEjYSEhMSEhISNhITEhISNhISEzYSNRI2EgAE/QABIUkSAAwLAAEiSBIADAwAASFIEwANBQ==
+  #       set_effect:
+  #         - service: input_select.select_option
+  #           target:
+  #             entity_id: input_select.kidl_lightstrip_effects
+  #           data:
+  #             option: >         
+  #               {{ effect }}      
+  #         - service: remote.send_command
+  #           target:
+  #             entity_id: *remote
+  #           data:
+  #             command: >        
+  #               {% if effect == 'white down' %}
+  #                 b64:JgBYAAABIZESExISExESExISExISEhITEjYSNhE2EzYSNhI1EzYSNhI1EhMSNhISEjYSExISExESExI2EhMRNhITEjYSNRM2EgAE/QABIUgTAAwKAAEiSREADQU=
+  #               {% elif effect == 'white up' %}
+  #                 b64:JgBoAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2EjUTNhISExESNhMSEjYSEhITEhITNhE2EhMSNhISEjYSNhI1EwAE/QABIkgSAAwLAAEhSBMADAsAASFIEwAMCgABIUkSAA0F
+  #               {% elif effect == 'white 25' %}
+  #                 b64:JgBoAAABIZATERITEhITEhISEhITEhITETYSNhM2EjUSNhM1EzUSNhITEhISEhITEjYSEhISExISNhI2EjYSNhMREjYSNhM1EgAE/QABIkgSAAwLAAEhSRIADAoAASFJEgAMCgABI0gSAA0F
+  #               {% elif effect == 'white 50' %}
+  #                 b64:JgBYAAABIJESExISExESExISExIRExISEzYSNRI2EzYSNhE2EzUTNhI1EhMSEhMSETYTEhITEhETEhI2EzYRNhITEjYSNRI2EwAE/AABIkgSAAwLAAEhSBMADQU=
+  #               {% elif effect == 'white 75' %}
+  #                 b64:JgBgAAABIJESEhMSERMSEhMSEhISEhMSEjYSNhI2EjYTNBM2EjYSNRMSEjYTERITEjYSExIRExISNhMSETYTNRMSEjUTNhI2EgAE/QABIUkSAAwKAAEhSRIADAoAASJIEgANBQ==
+  #               {% elif effect == 'white 100' %}
+  #                 b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=
+  #               {% elif effect == 'white 100' %}
+  #                 b64:JgBYAAABIZATERITEhITEhISEhITEhITEjUSNhM2EjUSNhI2EzYRNhI2EjYTERITEjYSExESExISExISEjYSNhITETYSNhI2EwAE/AABIkgSAAwKAAEiSRIADQU=
+  #               {% elif effect == 'white 100' %}
+  #                 b64:JgBgAAABIZASExISExISEhISExISExIREzYSNhI1EzYSNhI2ETYTNhISEhISNhM2EhETEhITEhITNRI2EhMSERM2EjYSNRI2EwAE/QABIUgTAAwKAAEiSBIADAsAASFIEwANBQ==
                   
-                {% else %}
-                  b64:JgBgAAABIZERExITEhITEhETEhITEhITETYSNhM2ETYSNhM2EjUSNhM2EjUSExI2EhMREhMSEhMSEhISEjYTEhI1EzYSNhE2EwAE/QABIUkSAAwMAAEhSBMADAwAASFIEwANBQ==
-                {% endif %}
+  #               {% else %}
+  #                 b64:JgBgAAABIZERExITEhITEhETEhITEhITETYSNhM2ETYSNhM2EjUSNhM2EjUSExI2EhMREhMSEhMSEhISEjYTEhI1EzYSNhE2EwAE/QABIUkSAAwMAAEhSBMADAwAASFIEwANBQ==
+  #               {% endif %}
