@@ -1,0 +1,179 @@
+# ArveVM; Solution Notify - send messages to speakers (script.announce) and phones (script.notify_phones)
+# Wiki: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Notify
+
+homeassistant:
+  customize:
+    package.node_anchors:
+      # ArveVM; INPUT - change to your own entities:
+      tts_engine: &tts_engine tts.google_translate_no_no      # tts-entity (Settings -> Entities, filter 'tts.')
+      announce_label: &announce_label announce                # label on speakers that may talk
+      phones_parents: &phones_parents                         # notify-services, without 'notify.'
+        - mobile_app_dad_mobile
+        - mobile_app_mom_mobile
+      phones_kids: &phones_kids []                            # todo - add kids phones
+
+
+script:
+  # ---------------------------------------------------------------------------
+  # Speakers
+  # ---------------------------------------------------------------------------
+  announce:
+    alias: "Announce"
+    description: "Speak a message on one/several speakers, or on all 'announce'-speakers on a floor"
+    icon: mdi:bullhorn
+    mode: queued            # messages wait for each other instead of talking over each other
+    max: 10
+    fields:
+      message:
+        description: "What to say"
+        required: true
+        selector:
+          text:
+      speakers:
+        description: "One or more speakers (overrides floor)"
+        selector:
+          entity:
+            domain: media_player
+            multiple: true
+      floor:
+        description: "All 'announce'-labelled speakers on this floor. Empty = all 'announce'-speakers"
+        selector:
+          floor:
+      volume:
+        description: "Volume while speaking (0-1). Empty = keep current"
+        selector:
+          number:
+            min: 0
+            max: 1
+            step: 0.05
+
+    variables:
+      label: *announce_label
+      # ArveVM; which speakers: speakers > floor > all labelled speakers
+      targets: >
+        {% set announce = label_entities(label) | select('match', 'media_player\.') | list %}
+        {% if speakers is defined and speakers %}
+          {{ speakers if speakers is list else [speakers] }}
+        {% elif floor is defined and floor %}
+          {{ floor_areas(floor) | map('area_entities') | sum(start=[])
+             | select('in', announce) | list }}
+        {% else %}
+          {{ announce }}
+        {% endif %}
+      # remember current volume, to restore it afterwards
+      old_volumes: >
+        {% set ns = namespace(v=[]) %}
+        {% for e in targets %}
+          {% set ns.v = ns.v + [[e, state_attr(e, 'volume_level')]] %}
+        {% endfor %}
+        {{ ns.v }}
+      set_volume: "{{ volume is defined and volume | float(0) > 0 }}"
+
+    sequence:
+      - condition: template
+        value_template: "{{ targets | count > 0 }}"
+
+      - if:
+          - condition: template
+            value_template: "{{ set_volume }}"
+        then:
+          - action: media_player.volume_set
+            target:
+              entity_id: "{{ targets }}"
+            data:
+              volume_level: "{{ volume }}"
+
+      - action: tts.speak
+        target:
+          entity_id: *tts_engine
+        data:
+          media_player_entity_id: "{{ targets }}"
+          message: "{{ message }}"
+          cache: true
+
+      # wait until speakers are done talking (max 60s)
+      - delay: 2
+      - wait_template: >
+          {{ targets | select('is_state', 'playing') | list | count == 0 }}
+        timeout: 60
+        continue_on_timeout: true
+
+      - if:
+          - condition: template
+            value_template: "{{ set_volume }}"
+        then:
+          - repeat:
+              for_each: "{{ old_volumes | selectattr('1', 'ne', none) | list }}"
+              sequence:
+                - action: media_player.volume_set
+                  target:
+                    entity_id: "{{ repeat.item[0] }}"
+                  data:
+                    volume_level: "{{ repeat.item[1] }}"
+
+  # ---------------------------------------------------------------------------
+  # Phones
+  # ---------------------------------------------------------------------------
+  notify_phones:
+    alias: "Notify phones"
+    description: "Push a message to a group of phones: parents / kids / family"
+    icon: mdi:cellphone-message
+    mode: parallel
+    fields:
+      group:
+        description: "Who gets it"
+        required: true
+        default: parents
+        selector:
+          select:
+            options:
+              - parents
+              - kids
+              - family
+      message:
+        description: "Message"
+        required: true
+        selector:
+          text:
+      title:
+        description: "Title (optional)"
+        selector:
+          text:
+      data:
+        description: "Companion-app extras, e.g. {priority: high, channel: alarm_stream} (optional)"
+        selector:
+          object:
+      persistent:
+        description: "Also show as notification in HA"
+        default: false
+        selector:
+          boolean:
+
+    variables:
+      parents: *phones_parents
+      kids: *phones_kids
+      phones: >
+        {% if group == 'parents' %}{{ parents }}
+        {% elif group == 'kids' %}{{ kids }}
+        {% else %}{{ parents + kids }}
+        {% endif %}
+
+    sequence:
+      - repeat:
+          for_each: "{{ phones }}"
+          sequence:
+            - action: "notify.{{ repeat.item }}"
+              continue_on_error: true       # one phone offline should not stop the rest
+              data:
+                message: "{{ message }}"
+                title: "{{ title | default('') }}"
+                data: "{{ data | default({}) }}"
+
+      - if:
+          - condition: template
+            value_template: "{{ persistent | default(false) }}"
+        then:
+          - action: persistent_notification.create
+            data:
+              message: "{{ message }}"
+              title: "{{ title | default('Notify') }}"

@@ -1,0 +1,187 @@
+# ArveVM; Solution Coffeemaker - any input starts brew, says when coffee is ready, turns plug off after runtime
+# Wiki: https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Coffeemaker
+# Idea: https://github.com/thomasloven/hass-config/blob/008f62dcb9d95c91556715be36be17b1138b2436/packages/coffeemaker.yaml
+
+homeassistant:
+  customize:
+    package.node_anchors:
+      # ArveVM; INPUT - change to your own entities:
+      coffeemaker_switch: &coffeemaker_switch switch.kitchen_moccamaster_plug   # power-plug for coffeemaker
+      coffeemaker_speakers: &coffeemaker_speakers                                # speakers for ready/off-messages
+        - media_player.symfonisk
+        - media_player.kitchen_googlemini
+      # Buttons that start/restart brew - add as many as you like (event.* or z2m sensor.*_action)
+      # coffeemaker_buttons: &coffeemaker_buttons
+        # - Kitchen Switch3 has automation that trigger coffemaker_start
+      # Which presses count, e.g. [on_l1] for button 1 on a Namron 4-gang. Empty [] = any press
+      # coffeemaker_button_presses: &coffeemaker_button_presses []
+
+
+# Settings - both counted in minutes from start. Adjust from dashboard
+input_number:
+  coffeemaker_ready_min:
+    name: "Coffeemaker ready after"
+    icon: mdi:coffee-outline
+    unit_of_measurement: min
+    min: 1
+    max: 15
+    step: 1
+    mode: slider
+  coffeemaker_off_min:
+    name: "Coffeemaker off after"
+    icon: mdi:timer-cog-outline
+    unit_of_measurement: min
+    min: 1
+    max: 60
+    step: 1
+    mode: slider
+
+timer:
+  coffeemaker_ready:
+    name: "Coffeemaker ready"
+    icon: mdi:coffee-outline
+    restore: true
+  coffeemaker_off:
+    name: "Coffeemaker off"
+    icon: mdi:coffee-maker-outline
+    restore: true
+
+
+# The one "verb" of this solution - call it from anything: buttons, dashboard, voice, NFC, other automations
+script:
+  coffeemaker_start:
+    alias: "Coffeemaker start"
+    description: "Plug ON and (re)start both timers. Already on = new brew, timers restart"
+    icon: mdi:coffee-maker
+    mode: restart
+    variables:
+      speakers: *coffeemaker_speakers
+      ready_minutes: "{{ states('input_number.coffeemaker_ready_min') | int(6) }}"
+      off_minutes: "{{ states('input_number.coffeemaker_off_min') | int(30) }}"
+    sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: *coffeemaker_switch
+      - action: timer.start
+        target:
+          entity_id: timer.coffeemaker_ready
+        data:
+          duration: "{{ (ready_minutes | int(6)) * 60 }}"
+      - action: timer.start
+        target:
+          entity_id: timer.coffeemaker_off
+        data:
+          duration: "{{ (off_minutes | int(30)) * 60 }}"
+      - action: script.turn_on
+        target:
+          entity_id: script.announce
+        data:
+          variables:
+            message: "Kaffitraktaren er startet. Kaffien er klar om {{ ready_minutes }} minutter. Kaffitraktaren blir skrudd av om {{ off_minutes }} minutter"
+            speakers: "{{ speakers }}"
+
+
+automation:
+  - id: coffeemaker
+    alias: "Coffeemaker"
+    description: "Buttons start brew, plug ON/OFF follows timers, say when ready, turn off after runtime"
+    mode: queued
+    triggers:
+      # ArveVM; un-comment with the button-anchors above
+      # - trigger: state
+      #   id: button
+      #   entity_id: *coffeemaker_buttons
+      #   not_from: [unavailable, unknown]
+      #   not_to: [unavailable, unknown, ""]
+      - trigger: state
+        id: switch_on
+        entity_id: *coffeemaker_switch
+        from: "off"
+        to: "on"
+      - trigger: state
+        id: switch_off
+        entity_id: *coffeemaker_switch
+        to: "off"
+      - trigger: event
+        id: ready_done
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.coffeemaker_ready
+      - trigger: event
+        id: off_done
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.coffeemaker_off
+
+    variables:
+      speakers: *coffeemaker_speakers
+      # presses: *coffeemaker_button_presses        # ArveVM; un-comment with the button-anchors above
+
+    actions:
+      - choose:
+          # ArveVM; un-comment with the button-anchors above
+          # Button pressed: start/restart brew (if it is one of the presses we listen for)
+          # event.* has the press in attribute event_type, z2m sensor.*_action has it as state
+          # - conditions:
+          #     - condition: trigger
+          #       id: button
+          #     - condition: template
+          #       value_template: >
+          #         {% set press = trigger.to_state.attributes.event_type | default(trigger.to_state.state) %}
+          #         {{ presses | count == 0 or press in presses }}
+          #   sequence:
+          #     - action: script.coffeemaker_start
+
+          # Plug ON from elsewhere (dashboard, app, plug-button): start timers if not already running
+          - conditions:
+              - condition: trigger
+                id: switch_on
+              - condition: state
+                entity_id: timer.coffeemaker_off
+                state: "idle"
+            sequence:
+              - action: script.coffeemaker_start
+
+          # Plug OFF (any way): cancel both timers
+          - conditions:
+              - condition: trigger
+                id: switch_off
+            sequence:
+              - action: timer.cancel
+                target:
+                  entity_id:
+                    - timer.coffeemaker_ready
+                    - timer.coffeemaker_off
+
+          # Ready-timer done: tell the house (only if still on)
+          # ArveVM; uses Solution Notify - https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Notify
+          - conditions:
+              - condition: trigger
+                id: ready_done
+              - condition: state
+                entity_id: *coffeemaker_switch
+                state: "on"
+            sequence:
+              - action: script.turn_on      # turn_on = don't wait for speech to finish
+                target:
+                  entity_id: script.announce
+                data:
+                  variables:
+                    message: "Kaffien er klar"
+                    speakers: "{{ speakers }}"
+
+          # Off-timer done: plug OFF + tell the house
+          - conditions:
+              - condition: trigger
+                id: off_done
+            sequence:
+              - action: switch.turn_off
+                target:
+                  entity_id: *coffeemaker_switch
+              - action: script.turn_on
+                target:
+                  entity_id: script.announce
+                data:
+                  variables:
+                    message: "Kaffitraktaren er skrudd av"
+                    speakers: "{{ speakers }}"

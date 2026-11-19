@@ -6,8 +6,8 @@ homeassistant:
   customize:
     package.node_anchors:
       # Add node-anchor for identification of code-location for created sensors
-      solution_attribute_to_entity: &solution_attribute
-        solution: "House"
+      # solution_attribute_to_entity: &solution_attribute
+        # solution: "House"
 
 light:
   - platform: group

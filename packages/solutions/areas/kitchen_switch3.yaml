@@ -43,6 +43,10 @@ automation:
         platform: state
         entity_id: sensor.kitchen_switch3_action
         to: on_l4
+      - id: l4_right_push     # line4-right push
+        platform: state
+        entity_id: sensor.kitchen_switch3_action
+        to: off_l4
       - id: l4_left_hold      # line4-left hold
         platform: state
         entity_id: sensor.kitchen_switch3_action
@@ -109,10 +113,20 @@ automation:
                 data: {}
                 target:
                   entity_id: light.kitchen_light_windowstrip
-         
+
+          # ArveVM; start/restart coffee - Solution Coffeemaker
+          #   https://github.com/ArveVM/MyAssistedHome/wiki/Solution-Coffeemaker
           - conditions:
               - condition: trigger
-                id: l4_left_hold 
+                id: l4_right_push
+            sequence:
+              - service: script.turn_on     # turn_on = don't wait, so mode:restart here can't cut it off
+                target:
+                  entity_id: script.coffeemaker_start
+
+          - conditions:
+              - condition: trigger
+                id: l4_left_hold
             sequence:
               - repeat:
                   while:
